@@ -9,7 +9,7 @@ function App() {
   const iframeRef = useRef(null);
 
   useEffect(() => {
-    fetch('/api/hello')
+    fetch('http://localhost:5000/api/hello')
       .then(res => res.json())
       .then(data => setMessage(data.message));
   }, []);
@@ -21,14 +21,21 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setQrHtml('');
-    const res = await fetch('/api/generate-qr', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form)
+    // Build the query string from form values
+    const params = new URLSearchParams({
+      url: form.url,
+      id: form.id,
+      name: form.name
+    }).toString();
+
+    const res = await fetch(`http://localhost:5000/api/generate-qr-image?${params}`, {
+      method: 'POST'
     });
-    const html = await res.text();
-    setQrHtml(html);
-    // For accessibility, focus the iframe after loading
+    const data = await res.json();
+    // Show the QR image in an <img> tag
+    setQrHtml(
+      `<img src="http://localhost:5000/api/generate-qr-image/${data.filename}" alt="QR Code" />`
+    );
     setTimeout(() => {
       if (iframeRef.current) iframeRef.current.focus();
     }, 100);
