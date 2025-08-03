@@ -1,6 +1,6 @@
 {
   "name": "goodpawiesui",
-  "version": "1.0.0",
+  "version": "1.0.0.1a",
   "main": "index.js",
   "scripts": {
     "client": "npm start --prefix client",
@@ -15,7 +15,6 @@
     "concurrently": "^9.2.0"
   },
   "dependencies": {
-    "mysql2": "^3.14.3",
-    "qrcode": "^1.5.4"
+    "mysql2": "^3.14.3"
   }
 }
