@@ -11,9 +11,13 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 5000;
+const authRoutes = require('./auth');
+const cookieParser = require('cookie-parser');
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
+app.use('/api', authRoutes);
 
 app.get('/api/hello', (req, res) => {
   res.json({ message: 'Hello from Express!' });

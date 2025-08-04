@@ -13,7 +13,7 @@ DROP TABLE IF EXISTS users;
 -- Users table
 CREATE TABLE users (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    s_username VARCHAR(20) NOT NULL UNIQUE,
+    s_username VARCHAR(30) NOT NULL UNIQUE,
     s_password_hash VARCHAR(300) NOT NULL,
     s_phone_prefix VARCHAR(5) NOT NULL,
     s_phone_number VARCHAR(10) NOT NULL,
