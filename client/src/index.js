@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'materialize-css/dist/css/materialize.min.css';
+import 'purecss/build/pure-min.css';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -16,9 +20,4 @@ root.render(
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
 
-/* Bootstrap CSS */
-import 'bootstrap/dist/css/bootstrap.min.css';
-/* Materialize CSS */
-import 'materialize-css/dist/css/materialize.min.css';
-/* Pure.css */
-import 'purecss/build/pure-min.css';
+
