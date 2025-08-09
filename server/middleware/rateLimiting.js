@@ -21,6 +21,16 @@ class DatabaseStore {
 
   async increment(key) {
     try {
+      // Ensure key is a string - handle new express-rate-limit API
+      if (typeof key === 'object') {
+        console.error('Received object instead of string for rate limit key:', key);
+        return {
+          totalHits: 1,
+          resetTime: new Date(Date.now() + this.windowMs)
+        };
+      }
+      
+      const keyStr = String(key);
       const connection = await mysql.createConnection(dbConfig);
       
       // Clean old attempts
@@ -32,13 +42,13 @@ class DatabaseStore {
       // Count current attempts
       const [rows] = await connection.execute(
         `SELECT COUNT(*) as count FROM ${this.tableName} WHERE identifier = ? AND attempt_time > ?`,
-        [key, new Date(Date.now() - this.windowMs)]
+        [keyStr, new Date(Date.now() - this.windowMs)]
       );
       
       // Add new attempt
       await connection.execute(
         `INSERT INTO ${this.tableName} (identifier, attempt_time, ip_address) VALUES (?, NOW(), ?)`,
-        [key, key.split(':')[0]] // Extract IP from key
+        [keyStr, keyStr.split(':')[0]] // Extract IP from key
       );
       
       await connection.end();
@@ -67,10 +77,12 @@ class DatabaseStore {
 
   async resetKey(key) {
     try {
+      // Ensure key is a string
+      const keyStr = String(key);
       const connection = await mysql.createConnection(dbConfig);
       await connection.execute(
         `DELETE FROM ${this.tableName} WHERE identifier = ?`,
-        [key]
+        [keyStr]
       );
       await connection.end();
     } catch (error) {
@@ -141,9 +153,8 @@ const authRateLimiter = createRateLimiter({
   max: 5, // 5 attempts per window
   message: 'Too many authentication attempts, please try again in 15 minutes.',
   keyGenerator: (req) => {
-    // Use IP + identifier for more granular control
     const identifier = req.body.identifier || req.body.username || req.body.email || '';
-    return `${req.ip}:${identifier}`;
+    return `${ipKeyGenerator(req)}:${identifier}`;
   }
 });
 
@@ -174,7 +185,7 @@ const passwordResetRateLimiter = createRateLimiter({
   message: 'Too many password reset attempts, please try again in an hour.',
   keyGenerator: (req) => {
     const identifier = req.body.identifier || req.body.email || '';
-    return `${req.ip}:${identifier}`;
+    return `${ipKeyGenerator(req)}:${identifier}`;
   }
 });
 

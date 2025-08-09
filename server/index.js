@@ -38,9 +38,7 @@ const dbConfig = {
 const db = mysql.createPool({
   ...dbConfig,
   connectionLimit: 10,
-  queueLimit: 0,
-  acquireTimeout: 60000,
-  timeout: 60000
+  queueLimit: 0
 });
 
 // Security middleware
@@ -730,14 +728,14 @@ app.use((error, req, res, next) => {
   });
 });
 
-// 404 handler
-app.use('*', (req, res) => {
-  res.status(404).json({
-    success: false,
-    error: 'NOT_FOUND',
-    message: 'Endpoint not found'
-  });
-});
+//// 404 handler - catch all unmatched routes
+//app.all('*', (req, res) => {
+//  res.status(404).json({
+//    success: false,
+//    error: 'NOT_FOUND',
+//    message: 'Endpoint not found'
+//  });
+//});
 
 // Cleanup expired tokens every hour
 setInterval(cleanupExpiredTokens, 60 * 60 * 1000);
