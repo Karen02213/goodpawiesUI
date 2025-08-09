@@ -90,22 +90,18 @@ CREATE TABLE pets_breed (
 );
 
 -- Indexes for performance
-CREATE INDEX idx_users_username ON users(s_username);INSERT INTO pets (userid, s_petname, s_type, s_breed, s_description, b_active)
-VALUES
-(1, 'Buddy', 'Dog', 'Golden Retriever', 'Golden Retriever, very friendly.', 1),
-(1, 'Mittens', 'Cat', 'Tabby', 'Tabby cat, loves naps.', 1),
-(2, 'Rex', 'Dog', 'German Shepherd', 'German Shepherd, trained in agility.', 1),
-(3, 'Luna', 'Dog', 'Border Collie', 'Border Collie, loves to play fetch.', 1);
+CREATE INDEX idx_users_username ON users(s_username);
 CREATE INDEX idx_pets_userid ON pets(userid);
 CREATE INDEX idx_pets_images_petid ON pets_images(petid);
 CREATE INDEX idx_user_images_userid ON user_images(userid);
 
+
 -- Sample data for users
-INSERT INTO users (s_username, s_password_hash, s_email, s_phone_prefix, s_phone_number, s_full_name, s_full_surname, s_description, b_active)
+INSERT INTO users (s_username, s_password_hash, s_email, s_phone_prefix, s_phone_number, s_full_name, s_full_surname, b_active)
 VALUES
-('alice', '$2b$10$abcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdef', 'alice@example.com', '+1', '5551234', 'Alice', 'Smith', 'Loves animals and hiking.', 1),
-('bob', '$2b$10$abcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdef', 'bob@example.com', '+44', '7778888', 'Bob', 'Brown', 'Pet enthusiast and photographer.', 1),
-('carol', '$2b$10$abcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdef', 'carol@example.com', '+49', '1234567', 'Carol', 'White', 'Dog lover and runner.', 1);
+('alice', '$2b$10$abcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdef', 'alice@example.com', '+1', '5551234', 'Alice', 'Smith', 1),
+('bob', '$2b$10$abcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdef', 'bob@example.com', '+44', '7778888', 'Bob', 'Brown', 1),
+('carol', '$2b$10$abcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdef', 'carol@example.com', '+49', '1234567', 'Carol', 'White', 1);
 
 -- Sample data for user_info
 INSERT INTO user_info (userid, s_description, b_active)
@@ -141,7 +137,8 @@ INSERT INTO pets_breed (id_type, s_breed, b_active) VALUES
 (6, 'Syrian', 1),
 (6, 'Dwarf', 1);
 
--- Update pets insert to use s_type and s_breed
+
+-- Sample data for pets
 INSERT INTO pets (userid, s_petname, s_type, s_breed, s_description, b_active)
 VALUES
 (1, 'Buddy', 'Dog', 'Golden Retriever', 'Golden Retriever, very friendly.', 1),
