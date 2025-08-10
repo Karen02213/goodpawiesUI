@@ -1,4 +1,5 @@
 // server/middleware/rateLimiting.js
+// TODO: fix and implement ratelimit correctly and avoid in memory storage
 const rateLimit = require('express-rate-limit');
 const mysql = require('mysql2/promise');
 const { ipKeyGenerator } = require('express-rate-limit');
@@ -22,15 +23,14 @@ class DatabaseStore {
   async increment(key) {
     try {
       // Ensure key is a string - handle new express-rate-limit API
-      if (typeof key === 'object') {
-        console.error('Received object instead of string for rate limit key:', key);
-        return {
-          totalHits: 1,
-          resetTime: new Date(Date.now() + this.windowMs)
-        };
+      let keyStr;
+      if (typeof key === 'object' && key !== null) {
+        // Handle object key from newer versions of express-rate-limit
+        keyStr = key.key || key.toString();
+      } else {
+        keyStr = String(key);
       }
       
-      const keyStr = String(key);
       const connection = await mysql.createConnection(dbConfig);
       
       // Clean old attempts
@@ -78,7 +78,13 @@ class DatabaseStore {
   async resetKey(key) {
     try {
       // Ensure key is a string
-      const keyStr = String(key);
+      let keyStr;
+      if (typeof key === 'object' && key !== null) {
+        keyStr = key.key || key.toString();
+      } else {
+        keyStr = String(key);
+      }
+      
       const connection = await mysql.createConnection(dbConfig);
       await connection.execute(
         `DELETE FROM ${this.tableName} WHERE identifier = ?`,
@@ -117,14 +123,14 @@ const createRateLimitTable = async () => {
 createRateLimitTable();
 
 /**
- * General rate limiter
+ * General rate limiter - using memory store to avoid double count issues
  */
 const createRateLimiter = (options = {}) => {
   const {
     windowMs = 15 * 60 * 1000, // 15 minutes
     max = 100, // 100 requests per window
     message = 'Too many requests, please try again later.',
-    keyGenerator = ipKeyGenerator,
+    keyGenerator,
     standardHeaders = true,
     legacyHeaders = false,
   } = options;
@@ -141,7 +147,8 @@ const createRateLimiter = (options = {}) => {
     keyGenerator,
     standardHeaders,
     legacyHeaders,
-    store: new DatabaseStore('rate_limit_attempts')
+    // Use memory store for now to avoid double count issues
+    // store: new DatabaseStore('rate_limit_attempts')
   });
 };
 

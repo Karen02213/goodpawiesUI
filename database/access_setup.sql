@@ -1,13 +1,3 @@
--- Drop tables if they exist (in correct order due to foreign keys)
-DROP TABLE IF EXISTS likes;
-DROP TABLE IF EXISTS comments;
-DROP TABLE IF EXISTS posts;
-DROP TABLE IF EXISTS pets_images;
-DROP TABLE IF EXISTS pets;
-DROP TABLE IF EXISTS user_images;
-DROP TABLE IF EXISTS user_info;
-DROP TABLE IF EXISTS tokens;
-DROP TABLE IF EXISTS cookies;
 -- Cookies table
 CREATE TABLE cookies (
     id INT PRIMARY KEY AUTO_INCREMENT,
