@@ -1,24 +1,65 @@
-import React, { useState } from 'react';
-import {  BrowserRouter as Router , Routes, Route, Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../../utils/auth';
 
 function LoginPage() {
-  const [form, setForm] = useState({ username: '', password: '' });
+  const [form, setForm] = useState({ identifier: '', password: '' });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Redirect to intended page after login
+  const from = location.state?.from?.pathname || '/';
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(from, { replace: true });
+    }
+  }, [isAuthenticated, navigate, from]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setError(''); // Clear error when user types
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
 
-    if (form.username === '' || form.password === '') {
-      alert('Por favor, completa todos los campos');
+    if (form.identifier === '' || form.password === '') {
+      setError('Por favor, completa todos los campos');
       return;
     }
 
-    alert('Inicio de sesión exitoso');
-    navigate('/');
+    setLoading(true);
+    
+    try {
+      const result = await login(form.identifier, form.password);
+      
+      if (result.success) {
+        navigate(from, { replace: true });
+      } else {
+        switch (result.error) {
+          case 'INVALID_CREDENTIALS':
+            setError('Usuario/email o contraseña incorrectos');
+            break;
+          case 'ACCOUNT_LOCKED':
+            setError('Cuenta bloqueada temporalmente por demasiados intentos fallidos');
+            break;
+          case 'NETWORK_ERROR':
+            setError('Error de conexión. Por favor, intenta de nuevo.');
+            break;
+          default:
+            setError(result.message || 'Error al iniciar sesión');
+        }
+      }
+    } catch (err) {
+      setError('Error inesperado. Por favor, intenta de nuevo.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -33,19 +74,35 @@ function LoginPage() {
     }}>
       <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>Inicio de sesión</h1>
 
+      {error && (
+        <div style={{
+          backgroundColor: '#f8d7da',
+          border: '1px solid #f5c6cb',
+          color: '#721c24',
+          padding: '10px',
+          borderRadius: '5px',
+          marginBottom: '20px',
+          textAlign: 'center'
+        }}>
+          {error}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px' }}>Nombre de usuario:</label>
+          <label style={{ display: 'block', marginBottom: '5px' }}>Usuario/Email/Teléfono:</label>
           <input
-            name="username"
+            name="identifier"
             type="text"
-            value={form.username}
+            value={form.identifier}
             onChange={handleChange}
+            disabled={loading}
             style={{
               width: '100%',
               padding: '10px',
               fontSize: '1rem',
-              boxSizing: 'border-box'
+              boxSizing: 'border-box',
+              opacity: loading ? 0.6 : 1
             }}
           />
         </div>
@@ -57,11 +114,13 @@ function LoginPage() {
             type="password"
             value={form.password}
             onChange={handleChange}
+            disabled={loading}
             style={{
               width: '100%',
               padding: '10px',
               fontSize: '1rem',
-              boxSizing: 'border-box'
+              boxSizing: 'border-box',
+              opacity: loading ? 0.6 : 1
             }}
           />
           <div style={{ textAlign: 'right', marginTop: '8px' }}>
@@ -73,18 +132,20 @@ function LoginPage() {
 
         <button
           type="submit"
+          disabled={loading}
           style={{
             width: '100%',
             padding: '12px',
-            backgroundColor: '#007bff',
+            backgroundColor: loading ? '#6c757d' : '#007bff',
             color: '#fff',
             fontSize: '1rem',
             border: 'none',
             borderRadius: '5px',
-            cursor: 'pointer'
+            cursor: loading ? 'not-allowed' : 'pointer',
+            opacity: loading ? 0.8 : 1
           }}
         >
-          Entrar
+          {loading ? 'Iniciando sesión...' : 'Entrar'}
         </button>
       </form>
       <div style={{ textAlign: 'center', marginTop: '20px' }}>

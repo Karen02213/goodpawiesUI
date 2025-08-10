@@ -5,7 +5,7 @@ import '../../styles/FormStyles.css';
 export default function RegisterForm({ registerDataRef }) {
   const [formData, setFormData] = useState({
     s_username: '',
-    s_phone_prefix: '',
+    s_phone_prefix: '+52', // Default Mexico prefix
     s_phone_number: '',
     s_email: '',
     s_full_name: '',

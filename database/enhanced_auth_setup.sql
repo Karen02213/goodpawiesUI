@@ -60,16 +60,117 @@ CREATE TABLE IF NOT EXISTS password_reset_tokens (
 );
 
 -- Add additional security fields to users table if they don't exist
-ALTER TABLE users 
-ADD COLUMN IF NOT EXISTS email_verified BOOLEAN DEFAULT FALSE,
-ADD COLUMN IF NOT EXISTS phone_verified BOOLEAN DEFAULT FALSE,
-ADD COLUMN IF NOT EXISTS two_factor_secret VARCHAR(32),
-ADD COLUMN IF NOT EXISTS two_factor_enabled BOOLEAN DEFAULT FALSE,
-ADD COLUMN IF NOT EXISTS account_locked BOOLEAN DEFAULT FALSE,
-ADD COLUMN IF NOT EXISTS lock_until TIMESTAMP NULL,
-ADD COLUMN IF NOT EXISTS failed_login_attempts INT DEFAULT 0,
-ADD COLUMN IF NOT EXISTS last_login TIMESTAMP NULL,
-ADD COLUMN IF NOT EXISTS password_changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+-- Note: MySQL doesn't support ADD COLUMN IF NOT EXISTS in older versions
+-- We'll use a more compatible approach
+
+-- Check and add columns one by one
+SET @sql = (SELECT IF(
+    (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS 
+     WHERE table_name = 'users' 
+     AND table_schema = DATABASE()
+     AND column_name = 'email_verified') > 0,
+    'SELECT ''Column email_verified already exists''',
+    'ALTER TABLE users ADD COLUMN email_verified BOOLEAN DEFAULT FALSE'
+));
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @sql = (SELECT IF(
+    (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS 
+     WHERE table_name = 'users' 
+     AND table_schema = DATABASE()
+     AND column_name = 'phone_verified') > 0,
+    'SELECT ''Column phone_verified already exists''',
+    'ALTER TABLE users ADD COLUMN phone_verified BOOLEAN DEFAULT FALSE'
+));
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @sql = (SELECT IF(
+    (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS 
+     WHERE table_name = 'users' 
+     AND table_schema = DATABASE()
+     AND column_name = 'two_factor_secret') > 0,
+    'SELECT ''Column two_factor_secret already exists''',
+    'ALTER TABLE users ADD COLUMN two_factor_secret VARCHAR(32)'
+));
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @sql = (SELECT IF(
+    (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS 
+     WHERE table_name = 'users' 
+     AND table_schema = DATABASE()
+     AND column_name = 'two_factor_enabled') > 0,
+    'SELECT ''Column two_factor_enabled already exists''',
+    'ALTER TABLE users ADD COLUMN two_factor_enabled BOOLEAN DEFAULT FALSE'
+));
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @sql = (SELECT IF(
+    (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS 
+     WHERE table_name = 'users' 
+     AND table_schema = DATABASE()
+     AND column_name = 'account_locked') > 0,
+    'SELECT ''Column account_locked already exists''',
+    'ALTER TABLE users ADD COLUMN account_locked BOOLEAN DEFAULT FALSE'
+));
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @sql = (SELECT IF(
+    (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS 
+     WHERE table_name = 'users' 
+     AND table_schema = DATABASE()
+     AND column_name = 'lock_until') > 0,
+    'SELECT ''Column lock_until already exists''',
+    'ALTER TABLE users ADD COLUMN lock_until TIMESTAMP NULL'
+));
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @sql = (SELECT IF(
+    (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS 
+     WHERE table_name = 'users' 
+     AND table_schema = DATABASE()
+     AND column_name = 'failed_login_attempts') > 0,
+    'SELECT ''Column failed_login_attempts already exists''',
+    'ALTER TABLE users ADD COLUMN failed_login_attempts INT DEFAULT 0'
+));
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @sql = (SELECT IF(
+    (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS 
+     WHERE table_name = 'users' 
+     AND table_schema = DATABASE()
+     AND column_name = 'last_login') > 0,
+    'SELECT ''Column last_login already exists''',
+    'ALTER TABLE users ADD COLUMN last_login TIMESTAMP NULL'
+));
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @sql = (SELECT IF(
+    (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS 
+     WHERE table_name = 'users' 
+     AND table_schema = DATABASE()
+     AND column_name = 'password_changed_at') > 0,
+    'SELECT ''Column password_changed_at already exists''',
+    'ALTER TABLE users ADD COLUMN password_changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP'
+));
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
 
 -- Enhanced user validation procedure
 DELIMITER //
@@ -237,12 +338,5 @@ END //
 
 DELIMITER ;
 
--- Create event to run cleanup procedure every hour
-SET GLOBAL event_scheduler = ON;
-
-DROP EVENT IF EXISTS cleanup_tokens_event;
-
-CREATE EVENT cleanup_tokens_event
-ON SCHEDULE EVERY 1 HOUR
-DO
-    CALL sp_cleanup_expired_tokens();
+-- Note: Event creation requires SUPER privileges
+-- The cleanup procedure can be called manually or via application scheduling

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
-export default function AvatarMenu({ imageUrl }) {
+export default function AvatarMenu({ imageUrl, username, onLogout }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef();
 
@@ -15,6 +15,12 @@ export default function AvatarMenu({ imageUrl }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const handleLogout = () => {
+    setOpen(false);
+    if (onLogout) {
+      onLogout();
+    }
+  };
 
   return (
     <div ref={menuRef}
@@ -56,9 +62,20 @@ export default function AvatarMenu({ imageUrl }) {
             zIndex: 10
           }}
         >
-            <Link to="/perfil" style={linkStyle}>👤 Ver Perfil</Link>
+            {username && (
+              <div style={{ ...linkStyle, fontWeight: 'bold', borderBottom: '1px solid #eee', marginBottom: '5px' }}>
+                Hola, {username}
+              </div>
+            )}
+            <Link 
+              to="/perfil" 
+              style={linkStyle}
+              onClick={() => setOpen(false)}
+            >
+              👤 Ver Perfil
+            </Link>
             {/* <Link to="/configuracion" style={linkStyle}>⚙️ Configuración</Link> */}
-            <button onClick={() => alert("Cerrar sesión")} style={buttonStyle}>
+            <button onClick={handleLogout} style={buttonStyle}>
               🚪 Cerrar sesión
             </button>
         </div>
