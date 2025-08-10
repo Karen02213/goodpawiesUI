@@ -2,21 +2,7 @@
 #!/bin/bash
 
 show_help() {
-    echo "Us    echo "📦 Checking database setup..."
-    if docker exec -i goodpawies-mysql mysql -ugoodpawiesuser -pgoodpawiespass goodpawiesdb -e "SHOW PROCEDURE STATUS WHERE Name='sp_register_user';" | grep -q "sp_register_user"; then
-        echo "✅ Database is already set up!"
-    else
-        echo "📦 Setting up database..."
-        echo "  Running user_setup.sql..."
-        docker exec -i goodpawies-mysql mysql -ugoodpawiesuser -pgoodpawiespass goodpawiesdb < /database/user_setup.sql
-        echo "  Running enhanced_auth_setup.sql..."
-        docker exec -i goodpawies-mysql mysql -ugoodpawiesuser -pgoodpawiespass goodpawiesdb < /database/enhanced_auth_setup.sql
-        echo "  Running social_media_setup.sql..."
-        docker exec -i goodpawies-mysql mysql -ugoodpawiesuser -pgoodpawiespass goodpawiesdb < /database/social_media_setup.sql
-        echo "  Running access_setup.sql..."
-        docker exec -i goodpawies-mysql mysql -ugoodpawiesuser -pgoodpawiespass goodpawiesdb < /database/access_setup.sql
-        echo "✅ Database setup complete!"
-    fi     docker exec -i goodpawies-mysql mysql -ugoodpawiesuser -pgoodpawiespass goodpawiesdb < /database/user_setup.sql0 [--npm] [--database] [--update] [--docker]"
+    echo "Usage: setup.sh [--npm] [--database] [--update] [--docker]"
     echo "  --npm        Install npm dependencies only"
     echo "  --database   Setup database only"
     echo "  --update     Run apt update and upgrade"
@@ -57,7 +43,14 @@ run_database() {
         echo "✅ Database is already set up!"
     else
         echo "📦 Setting up database..."
-    docker exec -i goodpawies-mysql mysql -ugoodpawiesuser -pgoodpawiespass goodpawiesdb < database/user_setup.sql
+        echo "  Running user_setup.sql..."
+        docker exec -i goodpawies-mysql mysql -ugoodpawiesuser -pgoodpawiespass goodpawiesdb < database/user_setup.sql
+        echo "  Running enhanced_auth_setup.sql..."
+        docker exec -i goodpawies-mysql mysql -ugoodpawiesuser -pgoodpawiespass goodpawiesdb < database/enhanced_auth_setup.sql
+        echo "  Running social_media_setup.sql..."
+        docker exec -i goodpawies-mysql mysql -ugoodpawiesuser -pgoodpawiespass goodpawiesdb < database/social_media_setup.sql
+        echo "  Running access_setup.sql..."
+        docker exec -i goodpawies-mysql mysql -ugoodpawiesuser -pgoodpawiespass goodpawiesdb < database/access_setup.sql
         echo "✅ Database setup complete!"
     fi
 }
