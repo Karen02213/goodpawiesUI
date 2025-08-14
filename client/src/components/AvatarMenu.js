@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
-export default function AvatarMenu({ imageUrl, username, onLogout }) {
+export default function AvatarMenu({ imageUrl, username, onLogout,  }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef();
 
@@ -52,29 +52,25 @@ export default function AvatarMenu({ imageUrl, username, onLogout }) {
           style={{
             position: "absolute",
             top: "50px",
-            right: "0",
+            right: "9px",
             background: "white",
             border: "1px solid #ddd",
             borderRadius: "8px",
             boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-            padding: "10px",
-            minWidth: "150px",
+            minWidth: "163px",
+            textAlign: "center",
             zIndex: 10
           }}
         >
             {username && (
-              <div style={{ ...linkStyle, fontWeight: 'bold', borderBottom: '1px solid #eee', marginBottom: '5px' }}>
+              <div style={{ ...linkStyle, fontWeight: 'bold', borderBottom: '1px solid #eee' }}>
                 Hola, {username}
               </div>
             )}
-            <Link 
-              to="/perfil" 
-              style={linkStyle}
-              onClick={() => setOpen(false)}
-            >
+            <Link to="/perfil"  style={linkStyle} onClick={() => setOpen(false)}>
               👤 Ver Perfil
             </Link>
-            {/* <Link to="/configuracion" style={linkStyle}>⚙️ Configuración</Link> */}
+            <Link to="/configuracion" style={linkStyle}>⚙️ Configuración</Link>
             <button onClick={handleLogout} style={buttonStyle}>
               🚪 Cerrar sesión
             </button>

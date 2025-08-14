@@ -1,5 +1,6 @@
 // client/src/utils/auth.js - Client-side Authentication Helper
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 class AuthService {
   constructor() {
@@ -296,9 +297,15 @@ export const useAuth = () => {
   };
 
   const logout = async () => {
-    await authService.logout();
-    setUser(null);
-    setIsAuthenticated(false);
+    try {
+      await authService.logout();
+      setUser(null);
+      setIsAuthenticated(false);
+      authService.removeToken(); // <-- Asegúrate de tener esto
+      sessionStorage.clear();
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
   };
 
   return {

@@ -36,17 +36,17 @@ export default function RegisterForm({ registerDataRef }) {
 
       <div className="form-group">
         <label>Nombre(s):</label>
-        <input type="text" name="s_full_name" placeholder="Nombre(s)" maxLength={30} onChange={handleChange} />
+        <input type="text" name="s_full_name" placeholder="Nombre(s)" required maxLength={30} onChange={handleChange} />
       </div>
 
       <div className="form-group">
         <label>Apellidos:</label>
-        <input type="text" name="s_full_surname" placeholder="Apellidos" maxLength={30} onChange={handleChange} />
+        <input type="text" name="s_full_surname" placeholder="Apellidos" required maxLength={30} onChange={handleChange} />
       </div>
 
       <div className="form-group">  
   <label>Teléfono:</label>
-  <input type="tel" name="s_phone_number" placeholder="Teléfono" required maxLength={10} value={formData.s_phone_number} onChange={(e) => {
+  <input type="tel" name="s_phone_number" placeholder="Teléfono" required minLength={10} maxLength={10} value={formData.s_phone_number} onChange={(e) => {
       const onlyNums = e.target.value.replace(/\D/g, ""); // elimina todo lo que no es número
       setFormData(prev => ({ ...prev, s_phone_number: onlyNums }));
     }}

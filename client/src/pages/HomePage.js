@@ -137,16 +137,7 @@ function HomePage() {
   };
 
   return (
-    <div style={{ background: '#f8f9fa', minHeight: '100vh', position: 'relative' }}>
-      {/* Navbar - bigger */}
-      <nav className="navbar navbar-light bg-light mb-3" style={{ padding: '1.2rem 1.5rem', borderRadius: 0, minHeight: 70 }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-          <span className="navbar-brand" style={{ fontSize: 26, fontWeight: 600, flex: 1, textAlign: 'center' }}>{username}</span>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', flex: 1 }}>
-            <img src={profileImage} alt="Profile" style={{ width: 48, height: 48, borderRadius: '50%', marginRight: 0, display: 'block' }} />
-          </div>
-        </div>
-      </nav>
+    <div style={{ background: '#f8f9fa', minHeight: '100vh', position: 'relative', marginTop:'2%'}}>
       {/* Scrollable News Feed */}
       <div style={{ maxWidth: 600, margin: '0 auto', padding: '0 8px' }}>
         {news.map(post => (

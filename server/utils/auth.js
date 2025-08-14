@@ -132,7 +132,7 @@ const createSession = async (userId, username, ipAddress, userAgent, permissions
       accessToken,
       refreshToken,
       sessionId,
-      expiresIn: 15 * 60, // 15 minutes in seconds
+      expiresIn: 90 * 60, // 15 minutes in seconds
       tokenType: 'Bearer'
     };
   } catch (error) {

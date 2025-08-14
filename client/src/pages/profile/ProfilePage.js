@@ -34,7 +34,9 @@ export default function ProfilePage() {
       </div>
 
       <div style={styles.section}>
-        <Link to="/agregar-mascota" style={styles.addButton}>➕ Agregar Mascota</Link>
+        <div style={styles.card}>
+          <Link to="/agregar-mascota" style={styles.addButton}>➕ Agregar Mascota</Link>
+        </div>
       </div>
     </div>
   );
