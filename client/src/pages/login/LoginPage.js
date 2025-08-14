@@ -48,6 +48,9 @@ function LoginPage() {
           case 'ACCOUNT_LOCKED':
             setError('Cuenta bloqueada temporalmente por demasiados intentos fallidos');
             break;
+          case 'ACCOUNT_TIME_OUT':
+            setError('Cuenta bloqueada por 5 min. Por favor, intenta de nuevo más tarde.');
+            break;
           case 'NETWORK_ERROR':
             setError('Error de conexión. Por favor, intenta de nuevo.');
             break;

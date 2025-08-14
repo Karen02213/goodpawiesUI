@@ -11,7 +11,8 @@
 
 # production
 /build
-
+/logs/*.log
+/logs/*audit.json
 # misc
 .DS_Store
 .env.local

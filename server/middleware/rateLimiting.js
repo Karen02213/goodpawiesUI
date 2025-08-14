@@ -154,11 +154,13 @@ const createRateLimiter = (options = {}) => {
 
 /**
  * Strict rate limiter for authentication endpoints
+ * This limits the number of login attempts to prevent brute force attacks.
+ * Adjust the max and windowMs values as needed for your application's requirements.
  */
 const authRateLimiter = createRateLimiter({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 1 * 60 * 1000, // 1 minute
   max: 5, // 5 attempts per window
-  message: 'Too many authentication attempts, please try again in 15 minutes.',
+  message: 'Too many authentication attempts, please try again in 1 minute.',
   keyGenerator: (req) => {
     const identifier = req.body.identifier || req.body.username || req.body.email || '';
     return `${ipKeyGenerator(req)}:${identifier}`;
@@ -167,15 +169,29 @@ const authRateLimiter = createRateLimiter({
 
 /**
  * Moderate rate limiter for API endpoints
+ * This is a general rate limiter for API requests, allowing more requests than auth endpoints.
+ * It helps to prevent abuse while ensuring a smooth user experience.
+ * Adjust the max and windowMs values as needed for your application's requirements.
+ * Consider implementing additional logging or monitoring for rate-limited requests.
+ * This can help identify potential abuse patterns and inform future adjustments.
+ * For example, you could log the user ID, IP address, and timestamp of each rate-limited request.
+ * Consider implementing a monitoring dashboard to visualize rate limit events.
+ * This can help you quickly identify and respond to potential abuse.
+ * For example, you could use a tool like Grafana or Kibana to create visualizations of rate limit events.
+ * Implementing alerts for unusual patterns can also be beneficial.
+ * This can help you proactively address potential abuse before it becomes a larger issue.
  */
 const apiRateLimiter = createRateLimiter({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 5 * 60 * 1000, // 5 minutes
   max: 1000, // 1000 requests per window
   message: 'Too many API requests, please slow down.',
 });
 
 /**
  * Strict rate limiter for registration
+ * This limits the number of registration attempts to prevent abuse.
+ * Adjust the max and windowMs values as needed for your application's requirements.
+ * Consider implementing additional logging or monitoring for registration attempts.
  */
 const registrationRateLimiter = createRateLimiter({
   windowMs: 60 * 60 * 1000, // 1 hour
@@ -230,7 +246,7 @@ const trackLoginAttempt = async (req, res, next) => {
     await connection.end();
 
     // If too many failed attempts, block the request
-    if (failedAttempts[0].count >= 5 && !success) {
+    if (failedAttempts[0].count >= 21 && !success) {
       return res.status(429).json({
         success: false,
         error: 'TOO_MANY_ATTEMPTS',

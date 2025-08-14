@@ -206,6 +206,8 @@ BEGIN
         SET p_result = 'USER_NOT_FOUND';
         SET p_user_data = NULL;
     -- Check if account is locked
+    -- If account is locked, check lock_until timestamp
+    -- If lock_until is in the future, deny access
     ELSEIF v_account_locked = TRUE AND (v_lock_until IS NULL OR v_lock_until > NOW()) THEN
         SET p_user_id = v_user_id;
         SET p_result = 'ACCOUNT_LOCKED';
@@ -243,14 +245,24 @@ BEGIN
         -- Password is incorrect, increment failed attempts
         SET v_failed_attempts = v_failed_attempts + 1;
         
-        IF v_failed_attempts >= 5 THEN
-            -- Lock account for 30 minutes after 5 failed attempts
-            UPDATE users 
-            SET failed_login_attempts = v_failed_attempts,
-                account_locked = TRUE,
-                lock_until = DATE_ADD(NOW(), INTERVAL 30 MINUTE)
-            WHERE id = v_user_id;
-            SET p_result = 'ACCOUNT_LOCKED';
+        IF v_failed_attempts >= 10 THEN
+            -- Lock account for 15 minutes after 10 failed attempts
+            -- Increment failed attempts
+            IF v_failed_attempts >= 20 THEN 
+                UPDATE users 
+                SET failed_login_attempts = v_failed_attempts,
+                    account_locked = TRUE,
+                    lock_until = DATE_ADD(NOW(), INTERVAL 60 MINUTE)
+                WHERE id = v_user_id;
+                SET p_result = 'ACCOUNT_LOCKED';
+            ELSE
+                UPDATE users 
+                SET failed_login_attempts = v_failed_attempts,
+                    account_locked = TRUE,
+                    lock_until = DATE_ADD(NOW(), INTERVAL 5 MINUTE)
+                WHERE id = v_user_id;
+                SET p_result = 'ACCOUNT_TIME_OUT';
+            END IF;
         ELSE
             UPDATE users 
             SET failed_login_attempts = v_failed_attempts
