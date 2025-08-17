@@ -32,7 +32,7 @@ export function validatePhonePrefix(prefix) {
 
 // Phone number validation
 export function validatePhoneNumber(number) {
-  if (!/^\d{7,15}$/.test(number)) return 'Phone number must contain only digits and be 7-15 characters long';
+  if (!/^\d{7,10}$/.test(number)) return 'Phone number must contain only digits and be 7-15 characters long';
   return null;
 }
 

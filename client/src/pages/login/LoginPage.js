@@ -2,13 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../utils/auth';
 
+
 function LoginPage() {
-  const [form, setForm] = useState({ identifier: '', password: '' });
+  const location = useLocation();
+  // Get username and success from query params
+  const searchParams = new URLSearchParams(location.search);
+  const usernameFromRegister = searchParams.get('username') || '';
+  const showSuccess = searchParams.get('success') === 'true';
+
+  const [form, setForm] = useState({ identifier: usernameFromRegister, password: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
 
   // Redirect to intended page after login
   const from = location.state?.from?.pathname || '/';
@@ -76,6 +82,22 @@ function LoginPage() {
       boxShadow: '0 0 10px rgba(0,0,0,0.1)'
     }}>
       <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>Inicio de sesión</h1>
+
+      {/* Success message after registration */}
+      {showSuccess && (
+        <div style={{
+          backgroundColor: '#d4edda',
+          border: '1px solid #c3e6cb',
+          color: '#155724',
+          padding: '10px',
+          borderRadius: '5px',
+          marginBottom: '20px',
+          textAlign: 'center',
+          fontWeight: 'bold'
+        }}>
+          ¡Usuario creado exitosamente! Ahora puedes iniciar sesión.
+        </div>
+      )}
 
       {error && (
         <div style={{

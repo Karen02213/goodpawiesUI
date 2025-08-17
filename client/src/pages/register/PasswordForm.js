@@ -46,7 +46,7 @@ export default function PasswordForm({ registerDataRef }) {
       const result = await register(completeData);
 
       if (result.success) {
-        navigate('/', { replace: true });
+        navigate('/login?success=true&username=' + encodeURIComponent(completeData.username), { replace: true });
       } else {
         switch (result.error) {
           case 'USER_EXISTS':
