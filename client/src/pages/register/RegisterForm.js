@@ -116,30 +116,27 @@ export default function RegisterForm({ registerDataRef }) {
 
       <div className="form-group">
         <label htmlFor="s_phone_number">Teléfono:</label>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-            <label htmlFor="s_phone_prefix" style={{ fontSize: '0.95rem', marginBottom: '2px' }}>Prefijo</label>
-            <select
-              id="s_phone_prefix"
-              name="s_phone_prefix"
-              value={formData.s_phone_prefix}
-              onChange={handleChange}
-              style={{ padding: '10px 8px', borderRadius: '6px', border: '1px solid #ccc', fontSize: '1rem', background: '#fff', minWidth: '80px' }}
-              required
-            >
-              <option value="+52">🇲🇽 +52</option>
-              <option value="+1">🇺🇸 +1</option>
-              <option value="+44">🇬🇧 +44</option>
-              <option value="+34">🇪🇸 +34</option>
-              <option value="+57">🇨🇴 +57</option>
-              <option value="+55">🇧🇷 +55</option>
-              <option value="+91">🇮🇳 +91</option>
-              <option value="+81">🇯🇵 +81</option>
-              <option value="+49">🇩🇪 +49</option>
-              <option value="+33">🇫🇷 +33</option>
-              {/* Add more as needed */}
-            </select>
-          </div>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px' }}>
+          <select
+            className="form-select"
+            id="s_phone_prefix_bootstrap"
+            name="s_phone_prefix"
+            value={formData.s_phone_prefix}
+            onChange={handleChange}
+            required
+            style={{ maxWidth: '110px', minWidth: '90px' }}
+          >
+            <option value="+52">🇲🇽 +52</option>
+            <option value="+1">🇺🇸 +1</option>
+            <option value="+44">🇬🇧 +44</option>
+            <option value="+34">🇪🇸 +34</option>
+            <option value="+57">🇨🇴 +57</option>
+            <option value="+55">🇧🇷 +55</option>
+            <option value="+91">🇮🇳 +91</option>
+            <option value="+81">🇯🇵 +81</option>
+            <option value="+49">🇩🇪 +49</option>
+            <option value="+33">🇫🇷 +33</option>
+          </select>
           <input
             type="tel"
             id="s_phone_number"
@@ -153,6 +150,7 @@ export default function RegisterForm({ registerDataRef }) {
               const onlyNums = e.target.value.replace(/\D/g, "");
               setFormData(prev => ({ ...prev, s_phone_number: onlyNums }));
             }}
+            className="form-control"
             style={{ flex: 1 }}
           />
         </div>

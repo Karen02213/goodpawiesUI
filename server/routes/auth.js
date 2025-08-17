@@ -3,7 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const helmet = require('helmet');
-
+const delay = require('../middleware/delay');
 // Import custom middleware and utilities
 const { verifyToken, verifyRefreshToken, optionalAuth } = require('../middleware/auth');
 const { 
@@ -48,7 +48,7 @@ router.use(sanitizeInput);
  */
 router.post('/register', 
   registrationRateLimiter,
-  validateRegistration,
+  validateRegistration,delay,
   async (req, res) => {
     const startTime = Date.now();
     try {
@@ -147,7 +147,7 @@ router.post('/register',
  * POST /api/auth/login
  * Authenticate user and create session
  */
-router.post('/login',
+router.post('/login',delay,
   authRateLimiter,
   validateLogin,
   trackLoginAttempt,
@@ -287,7 +287,7 @@ router.post('/login',
  * POST /api/auth/refresh
  * Refresh access token using refresh token
  */
-router.post('/refresh',
+router.post('/refresh',delay,
   verifyRefreshToken,
   async (req, res) => {
     const startTime = Date.now();
@@ -336,7 +336,7 @@ router.post('/refresh',
  * POST /api/auth/logout
  * Logout user and revoke session
  */
-router.post('/logout',
+router.post('/logout',delay,
   verifyToken,
   async (req, res) => {
     const startTime = Date.now();
@@ -382,7 +382,7 @@ router.post('/logout',
  * POST /api/auth/logout-all
  * Logout from all devices
  */
-router.post('/logout-all',
+router.post('/logout-all',delay,
   verifyToken,
   async (req, res) => {
     const startTime = Date.now();
@@ -568,8 +568,8 @@ router.get('/me',
           id: userData.userid,
           username: userData.username,
           email: userData.email,
-          fullName: userData.full_name,
-          fullSurname: userData.full_surname,
+          fullName: userData.fullName,
+          fullSurname: userData.fullSurname,
           phone: userData.phone,
           description: userData.description,
           emailVerified: userData.email_verified,

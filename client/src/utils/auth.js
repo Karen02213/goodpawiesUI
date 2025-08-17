@@ -1,7 +1,6 @@
 // client/src/utils/auth.js - Client-side Authentication Helper
 import { useState, useEffect } from 'react';
-import axios from 'axios';
-
+import { useLocation } from 'react-router-dom';
 class AuthService {
   constructor() {
     this.baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
@@ -249,6 +248,7 @@ export const useAuth = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -268,7 +268,7 @@ export const useAuth = () => {
     };
 
     checkAuth();
-  }, []);
+  }, [location.pathname]);
 
   const login = async (identifier, password) => {
     setLoading(true);

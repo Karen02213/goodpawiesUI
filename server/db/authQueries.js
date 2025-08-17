@@ -206,11 +206,11 @@ async function revokeAllUserSessions(userId) {
  */
 async function getUserProfileData(userId) {
   const query = `
-    SELECT u.id as userid, u.s_username, u.s_email, u.s_full_name, u.s_full_surname,
+    SELECT u.id as userid, u.s_username as username, u.s_email as email, u.s_full_name as fullName, u.s_full_surname as fullSurname,
            CONCAT(u.s_phone_prefix, u.s_phone_number) as phone,
            u.email_verified, u.phone_verified, u.two_factor_enabled,
-           u.dt_created_at, u.last_login,
-           ui.s_description
+           u.dt_created_at as created_at, u.last_login,
+           ui.s_description as description
     FROM users u
     LEFT JOIN user_info ui ON u.id = ui.userid AND ui.b_active = 1
     WHERE u.id = ? AND u.b_active = 1

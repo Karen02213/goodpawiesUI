@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const authQueries = require('../db/authQueries');
 const logger = require('../utils/logger');
+
 const { errors, send } = require('../utils/response');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-in-production';

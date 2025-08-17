@@ -115,7 +115,7 @@ const createRateLimiter = (options = {}) => {
 const rateLimitConfigs = {
   auth: {
     windowMs: 1 * 60 * 1000,
-    max: 5,
+    max: 500,
     message: 'Too many authentication attempts, please try again in 1 minute.',
     keyGenerator: (req) => {
       const identifier = req.body.identifier || req.body.username || req.body.email || '';
@@ -129,12 +129,12 @@ const rateLimitConfigs = {
   },
   registration: {
     windowMs: 60 * 60 * 1000,
-    max: 3,
+    max: 300,
     message: 'Too many registration attempts, please try again in an hour.'
   },
   passwordReset: {
     windowMs: 60 * 60 * 1000,
-    max: 3,
+    max: 300,
     message: 'Too many password reset attempts, please try again in an hour.',
     keyGenerator: (req) => {
       const identifier = req.body.identifier || req.body.email || '';

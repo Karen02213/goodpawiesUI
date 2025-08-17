@@ -1,16 +1,18 @@
 import { Link } from 'react-router-dom';
 import AvatarMenu from './AvatarMenu';
 import { useAuth } from '../utils/auth';
+import { useAuthContext } from './AuthProvider';
 import { useState } from 'react';
 
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
+  // const { user, isAuthenticated, logout } = useAuthContext();
   const userImageUrl = user?.avatar || '/default-avatar.png';
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = async () => {
     await logout();
-    window.location.href = '/login';
+    window.location.href = '/login?logout=true&username=' + user?.username;
   };
 
   return (
