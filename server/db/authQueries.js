@@ -415,7 +415,7 @@ async function deactivateUserSession(userId, sessionId) {
 async function deactivateSessionById(sessionId) {
   const query = `
     UPDATE user_sessions 
-    SET is_active = FALSE, updated_at = NOW() 
+    SET is_active = FALSE, last_activity = NOW(), expires_at = NOW()
     WHERE session_id = ?
   `;
   return await db.execute(query, [sessionId]);
@@ -427,7 +427,7 @@ async function deactivateSessionById(sessionId) {
 async function deactivateAllUserSessions(userId) {
   const query = `
     UPDATE user_sessions 
-    SET is_active = FALSE, updated_at = NOW() 
+    SET is_active = FALSE, last_activity = NOW(), expires_at = NOW()
     WHERE userid = ?
   `;
   return await db.execute(query, [userId]);
@@ -440,7 +440,7 @@ async function revokeRefreshTokensBySession(sessionId) {
   const query = `
     UPDATE refresh_tokens rt
     JOIN user_sessions us ON rt.userid = us.userid
-    SET rt.revoked = TRUE, rt.updated_at = NOW()
+    SET rt.revoked = TRUE, rt.expires_at = NOW()
     WHERE us.session_id = ?
   `;
   return await db.execute(query, [sessionId]);
@@ -452,7 +452,7 @@ async function revokeRefreshTokensBySession(sessionId) {
 async function revokeAllUserRefreshTokens(userId) {
   const query = `
     UPDATE refresh_tokens 
-    SET revoked = TRUE, updated_at = NOW() 
+    SET revoked = TRUE, expires_at = NOW() 
     WHERE userid = ?
   `;
   return await db.execute(query, [userId]);

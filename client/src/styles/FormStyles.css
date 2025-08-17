@@ -1,3 +1,15 @@
+/* Ensure select elements are visible and styled like inputs */
+.form-container select {
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #fff;
+  width: 100%;
+  box-sizing: border-box;
+  appearance: auto;
+}
 /* FormStyles.css */
 
 .form-container {
@@ -7,6 +19,8 @@
   border-radius: 10px;
   background: #f8f8f8;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .form-group {
@@ -36,6 +50,59 @@
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Password input with eye icon */
+.password-input-container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.password-input {
+  padding: 12px 45px 12px 12px !important;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  flex: 1 1 auto;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 12px;
+  top: 0;
+  bottom: 0;
+  margin: auto 0;
+  background: none !important;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  outline: none;
+  height: 24px;
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  color: #666;
+  z-index: 2;
+}
+
+.password-toggle-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+.password-toggle-btn:focus {
+  background: none !important;
+  outline: none;
+  box-shadow: none !important;
 }
 
 .form-container button {

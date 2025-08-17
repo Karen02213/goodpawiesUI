@@ -1,6 +1,8 @@
 import { useState } from 'react';
+
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../utils/auth';
+import { validatePassword } from '../../utils/validation';
 import '../../styles/FormStyles.css';
 
 export default function PasswordForm({ registerDataRef }) {
@@ -8,6 +10,8 @@ export default function PasswordForm({ registerDataRef }) {
   const [confirm, setConfirm] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
 
@@ -15,13 +19,15 @@ export default function PasswordForm({ registerDataRef }) {
     e.preventDefault();
     setError('');
 
-    if (password !== confirm) {
-      setError("Las contraseñas no coinciden");
+    // Validate password
+    const passwordError = validatePassword(password);
+    if (passwordError) {
+      setError(passwordError);
       return;
     }
 
-    if (password.length < 6) {
-      setError("La contraseña debe tener al menos 6 caracteres");
+    if (password !== confirm) {
+      setError("Las contraseñas no coinciden");
       return;
     }
 
@@ -55,6 +61,9 @@ export default function PasswordForm({ registerDataRef }) {
           case 'NETWORK_ERROR':
             setError('Error de conexión. Por favor, intenta de nuevo.');
             break;
+          case 'REGISTRATION_FAILED':
+            setError('Registration failed due to invalid data');
+            break;
           default:
             setError(result.message || 'Error al registrar usuario');
         }
@@ -84,40 +93,116 @@ export default function PasswordForm({ registerDataRef }) {
         </div>
       )}
       
-        <div>
-            <label>Contraseña:</label>
-            <input 
-              type="password" 
-              placeholder="Contraseña (mínimo 6 caracteres)" 
+
+        <div className="form-group">
+          <label>Contraseña:</label>
+          <div className="password-input-container">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Contraseña (mínimo 8 caracteres)"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={loading}
               required
+              className="password-input"
             />
+            <button
+              type="button"
+              tabIndex={-1}
+              onClick={() => setShowPassword((v) => !v)}
+              className="password-toggle-btn"
+              aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+            >
+              {showPassword ? (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M17.94 17.94A10.06 10.06 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                  <line x1="1" y1="1" x2="23" y2="23"/>
+                </svg>
+              ) : (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
-        <div>
-            <label>Confirmar Contraseña:</label>
-            <input 
-              type="password" 
-              placeholder="Confirmar Contraseña" 
+        <div className="form-group">
+          <label>Confirmar Contraseña:</label>
+          <div className="password-input-container">
+            <input
+              type={showConfirm ? 'text' : 'password'}
+              placeholder="Confirmar Contraseña"
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
               disabled={loading}
               required
+              className="password-input"
             />
+            <button
+              type="button"
+              tabIndex={-1}
+              onClick={() => setShowConfirm((v) => !v)}
+              className="password-toggle-btn"
+              aria-label={showConfirm ? 'Ocultar confirmación' : 'Mostrar confirmación'}
+            >
+              {showConfirm ? (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M17.94 17.94A10.06 10.06 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                  <line x1="1" y1="1" x2="23" y2="23"/>
+                </svg>
+              ) : (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
 
-      <button 
-        type="submit" 
-        disabled={loading}
-        style={{
-          display: 'flex',
-          opacity: loading ? 0.8 : 1,
-          cursor: loading ? 'not-allowed' : 'pointer'
-        }}
-      >
-        {loading ? 'Registrando...' : 'Finalizar Registro'}
-      </button>
+      <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+        <button
+          type="button"
+          disabled={loading}
+          style={{
+            flex: 1,
+            backgroundColor: '#6c757d',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '5px',
+            padding: '10px',
+            cursor: loading ? 'not-allowed' : 'pointer',
+            opacity: loading ? 0.8 : 1
+          }}
+          onClick={() => {
+            // Pass registration data back to previous form for prefill
+            if (registerDataRef.current) {
+              navigate('/registrarse', { state: { ...registerDataRef.current } });
+            } else {
+              navigate('/registrarse');
+            }
+          }}
+        >
+          Volver
+        </button>
+        <button 
+          type="submit" 
+          disabled={loading}
+          style={{
+            flex: 2,
+            backgroundColor: '#007bff',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '5px',
+            padding: '10px',
+            cursor: loading ? 'not-allowed' : 'pointer',
+            opacity: loading ? 0.8 : 1
+          }}
+        >
+          {loading ? 'Registrando...' : 'Finalizar Registro'}
+        </button>
+      </div>
     </form>
   );
 }

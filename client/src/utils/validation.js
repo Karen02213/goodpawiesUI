@@ -11,7 +11,7 @@ export function validateUsername(username) {
 // Password validation (same as server)
 export function validatePassword(password) {
   if (!password || password.length < 8 || password.length > 128) return 'Password must be between 8 and 128 characters';
-  if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/.test(password)) return 'Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character';
+  if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/.test(password)) return 'Password must contain at least one lowercase letter (a-z), one uppercase letter (A-Z), one number (0-9), and one special character (@$!%*?&)';
   return null;
 }
 
@@ -32,7 +32,7 @@ export function validatePhonePrefix(prefix) {
 
 // Phone number validation
 export function validatePhoneNumber(number) {
-  if (!/^\d{7,10}$/.test(number)) return 'Phone number must contain only digits and be 7-15 characters long';
+  if (!/^\d{7,10}$/.test(number)) return 'Phone number must contain only digits and be 7-10 characters long';
   return null;
 }
 
@@ -49,6 +49,8 @@ export function validateFullSurname(name) {
   if (!/^[a-zA-ZÀ-ÿ\u0100-\u017F\u0180-\u024F\u1E00-\u1EFF\s'-]+$/.test(name)) return 'Full surname can only contain letters, spaces, hyphens, and apostrophes';
   return null;
 }
+
+
 
 // Utility to run all validations for registration
 export function validateRegistrationForm({ username, password, email, phonePrefix, phoneNumber, fullName, fullSurname }) {
