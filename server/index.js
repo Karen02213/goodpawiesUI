@@ -29,19 +29,21 @@ const PORT = process.env.PORT || 5000;
 // Logger setup
 const logger = require('./utils/logger');
 
-// Logging middleware (log every request)
+// Logging middleware (log every request, structured for audit/data analysis)
 app.use((req, res, next) => {
   const start = Date.now();
   res.on('finish', () => {
     const duration = Date.now() - start;
-    logger.info('Request', {
+    logger.info('HTTP_REQUEST', {
       ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
       method: req.method,
       path: req.originalUrl || req.url,
       status: res.statusCode,
-      duration: `${duration}ms`,
+      durationMs: duration,
       userAgent: req.headers['user-agent'],
       referer: req.headers['referer'] || req.headers['referrer'] || '',
+      userId: req.user ? req.user.id : undefined,
+      timestamp: new Date().toISOString(),
     });
   });
   next();
@@ -187,6 +189,7 @@ app.get('/api/users/:userid',
       const [users] = await db.execute(query, params);
       
       if (users.length === 0) {
+        logger.audit('USER_PROFILE_NOT_FOUND', { userId: userid }, req);
         return res.status(404).json({
           success: false,
           error: 'USER_NOT_FOUND',
@@ -231,6 +234,7 @@ app.get('/api/users/:userid',
         responseData.descriptionUpdated = user.description_updated;
       }
       
+      logger.audit('USER_PROFILE_VIEW', { userId: userid, isOwner }, req);
       res.json({
         success: true,
         data: responseData
@@ -301,7 +305,7 @@ app.put('/api/users/:userid',
       
     } catch (error) {
       if (connection) await connection.rollback();
-      console.error('Update user error:', error);
+      logger.error('Update user error', { error, userId: req.params.userid });
       res.status(500).json({
         success: false,
         error: 'UPDATE_FAILED',
@@ -337,6 +341,7 @@ app.get('/api/users/:userid/pets',
       );
       
       if (users.length === 0) {
+        logger.audit('USER_PETS_NOT_FOUND', { userId: userid }, req);
         return res.status(404).json({
           success: false,
           error: 'USER_NOT_FOUND',
@@ -366,6 +371,7 @@ app.get('/api/users/:userid/pets',
       const totalPets = countResult[0].total;
       const totalPages = Math.ceil(totalPets / limit);
       
+      logger.audit('USER_PETS_VIEW', { userId: userid, page, limit }, req);
       res.json({
         success: true,
         data: {
@@ -390,7 +396,7 @@ app.get('/api/users/:userid/pets',
       });
       
     } catch (error) {
-      console.error('Get pets error:', error);
+      logger.error('Get pets error', { error, userId: req.params.userid });
       res.status(500).json({
         success: false,
         error: 'INTERNAL_ERROR',
@@ -425,6 +431,7 @@ app.post('/api/users/:userid/pets',
       
       const petId = result.insertId;
       
+      logger.audit('PET_REGISTERED', { userId: userid, petId, petname, type, breed }, req);
       res.status(201).json({
         success: true,
         message: 'Pet registered successfully',
@@ -438,7 +445,7 @@ app.post('/api/users/:userid/pets',
       });
       
     } catch (error) {
-      console.error('Create pet error:', error);
+      logger.error('Create pet error', { error, userId: req.params.userid });
       res.status(500).json({
         success: false,
         error: 'PET_CREATION_FAILED',
@@ -471,6 +478,7 @@ app.get('/api/pets/:petid',
       );
       
       if (pets.length === 0) {
+        logger.audit('PET_NOT_FOUND', { petId: petid }, req);
         return res.status(404).json({
           success: false,
           error: 'PET_NOT_FOUND',
@@ -486,6 +494,7 @@ app.get('/api/pets/:petid',
         [petid]
       );
       
+      logger.audit('PET_VIEW', { petId: petid, userId: pet.userid }, req);
       res.json({
         success: true,
         data: {
@@ -506,7 +515,7 @@ app.get('/api/pets/:petid',
       });
       
     } catch (error) {
-      console.error('Get pet error:', error);
+      logger.error('Get pet error', { error, petId: req.params.petid });
       res.status(500).json({
         success: false,
         error: 'INTERNAL_ERROR',
@@ -565,13 +574,14 @@ app.put('/api/pets/:petid',
         [petname, type, breed, description, petid]
       );
       
+      logger.audit('PET_UPDATED', { petId: petid, userId: req.user.id }, req);
       res.json({
         success: true,
         message: 'Pet updated successfully'
       });
       
     } catch (error) {
-      console.error('Update pet error:', error);
+      logger.error('Update pet error', { error, petId: req.params.petid });
       res.status(500).json({
         success: false,
         error: 'UPDATE_FAILED',
@@ -624,13 +634,14 @@ app.delete('/api/pets/:petid',
       await connection.execute('UPDATE pets SET b_active = 0 WHERE id = ?', [petid]);
       await connection.execute('UPDATE pets_images SET b_active = 0 WHERE petid = ?', [petid]);
       
+      logger.audit('PET_DELETED', { petId: petid, userId: req.user.id }, req);
       res.json({
         success: true,
         message: 'Pet deleted successfully'
       });
       
     } catch (error) {
-      console.error('Delete pet error:', error);
+      logger.error('Delete pet error', { error, petId: req.params.petid });
       res.status(500).json({
         success: false,
         error: 'DELETE_FAILED',
@@ -693,6 +704,7 @@ app.post('/api/qr/generate',
         width: 256
       });
       
+      logger.audit('QR_GENERATED', { userId: req.user.id, petId: id, filename }, req);
       res.json({
         success: true,
         data: {
@@ -703,7 +715,7 @@ app.post('/api/qr/generate',
       });
       
     } catch (error) {
-      console.error('QR generation error:', error);
+      logger.error('QR generation error', { error, userId: req.user ? req.user.id : undefined });
       res.status(500).json({
         success: false,
         error: 'QR_GENERATION_FAILED',
@@ -744,8 +756,7 @@ app.get('/api/qr/image/:filename', (req, res) => {
 
 // Global error handler
 app.use((error, req, res, next) => {
-  console.error('Unhandled error:', error);
-  
+  logger.error('Unhandled error', { error });
   if (error.type === 'entity.parse.failed') {
     return res.status(400).json({
       success: false,
@@ -753,7 +764,6 @@ app.use((error, req, res, next) => {
       message: 'Invalid JSON in request body'
     });
   }
-  
   res.status(500).json({
     success: false,
     error: 'INTERNAL_ERROR',

@@ -45,7 +45,7 @@ show_help() {
     echo ""
     echo "Database setup includes:"
     echo "  - Removes existing volume and container"
-    echo "  - Creates fresh MySQL container"
+    echo "  - Creates fresh MariaDB container"
     echo "  - Runs all SQL scripts"
     echo "  - Validates tables and stored procedures"
     echo ""
@@ -110,56 +110,55 @@ run_npm() {
 
 run_database() {
     print_header "�️  Fresh Database Setup"
-    
     # Database configuration
-    DB_CONTAINER_NAME="goodpawies-mysql"
-    DB_VOLUME_NAME="goodpawiesui_mysql-data"
+    DB_CONTAINER_NAME="goodpawies-mariadb"
+    DB_VOLUME_NAME="goodpawiesui_mariadb-data"
     DB_USER="goodpawiesuser"
     DB_PASS="goodpawiespass"
     DB_NAME="goodpawiesdb"
-    
+
     print_status "Starting fresh database setup..."
-    
+
     # Stop and remove existing container
     if [ "$(docker ps -q -f name=$DB_CONTAINER_NAME)" ]; then
-        print_status "Stopping existing MySQL container..."
+        print_status "Stopping existing MariaDB container..."
         docker stop $DB_CONTAINER_NAME
     fi
-    
+
     if [ "$(docker ps -aq -f name=$DB_CONTAINER_NAME)" ]; then
-        print_status "Removing existing MySQL container..."
+        print_status "Removing existing MariaDB container..."
         docker rm $DB_CONTAINER_NAME
     fi
-    
+
     # Remove existing volume
     if docker volume ls | grep -q $DB_VOLUME_NAME; then
-        print_status "Removing existing MySQL volume..."
+        print_status "Removing existing MariaDB volume..."
         docker volume rm $DB_VOLUME_NAME 2>/dev/null || true
     fi
-    
+
     # Create fresh container
-    print_status "Creating fresh MySQL container..."
+    print_status "Creating fresh MariaDB container..."
     docker compose up -d
-    
-    # Wait for MySQL to be ready
-    print_status "Waiting for MySQL to be ready..."
+
+    # Wait for MariaDB to be ready
+    print_status "Waiting for MariaDB to be ready..."
     for i in {1..30}; do
-        if docker exec $DB_CONTAINER_NAME mysql -u$DB_USER -p$DB_PASS -e "SELECT 1;" >/dev/null 2>&1; then
-            print_status "MySQL is ready!"
+        if docker exec $DB_CONTAINER_NAME mariadb -u$DB_USER -p$DB_PASS -e "SELECT 1;" >/dev/null 2>&1; then
+            print_status "MariaDB is ready!"
             break
         fi
         if [ $i -eq 30 ]; then
-            print_error "MySQL failed to start within 30 seconds"
+            print_error "MariaDB failed to start within 30 seconds"
             exit 1
         fi
         echo -n "."
         sleep 1
     done
     echo ""
-    
+
     # Run SQL scripts
     print_status "Running SQL setup scripts..."
-    
+
     # Array of SQL files in order
     SQL_FILES=(
         "database/user_setup.sql"
@@ -167,11 +166,11 @@ run_database() {
         "database/social_media_setup.sql"
         "database/access_setup.sql"
     )
-    
+
     for sql_file in "${SQL_FILES[@]}"; do
         if [ -f "$sql_file" ]; then
             print_status "Running $(basename $sql_file)..."
-            if docker exec -i $DB_CONTAINER_NAME mysql -u$DB_USER -p$DB_PASS $DB_NAME < "$sql_file"; then
+            if docker exec -i $DB_CONTAINER_NAME mariadb -u$DB_USER -p$DB_PASS $DB_NAME < "$sql_file"; then
                 print_status "✅ $(basename $sql_file) executed successfully"
             else
                 print_error "❌ Failed to execute $(basename $sql_file)"
@@ -181,33 +180,33 @@ run_database() {
             print_warning "⚠️  SQL file not found: $sql_file"
         fi
     done
-    
+
     # Validate database setup
     print_status "Validating database setup..."
-    
+
     # Check required tables
     REQUIRED_TABLES=("users" "user_info" "user_sessions" "refresh_tokens" "cookies" "tokens")
     for table in "${REQUIRED_TABLES[@]}"; do
-        if docker exec $DB_CONTAINER_NAME mysql -u$DB_USER -p$DB_PASS $DB_NAME -e "SHOW TABLES LIKE '$table';" | grep -q "$table"; then
+        if docker exec $DB_CONTAINER_NAME mariadb -u$DB_USER -p$DB_PASS $DB_NAME -e "SHOW TABLES LIKE '$table';" | grep -q "$table"; then
             print_status "✅ Table '$table' exists"
         else
             print_error "❌ Table '$table' missing"
             exit 1
         fi
     done
-    
+
     # Check required stored procedures
     REQUIRED_PROCEDURES=("sp_register_user" "sp_login_user" "sp_get_user_profile")
     for proc in "${REQUIRED_PROCEDURES[@]}"; do
-        if docker exec $DB_CONTAINER_NAME mysql -u$DB_USER -p$DB_PASS $DB_NAME -e "SHOW PROCEDURE STATUS WHERE Name='$proc';" | grep -q "$proc"; then
+        if docker exec $DB_CONTAINER_NAME mariadb -u$DB_USER -p$DB_PASS $DB_NAME -e "SHOW PROCEDURE STATUS WHERE Name='$proc';" | grep -q "$proc"; then
             print_status "✅ Stored procedure '$proc' exists"
         else
             print_warning "⚠️  Stored procedure '$proc' missing (may be optional)"
         fi
     done
-    
+
     print_status "✅ Database setup completed successfully!"
-    print_status "Database URL: mysql://$DB_USER:$DB_PASS@localhost:3306/$DB_NAME"
+    print_status "Database URL: mariadb://$DB_USER:$DB_PASS@localhost:3306/$DB_NAME"
 }
 
 run_update() {
@@ -372,7 +371,7 @@ main() {
     echo "📚 Useful URLs:"
     echo "   - API Health Check: http://localhost:5000/api/health"
     echo "   - Client App: http://localhost:3000"
-    echo "   - Database: mysql://goodpawiesuser:goodpawiespass@localhost:3306/goodpawiesdb"
+    echo "   - Database: mariadb://goodpawiesuser:goodpawiespass@localhost:3306/goodpawiesdb"
     echo ""
     print_status "Happy coding! 🐾"
 }

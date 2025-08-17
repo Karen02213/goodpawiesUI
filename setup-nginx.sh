@@ -7,7 +7,7 @@ echo "🚀 Setting up GoodPawies with Nginx and custom domain..."
 if [ "$EUID" -ne 0 ]; then
     echo "Note: Some steps require sudo privileges"
 fi
-
+echo "apt install nginx -y"
 # Add goodpawies.local to hosts file
 echo "📝 Adding goodpawies.local to /etc/hosts..."
 if ! grep -q "goodpawies.local" /etc/hosts; then

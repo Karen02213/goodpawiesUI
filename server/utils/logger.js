@@ -17,19 +17,33 @@ const logger = winston.createLogger({
   level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
   format: winston.format.combine(
     winston.format.timestamp(),
-    winston.format.printf(({ timestamp, level, message, ...meta }) => {
-      return `${timestamp} [${level.toUpperCase()}]: ${message} ${Object.keys(meta).length ? JSON.stringify(meta) : ''}`;
-    })
+    winston.format.errors({ stack: true }),
+    winston.format.metadata({ fillExcept: ['message', 'level', 'timestamp', 'label'] }),
+    winston.format.json()
   ),
   transports: [
     transport,
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.colorize(),
-        winston.format.simple()
+        winston.format.printf(({ timestamp, level, message, ...meta }) => {
+          return `${timestamp} [${level.toUpperCase()}]: ${message} ${meta && meta.metadata && Object.keys(meta.metadata).length ? JSON.stringify(meta.metadata) : ''}`;
+        })
       ),
     }),
   ],
 });
 
+// Helper for structured audit logs
+logger.audit = (action, details = {}, req = null) => {
+  const auditLog = {
+    action,
+    ...details,
+    ip: req ? (req.headers['x-forwarded-for'] || req.connection.remoteAddress) : undefined,
+    userAgent: req ? req.headers['user-agent'] : undefined,
+    userId: req && req.user ? req.user.id : undefined,
+    timestamp: new Date().toISOString(),
+  };
+  logger.info('AUDIT', auditLog);
+};
 module.exports = logger;
