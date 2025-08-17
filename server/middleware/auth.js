@@ -12,7 +12,7 @@ const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'your-super-secret-
  * Common audit logging for auth operations
  */
 const auditLog = (action, status, details, req, startTime) => {
-  logger.audit('auth', action, status, {
+  logger.audit(action, status, {
     ...details,
     ip: req.ip,
     userAgent: req.get('User-Agent'),
@@ -35,7 +35,7 @@ const verifyToken = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, JWT_SECRET);
-    const sessionValid = await authQueries.isSessionValid(decoded.userId, decoded.sessionId);
+    const sessionValid = await authQueries.isSessionValid(decoded.sessionId);
 
     if (!sessionValid) {
       auditLog('session_expired', 'invalid_session', { 
@@ -160,7 +160,7 @@ const optionalAuth = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, JWT_SECRET);
-    const sessionValid = await authQueries.isSessionValid(decoded.userId, decoded.sessionId);
+    const sessionValid = await authQueries.isSessionValid(decoded.sessionId);
 
     req.user = sessionValid ? {
       id: decoded.userId,
