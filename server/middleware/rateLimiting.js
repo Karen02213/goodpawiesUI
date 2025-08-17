@@ -1,15 +1,8 @@
 // server/middleware/rateLimiting.js
-// TODO: fix and implement ratelimit correctly and avoid in memory storage
 const rateLimit = require('express-rate-limit');
-const mysql = require('mysql2/promise');
 const { ipKeyGenerator } = require('express-rate-limit');
-
-const dbConfig = {
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'goodpawiesuser',
-  password: process.env.DB_PASSWORD || 'goodpawiespass',
-  database: process.env.DB_NAME || 'goodpawiesdb'
-};
+const { executeQuery, executeTransaction } = require('../utils/database');
+const { errors, send } = require('../utils/response');
 
 /**
  * Store for rate limiting using database
@@ -22,47 +15,34 @@ class DatabaseStore {
 
   async increment(key) {
     try {
-      // Ensure key is a string - handle new express-rate-limit API
-      let keyStr;
-      if (typeof key === 'object' && key !== null) {
-        // Handle object key from newer versions of express-rate-limit
-        keyStr = key.key || key.toString();
-      } else {
-        keyStr = String(key);
-      }
+      const keyStr = typeof key === 'object' && key !== null ? (key.key || key.toString()) : String(key);
       
-      const connection = await mysql.createConnection(dbConfig);
+      // Clean old attempts and count current ones
+      const operations = [
+        {
+          query: `DELETE FROM ${this.tableName} WHERE attempt_time < ?`,
+          params: [new Date(Date.now() - this.windowMs)]
+        },
+        {
+          query: `INSERT INTO ${this.tableName} (identifier, attempt_time, ip_address) VALUES (?, NOW(), ?)`,
+          params: [keyStr, keyStr.split(':')[0]]
+        }
+      ];
       
-      // Clean old attempts
-      await connection.execute(
-        `DELETE FROM ${this.tableName} WHERE attempt_time < ?`,
-        [new Date(Date.now() - this.windowMs)]
-      );
+      await executeTransaction(operations);
       
-      // Count current attempts
-      const [rows] = await connection.execute(
+      // Get current count
+      const results = await executeQuery(
         `SELECT COUNT(*) as count FROM ${this.tableName} WHERE identifier = ? AND attempt_time > ?`,
         [keyStr, new Date(Date.now() - this.windowMs)]
       );
       
-      // Add new attempt
-      await connection.execute(
-        `INSERT INTO ${this.tableName} (identifier, attempt_time, ip_address) VALUES (?, NOW(), ?)`,
-        [keyStr, keyStr.split(':')[0]] // Extract IP from key
-      );
-      
-      await connection.end();
-      
-      const totalHits = rows[0].count + 1;
-      const resetTime = new Date(Date.now() + this.windowMs);
-      
       return {
-        totalHits,
-        resetTime
+        totalHits: results[0].count,
+        resetTime: new Date(Date.now() + this.windowMs)
       };
     } catch (error) {
       console.error('Rate limit store error:', error);
-      // Fallback to allowing request if database fails
       return {
         totalHits: 1,
         resetTime: new Date(Date.now() + this.windowMs)
@@ -77,20 +57,8 @@ class DatabaseStore {
 
   async resetKey(key) {
     try {
-      // Ensure key is a string
-      let keyStr;
-      if (typeof key === 'object' && key !== null) {
-        keyStr = key.key || key.toString();
-      } else {
-        keyStr = String(key);
-      }
-      
-      const connection = await mysql.createConnection(dbConfig);
-      await connection.execute(
-        `DELETE FROM ${this.tableName} WHERE identifier = ?`,
-        [keyStr]
-      );
-      await connection.end();
+      const keyStr = typeof key === 'object' && key !== null ? (key.key || key.toString()) : String(key);
+      await executeQuery(`DELETE FROM ${this.tableName} WHERE identifier = ?`, [keyStr]);
     } catch (error) {
       console.error('Rate limit reset error:', error);
     }
@@ -102,8 +70,7 @@ class DatabaseStore {
  */
 const createRateLimitTable = async () => {
   try {
-    const connection = await mysql.createConnection(dbConfig);
-    await connection.execute(`
+    await executeQuery(`
       CREATE TABLE IF NOT EXISTS rate_limit_attempts (
         id INT PRIMARY KEY AUTO_INCREMENT,
         identifier VARCHAR(100) NOT NULL,
@@ -113,7 +80,6 @@ const createRateLimitTable = async () => {
         INDEX idx_rate_limit_time (attempt_time)
       )
     `);
-    await connection.end();
   } catch (error) {
     console.error('Failed to create rate limit table:', error);
   }
@@ -123,12 +89,12 @@ const createRateLimitTable = async () => {
 createRateLimitTable();
 
 /**
- * General rate limiter - using memory store to avoid double count issues
+ * General rate limiter factory - reduces redundancy in rate limiter creation
  */
 const createRateLimiter = (options = {}) => {
   const {
-    windowMs = 15 * 60 * 1000, // 15 minutes
-    max = 100, // 100 requests per window
+    windowMs = 15 * 60 * 1000,
+    max = 100,
     message = 'Too many requests, please try again later.',
     keyGenerator,
     standardHeaders = true,
@@ -138,79 +104,50 @@ const createRateLimiter = (options = {}) => {
   return rateLimit({
     windowMs,
     max,
-    message: {
-      success: false,
-      error: 'RATE_LIMIT_EXCEEDED',
-      message,
-      retryAfter: Math.ceil(windowMs / 1000)
-    },
+    message: errors.RATE_LIMIT(Math.ceil(windowMs / 1000)),
     keyGenerator,
     standardHeaders,
     legacyHeaders,
-    // Use memory store for now to avoid double count issues
-    // store: new DatabaseStore('rate_limit_attempts')
   });
 };
 
-/**
- * Strict rate limiter for authentication endpoints
- * This limits the number of login attempts to prevent brute force attacks.
- * Adjust the max and windowMs values as needed for your application's requirements.
- */
-const authRateLimiter = createRateLimiter({
-  windowMs: 1 * 60 * 1000, // 1 minute
-  max: 5, // 5 attempts per window
-  message: 'Too many authentication attempts, please try again in 1 minute.',
-  keyGenerator: (req) => {
-    const identifier = req.body.identifier || req.body.username || req.body.email || '';
-    return `${ipKeyGenerator(req)}:${identifier}`;
+// Rate limiter configurations - centralized to reduce redundancy
+const rateLimitConfigs = {
+  auth: {
+    windowMs: 1 * 60 * 1000,
+    max: 5,
+    message: 'Too many authentication attempts, please try again in 1 minute.',
+    keyGenerator: (req) => {
+      const identifier = req.body.identifier || req.body.username || req.body.email || '';
+      return `${ipKeyGenerator(req)}:${identifier}`;
+    }
+  },
+  api: {
+    windowMs: 5 * 60 * 1000,
+    max: 1000,
+    message: 'Too many API requests, please slow down.'
+  },
+  registration: {
+    windowMs: 60 * 60 * 1000,
+    max: 3,
+    message: 'Too many registration attempts, please try again in an hour.'
+  },
+  passwordReset: {
+    windowMs: 60 * 60 * 1000,
+    max: 3,
+    message: 'Too many password reset attempts, please try again in an hour.',
+    keyGenerator: (req) => {
+      const identifier = req.body.identifier || req.body.email || '';
+      return `${ipKeyGenerator(req)}:${identifier}`;
+    }
   }
-});
+};
 
-/**
- * Moderate rate limiter for API endpoints
- * This is a general rate limiter for API requests, allowing more requests than auth endpoints.
- * It helps to prevent abuse while ensuring a smooth user experience.
- * Adjust the max and windowMs values as needed for your application's requirements.
- * Consider implementing additional logging or monitoring for rate-limited requests.
- * This can help identify potential abuse patterns and inform future adjustments.
- * For example, you could log the user ID, IP address, and timestamp of each rate-limited request.
- * Consider implementing a monitoring dashboard to visualize rate limit events.
- * This can help you quickly identify and respond to potential abuse.
- * For example, you could use a tool like Grafana or Kibana to create visualizations of rate limit events.
- * Implementing alerts for unusual patterns can also be beneficial.
- * This can help you proactively address potential abuse before it becomes a larger issue.
- */
-const apiRateLimiter = createRateLimiter({
-  windowMs: 5 * 60 * 1000, // 5 minutes
-  max: 1000, // 1000 requests per window
-  message: 'Too many API requests, please slow down.',
-});
-
-/**
- * Strict rate limiter for registration
- * This limits the number of registration attempts to prevent abuse.
- * Adjust the max and windowMs values as needed for your application's requirements.
- * Consider implementing additional logging or monitoring for registration attempts.
- */
-const registrationRateLimiter = createRateLimiter({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 3, // 3 registrations per hour per IP
-  message: 'Too many registration attempts, please try again in an hour.',
-});
-
-/**
- * Rate limiter for password reset
- */
-const passwordResetRateLimiter = createRateLimiter({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 3, // 3 password reset attempts per hour
-  message: 'Too many password reset attempts, please try again in an hour.',
-  keyGenerator: (req) => {
-    const identifier = req.body.identifier || req.body.email || '';
-    return `${ipKeyGenerator(req)}:${identifier}`;
-  }
-});
+// Create all rate limiters using the factory
+const authRateLimiter = createRateLimiter(rateLimitConfigs.auth);
+const apiRateLimiter = createRateLimiter(rateLimitConfigs.api);
+const registrationRateLimiter = createRateLimiter(rateLimitConfigs.registration);
+const passwordResetRateLimiter = createRateLimiter(rateLimitConfigs.passwordReset);
 
 /**
  * Custom login attempt tracker with database
@@ -222,43 +159,34 @@ const trackLoginAttempt = async (req, res, next) => {
     const userAgent = req.get('User-Agent') || '';
     const success = res.locals.loginSuccess || false;
 
-    const connection = await mysql.createConnection(dbConfig);
-    
-    // Record the login attempt
-    await connection.execute(
-      `INSERT INTO login_attempts (identifier, ip_address, user_agent, success) 
-       VALUES (?, ?, ?, ?)`,
-      [identifier, ip, userAgent, success]
-    );
+    // Record the login attempt and clean old ones
+    const operations = [
+      {
+        query: 'INSERT INTO login_attempts (identifier, ip_address, user_agent, success) VALUES (?, ?, ?, ?)',
+        params: [identifier, ip, userAgent, success]
+      },
+      {
+        query: 'DELETE FROM login_attempts WHERE attempt_time < DATE_SUB(NOW(), INTERVAL 24 HOUR)',
+        params: []
+      }
+    ];
 
-    // Clean old attempts (older than 24 hours)
-    await connection.execute(
-      `DELETE FROM login_attempts WHERE attempt_time < DATE_SUB(NOW(), INTERVAL 24 HOUR)`
-    );
+    await executeTransaction(operations);
 
     // Check recent failed attempts for this identifier
-    const [failedAttempts] = await connection.execute(
+    const results = await executeQuery(
       `SELECT COUNT(*) as count FROM login_attempts 
        WHERE identifier = ? AND success = FALSE AND attempt_time > DATE_SUB(NOW(), INTERVAL 1 HOUR)`,
       [identifier]
     );
 
-    await connection.end();
-
-    // If too many failed attempts, block the request
-    if (failedAttempts[0].count >= 21 && !success) {
-      return res.status(429).json({
-        success: false,
-        error: 'TOO_MANY_ATTEMPTS',
-        message: 'Too many failed login attempts. Please try again in an hour.',
-        retryAfter: 3600
-      });
+    if (results[0].count >= 21 && !success) {
+      return send(res, { ...errors.RATE_LIMIT(3600), message: 'Too many failed login attempts. Please try again in an hour.' });
     }
 
     next();
   } catch (error) {
     console.error('Login attempt tracking error:', error);
-    // Don't block the request if tracking fails
     next();
   }
 };

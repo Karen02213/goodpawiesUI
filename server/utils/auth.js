@@ -2,14 +2,7 @@
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const argon2 = require('argon2');
-const mysql = require('mysql2/promise');
-
-const dbConfig = {
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'goodpawiesuser',
-  password: process.env.DB_PASSWORD || 'goodpawiespass',
-  database: process.env.DB_NAME || 'goodpawiesdb'
-};
+const authQueries = require('../db/authQueries');
 
 // JWT Configuration
 const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-in-production';
@@ -85,19 +78,14 @@ const generateRefreshToken = (payload) => {
 const createSession = async (userId, username, ipAddress, userAgent, permissions = []) => {
   try {
     const sessionId = generateSessionId();
-    const connection = await mysql.createConnection(dbConfig);
     
     // Calculate expiration times
     const accessTokenExpiry = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
     const refreshTokenExpiry = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
     const sessionExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
     
-    // Insert session into database
-    await connection.execute(
-      `INSERT INTO user_sessions (userid, session_id, expires_at, ip_address, user_agent) 
-       VALUES (?, ?, ?, ?, ?)`,
-      [userId, sessionId, sessionExpiry, ipAddress, userAgent]
-    );
+    // Insert session using modular query
+    await authQueries.createUserSession(userId, sessionId, sessionExpiry, ipAddress, userAgent);
     
     // Generate tokens
     const accessTokenPayload = {
@@ -118,21 +106,15 @@ const createSession = async (userId, username, ipAddress, userAgent, permissions
     const accessToken = generateAccessToken(accessTokenPayload);
     const refreshToken = generateRefreshToken(refreshTokenPayload);
     
-    // Store refresh token hash in database
+    // Store refresh token hash using modular query
     const refreshTokenHash = crypto.createHash('sha256').update(refreshToken).digest('hex');
-    await connection.execute(
-      `INSERT INTO refresh_tokens (userid, token_hash, expires_at, user_agent, ip_address) 
-       VALUES (?, ?, ?, ?, ?)`,
-      [userId, refreshTokenHash, refreshTokenExpiry, userAgent, ipAddress]
-    );
-    
-    await connection.end();
+    await authQueries.storeRefreshToken(userId, refreshTokenHash, refreshTokenExpiry, userAgent, ipAddress);
     
     return {
       accessToken,
       refreshToken,
       sessionId,
-      expiresIn: 90 * 60, // 15 minutes in seconds
+      expiresIn: 15 * 60, // 15 minutes in seconds
       tokenType: 'Bearer'
     };
   } catch (error) {
@@ -142,51 +124,52 @@ const createSession = async (userId, username, ipAddress, userAgent, permissions
 };
 
 /**
- * Refresh access token
+ * Verify refresh token and issue new access token
  */
-const refreshAccessToken = async (refreshToken, ipAddress, userAgent) => {
+const refreshAccessToken = async (refreshToken) => {
   try {
     // Verify refresh token
     const decoded = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
     
-    const connection = await mysql.createConnection(dbConfig);
-    
-    // Check if refresh token exists and is valid
-    const refreshTokenHash = crypto.createHash('sha256').update(refreshToken).digest('hex');
-    const [tokens] = await connection.execute(
-      `SELECT rt.userid, rt.expires_at, u.s_username, us.session_id 
-       FROM refresh_tokens rt
-       JOIN users u ON rt.userid = u.id
-       JOIN user_sessions us ON rt.userid = us.userid AND us.session_id = ?
-       WHERE rt.token_hash = ? AND rt.revoked = FALSE AND rt.expires_at > NOW() AND us.is_active = TRUE`,
-      [decoded.sessionId, refreshTokenHash]
-    );
-    
-    if (tokens.length === 0) {
-      await connection.end();
-      throw new Error('Invalid refresh token');
+    if (decoded.type !== 'refresh') {
+      throw new Error('Invalid token type');
     }
     
-    const { userid, s_username, session_id } = tokens[0];
+    // Generate token hash
+    const tokenHash = crypto.createHash('sha256').update(refreshToken).digest('hex');
     
-    // Update refresh token usage
-    await connection.execute(
-      `UPDATE refresh_tokens SET last_used = NOW() WHERE token_hash = ?`,
-      [refreshTokenHash]
-    );
+    // Verify token exists and is valid using modular query
+    const tokenRecord = await authQueries.getRefreshToken(tokenHash);
     
-    await connection.end();
+    if (!tokenRecord || tokenRecord.expires_at < new Date()) {
+      throw new Error('Token expired or invalid');
+    }
+    
+    // Get user data using modular query
+    const user = await authQueries.getUserById(decoded.userId);
+    
+    if (!user || !user.is_active) {
+      throw new Error('User not found or inactive');
+    }
+    
+    // Check if session is valid using modular query
+    const sessionValid = await authQueries.isSessionValid(decoded.sessionId);
+    if (!sessionValid) {
+      // Clean up invalid refresh token
+      await authQueries.deleteRefreshToken(tokenHash);
+      throw new Error('Session invalid');
+    }
     
     // Generate new access token
-    const accessTokenPayload = {
-      userId: userid,
-      username: s_username,
-      sessionId: session_id,
-      permissions: [], // You might want to fetch actual permissions from database
+    const newAccessTokenPayload = {
+      userId: decoded.userId,
+      username: decoded.username,
+      sessionId: decoded.sessionId,
+      permissions: user.permissions || [],
       type: 'access'
     };
     
-    const newAccessToken = generateAccessToken(accessTokenPayload);
+    const newAccessToken = generateAccessToken(newAccessTokenPayload);
     
     return {
       accessToken: newAccessToken,
@@ -204,24 +187,12 @@ const refreshAccessToken = async (refreshToken, ipAddress, userAgent) => {
  */
 const revokeSession = async (sessionId) => {
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    // Deactivate session using modular query
+    await authQueries.deactivateSessionById(sessionId);
     
-    // Deactivate session
-    await connection.execute(
-      `UPDATE user_sessions SET is_active = FALSE WHERE session_id = ?`,
-      [sessionId]
-    );
+    // Revoke all refresh tokens for this session using modular query
+    await authQueries.revokeRefreshTokensBySession(sessionId);
     
-    // Revoke all refresh tokens for this session
-    await connection.execute(
-      `UPDATE refresh_tokens rt
-       JOIN user_sessions us ON rt.userid = us.userid
-       SET rt.revoked = TRUE 
-       WHERE us.session_id = ?`,
-      [sessionId]
-    );
-    
-    await connection.end();
     return true;
   } catch (error) {
     console.error('Session revocation error:', error);
@@ -234,21 +205,12 @@ const revokeSession = async (sessionId) => {
  */
 const revokeAllUserSessions = async (userId) => {
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    // Deactivate all sessions for user using modular query
+    await authQueries.deactivateAllUserSessions(userId);
     
-    // Deactivate all sessions
-    await connection.execute(
-      `UPDATE user_sessions SET is_active = FALSE WHERE userid = ?`,
-      [userId]
-    );
+    // Revoke all refresh tokens for user using modular query
+    await authQueries.revokeAllUserRefreshTokens(userId);
     
-    // Revoke all refresh tokens
-    await connection.execute(
-      `UPDATE refresh_tokens SET revoked = TRUE WHERE userid = ?`,
-      [userId]
-    );
-    
-    await connection.end();
     return true;
   } catch (error) {
     console.error('All sessions revocation error:', error);
@@ -316,21 +278,8 @@ const createPasswordResetToken = async (userId) => {
     const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
     const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
     
-    const connection = await mysql.createConnection(dbConfig);
-    
-    // Invalidate any existing reset tokens for this user
-    await connection.execute(
-      `UPDATE password_reset_tokens SET used = TRUE WHERE userid = ? AND used = FALSE`,
-      [userId]
-    );
-    
-    // Insert new reset token
-    await connection.execute(
-      `INSERT INTO password_reset_tokens (userid, token_hash, expires_at) VALUES (?, ?, ?)`,
-      [userId, tokenHash, expiresAt]
-    );
-    
-    await connection.end();
+    // Invalidate any existing reset tokens for this user and create new token using modular query
+    await authQueries.createPasswordResetToken(userId, tokenHash, expiresAt);
     
     return token;
   } catch (error) {
@@ -346,28 +295,10 @@ const verifyPasswordResetToken = async (token) => {
   try {
     const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
     
-    const connection = await mysql.createConnection(dbConfig);
+    // Verify and mark token as used using modular query
+    const userId = await authQueries.verifyPasswordResetToken(tokenHash);
     
-    const [tokens] = await connection.execute(
-      `SELECT userid FROM password_reset_tokens 
-       WHERE token_hash = ? AND used = FALSE AND expires_at > NOW()`,
-      [tokenHash]
-    );
-    
-    if (tokens.length === 0) {
-      await connection.end();
-      return null;
-    }
-    
-    // Mark token as used
-    await connection.execute(
-      `UPDATE password_reset_tokens SET used = TRUE WHERE token_hash = ?`,
-      [tokenHash]
-    );
-    
-    await connection.end();
-    
-    return tokens[0].userid;
+    return userId;
   } catch (error) {
     console.error('Password reset token verification error:', error);
     return null;
@@ -379,21 +310,17 @@ const verifyPasswordResetToken = async (token) => {
  */
 const cleanupExpiredTokens = async () => {
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    // Remove expired refresh tokens using modular query
+    await authQueries.cleanExpiredRefreshTokens();
     
-    // Remove expired refresh tokens
-    await connection.execute(`DELETE FROM refresh_tokens WHERE expires_at < NOW()`);
+    // Remove expired sessions using modular query
+    await authQueries.cleanExpiredSessions();
     
-    // Remove expired sessions
-    await connection.execute(`DELETE FROM user_sessions WHERE expires_at < NOW()`);
+    // Remove expired password reset tokens using modular query
+    await authQueries.cleanExpiredPasswordResetTokens();
     
-    // Remove expired password reset tokens
-    await connection.execute(`DELETE FROM password_reset_tokens WHERE expires_at < NOW()`);
-    
-    // Remove old login attempts (older than 24 hours)
-    await connection.execute(`DELETE FROM login_attempts WHERE attempt_time < DATE_SUB(NOW(), INTERVAL 24 HOUR)`);
-    
-    await connection.end();
+    // Remove old login attempts using modular query
+    await authQueries.cleanOldLoginAttempts();
     
     console.log('Cleanup completed successfully');
   } catch (error) {

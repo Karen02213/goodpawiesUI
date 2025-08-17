@@ -35,13 +35,11 @@ const logger = winston.createLogger({
 });
 
 // Helper for structured audit logs
-logger.audit = (action, details = {}, req = null) => {
+logger.audit = (action, event, details = {}) => {
   const auditLog = {
     action,
+    event,
     ...details,
-    ip: req ? (req.headers['x-forwarded-for'] || req.connection.remoteAddress) : undefined,
-    userAgent: req ? req.headers['user-agent'] : undefined,
-    userId: req && req.user ? req.user.id : undefined,
     timestamp: new Date().toISOString(),
   };
   logger.info('AUDIT', auditLog);
