@@ -42,7 +42,8 @@ export default function AvatarMenu({ imageUrl, username, onLogout,  }) {
           borderRadius: "50%",
           objectFit: "cover",
           cursor: "pointer",
-          border: "2px solid #ccc"
+          border: "2px solid #ccc",
+          marginLeft: "14px",
         }}
       />
 
@@ -56,7 +57,7 @@ export default function AvatarMenu({ imageUrl, username, onLogout,  }) {
             background: "white",
             border: "1px solid #ddd",
             borderRadius: "8px",
-            boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+            boxShadow: "0 2px 6px rgba(219, 115, 197, 0.1)",
             minWidth: "163px",
             textAlign: "center",
             zIndex: 10

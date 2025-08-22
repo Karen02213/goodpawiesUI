@@ -25,7 +25,7 @@
 
 .form-group {
   position: relative;
-  margin-bottom: 25px;
+  margin-bottom: 18px;
 }
 
 .form-container h2 {
@@ -53,6 +53,11 @@
   width: 100%;
   box-sizing: border-box;
 }
+
+.textarea {
+    padding: 8px;
+    border-radius: 4px;
+  }
 
 /* Password input with eye icon */
 .password-input-container {
@@ -128,6 +133,16 @@
   font-size: 0.9rem;
   text-align: center;
 }
+
+.form-checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: #2196f3; /* color azul para el check */
+  margin-right: 6px;
+  opacity: 1;
+  cursor: pointer;
+}
+
 
 /* Responsive */
 @media (max-width: 600px) {

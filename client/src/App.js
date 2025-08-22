@@ -7,8 +7,10 @@ import RegisterForm from './pages/register/RegisterForm';
 import PasswordForm from './pages/register/PasswordForm';
 import ProfilePage from "./pages/profile/ProfilePage";
 import ProtectedRoute from './components/ProtectedRoute';
+import RegisterPetForm from './pages/register/RegisterPetForm';
 import Navbar from './components/Navbar';
 import './App.css';
+import RegisterPage from './pages/register/RegisterPetForm';
 
 function App() {
   const registerDataRef = useRef({});
@@ -22,6 +24,7 @@ function App() {
         <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
         <Route path="/perfil" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
         <Route path="/qr" element={<ProtectedRoute><QrPage /></ProtectedRoute>} />
+        <Route path="/agregar-mascota" element={<ProtectedRoute><RegisterPetForm /></ProtectedRoute>} />
         
         {/* Rutas públicas */}
         <Route path="/login" element={<LoginPage />} />

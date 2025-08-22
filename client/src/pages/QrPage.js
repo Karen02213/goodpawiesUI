@@ -29,7 +29,7 @@ function QrPage() {
     <div>
       <h2>Generate QR Code</h2>
       <form onSubmit={handleSubmit} style={{ marginBottom: 20 }}>
-        <div>
+        {/* <div>
           <label>URL: <input name="url" value={form.url} onChange={handleChange} required /></label>
         </div>
         <div>
@@ -38,7 +38,7 @@ function QrPage() {
         <div>
           <label>Name: <input name="name" value={form.name} onChange={handleChange} required /></label>
         </div>
-        <button type="submit">Generate QR</button>
+        <button type="submit">Generate QR</button> */}
       </form>
       {qrHtml && (
         <iframe

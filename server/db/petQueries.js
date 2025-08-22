@@ -85,6 +85,31 @@ async function getPetOwnership(petid) {
   return results[0] || null;
 }
 
+async function getBreedsByType(petType) {
+  const query = `
+    SELECT id, s_breed
+    FROM pets_breed 
+    WHERE id = ? AND b_active = 1
+    ORDER BY s_breed ASC
+  `;
+  
+  return await db.executeWithNoLock(query, [petType]);
+}
+
+/**
+ * Get all breeds
+ */
+async function getAllBreeds() {
+  const query = `
+    SELECT id, s_breed
+    FROM pets_breed 
+    WHERE b_active = 1
+    ORDER BY s_breed ASC
+  `;
+  
+  return await db.executeWithNoLock(query);
+}
+
 module.exports = {
   getPetById,
   getPetImages,
@@ -92,4 +117,6 @@ module.exports = {
   updatePet,
   deletePet,
   getPetOwnership,
+  getAllBreeds,
+  getBreedsByType,
 };

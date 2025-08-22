@@ -1,23 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../utils/auth";
 
 export default function ProfilePage() {
-  const user = {
-    name: "Ana Karen",
-    email: "anakaren@email.com",
-    avatar: "/default-avatar.png"
-  };
-
+  const { user } = useAuth();
   const [pets] = useState([]);
 
+  console.log(user);
   return (
     <div style={styles.container}>
       <div style={styles.card}>
-        <img src={user.avatar} alt="Avatar" style={styles.avatar} />
-        <h2>{user.name}</h2>
-        <p>{user.email}</p>
+        <img src={"/default-avatar.png"} alt="Avatar" style={styles.avatar} />
+        <h2>{user?.username}</h2>
+        <p>{user?.fullName}  {user?.fullSurname}</p>
+        <p>{user?.email}</p>
       </div>
-
       <div style={styles.section}>
         <h3>🐾 Mis Mascotas</h3>
         {pets.length === 0 ? (
@@ -35,7 +32,7 @@ export default function ProfilePage() {
 
       <div style={styles.section}>
         <div style={styles.card}>
-          <Link to="/agregar-mascota" style={styles.addButton}>➕ Agregar Mascota</Link>
+          <Link to="/agregar-mascota" style={styles.addButton}>➕</Link>
         </div>
       </div>
     </div>
@@ -78,9 +75,8 @@ const styles = {
   addButton: {
     display: "inline-block",
     padding: "10px 20px",
-    backgroundColor: "#4CAF50",
-    color: "#fff",
-    borderRadius: "5px",
+    backgroundColor: "#ffb3c1",
+    borderRadius: "30px",
     textDecoration: "none",
     fontWeight: "bold"
   }

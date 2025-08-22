@@ -36,6 +36,34 @@ router.post('/users/:userid/pets',
   })
 );
 
+
+//Get /pets/breeds
+
+router.get('/breeds', async (req, res) => {
+  try {
+    const breeds = await petQueries.getAllBreeds();
+    res.json({ breeds });
+  } catch (error) {
+    console.error('Error fetching breeds:', error);
+    res.status(500).json({ 
+      error: 'Error al obtener las razas' 
+    });
+  }
+});   
+
+router.get('/breeds/:petType', async (req, res) => {
+  try { 
+    const { petType } = req.params;
+    const breeds = petQueries.getBreedsByType(petType)
+    res.json({ breeds });
+  } catch (error) {
+    console.error('Error fetching breeds:', error);
+    res.status(500).json({ 
+      error: 'Error al obtener la raza' 
+    });
+  }
+});
+
 /**
  * GET /pets/:petid - Get specific pet information
  */
@@ -115,5 +143,7 @@ router.delete('/:petid',
     send(res, success(null, 'Pet deleted successfully'));
   })
 );
+
+
 
 module.exports = router;
