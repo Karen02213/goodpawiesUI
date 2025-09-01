@@ -1,5 +1,5 @@
 // client/src/utils/api.js - API Client for GoodPawies
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import authService from './auth';
 
 class ApiClient {
@@ -46,6 +46,50 @@ class ApiClient {
     return await authService.apiRequest(`/pets/${petId}`, {
       method: 'DELETE',
     });
+  }
+
+  // Enhanced Pet Registration API methods
+  async createPetEnhanced(petData) {
+    return await authService.apiRequest('/pets', {
+      method: 'POST',
+      body: JSON.stringify(petData),
+    });
+  }
+
+  async getPetTypes() {
+    try {
+      const response = await fetch(`${this.baseURL}/pets/types`);
+      return await response.json();
+    } catch (error) {
+      return { success: false, error: 'NETWORK_ERROR' };
+    }
+  }
+
+  async getPetBreeds() {
+    try {
+      const response = await fetch(`${this.baseURL}/pets/breeds`);
+      return await response.json();
+    } catch (error) {
+      return { success: false, error: 'NETWORK_ERROR' };
+    }
+  }
+
+  async getPetGenders() {
+    try {
+      const response = await fetch(`${this.baseURL}/pets/genders`);
+      return await response.json();
+    } catch (error) {
+      return { success: false, error: 'NETWORK_ERROR' };
+    }
+  }
+
+  async getPetSizes() {
+    try {
+      const response = await fetch(`${this.baseURL}/pets/sizes`);
+      return await response.json();
+    } catch (error) {
+      return { success: false, error: 'NETWORK_ERROR' };
+    }
   }
 
   // QR Code API methods
@@ -116,178 +160,78 @@ export const useApi = () => {
   return { execute, loading, error };
 };
 
-// Specific hooks for common operations
-export const useUserProfile = (userId) => {
-  const [profile, setProfile] = useState(null);
+// Custom hooks for pet dropdown data
+export const usePetDropdowns = () => {
+  const [breeds, setBreeds] = useState([]);
+  const [petTypes, setPetTypes] = useState([]);
+  const [genders, setGenders] = useState([]);
+  const [sizes, setSizes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (userId) {
-      fetchProfile();
-    }
-  }, [userId]);
-
-  const fetchProfile = async () => {
-    setLoading(true);
-    const result = await apiClient.getUser(userId);
-    
-    if (result.success) {
-      setProfile(result.data);
+    const fetchDropdownData = async () => {
+      setLoading(true);
       setError(null);
-    } else {
-      setError(result.error);
-    }
+      
+      try {
+        // Fetch all dropdown data in parallel
+        const [breedsData, typesData, gendersData, sizesData] = await Promise.all([
+          apiClient.getPetBreeds(),
+          apiClient.getPetTypes(),
+          apiClient.getPetGenders(),
+          apiClient.getPetSizes()
+        ]);
+        
+        setBreeds(breedsData.breeds || []);
+        setPetTypes(typesData.types || []);
+        setGenders(gendersData.genders || []);
+        setSizes(sizesData.sizes || []);
+        
+      } catch (err) {
+        console.error('Error fetching dropdown data:', err);
+        setError('Failed to load dropdown data');
+        setBreeds([]);
+        setPetTypes([]);
+        setGenders([]);
+        setSizes([]);
+      } finally {
+        setLoading(false);
+      }
+    };
     
-    setLoading(false);
-  };
+    fetchDropdownData();
+  }, []);
 
-  const updateProfile = async (profileData) => {
-    const result = await apiClient.updateUserProfile(userId, profileData);
-    
-    if (result.success) {
-      await fetchProfile(); // Refresh profile data
-    }
-    
-    return result;
-  };
-
-  return { profile, loading, error, updateProfile, refetch: fetchProfile };
+  return { breeds, petTypes, genders, sizes, loading, error };
 };
 
-export const useUserPets = (userId, page = 1, limit = 20) => {
-  const [pets, setPets] = useState([]);
-  const [pagination, setPagination] = useState(null);
-  const [loading, setLoading] = useState(true);
+// Custom hook for pet registration
+export const usePetRegistration = () => {
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  useEffect(() => {
-    if (userId) {
-      fetchPets();
-    }
-  }, [userId, page, limit]);
-
-  const fetchPets = async () => {
-    setLoading(true);
-    const result = await apiClient.getUserPets(userId, page, limit);
-    
-    if (result.success) {
-      setPets(result.data.pets);
-      setPagination(result.data.pagination);
-      setError(null);
-    } else {
-      setError(result.error);
-    }
-    
-    setLoading(false);
-  };
 
   const createPet = async (petData) => {
-    const result = await apiClient.createPet(userId, petData);
-    
-    if (result.success) {
-      await fetchPets(); // Refresh pets list
-    }
-    
-    return result;
-  };
-
-  return { pets, pagination, loading, error, createPet, refetch: fetchPets };
-};
-
-export const usePet = (petId) => {
-  const [pet, setPet] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    if (petId) {
-      fetchPet();
-    }
-  }, [petId]);
-
-  const fetchPet = async () => {
     setLoading(true);
-    const result = await apiClient.getPet(petId);
+    setError(null);
     
-    if (result.success) {
-      setPet(result.data);
-      setError(null);
-    } else {
-      setError(result.error);
+    try {
+      const result = await apiClient.createPetEnhanced(petData);
+      
+      if (!result.success) {
+        setError(result.message || 'Error al registrar la mascota');
+        return result;
+      }
+      
+      return result;
+    } catch (err) {
+      console.error('Error creating pet:', err);
+      setError('Error al registrar la mascota');
+      return { success: false, error: 'NETWORK_ERROR' };
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
-  const updatePet = async (petData) => {
-    const result = await apiClient.updatePet(petId, petData);
-    
-    if (result.success) {
-      await fetchPet(); // Refresh pet data
-    }
-    
-    return result;
-  };
-
-  const deletePet = async () => {
-    return await apiClient.deletePet(petId);
-  };
-
-  return { pet, loading, error, updatePet, deletePet, refetch: fetchPet };
+  return { createPet, loading, error };
 };
-
-// Example usage in components:
-/*
-// User Profile Component
-import { useUserProfile } from './utils/api';
-
-function UserProfile({ userId }) {
-  const { profile, loading, error, updateProfile } = useUserProfile(userId);
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-
-  const handleUpdateProfile = async (newData) => {
-    const result = await updateProfile(newData);
-    if (result.success) {
-      alert('Profile updated successfully!');
-    } else {
-      alert('Failed to update profile: ' + result.message);
-    }
-  };
-
-  return (
-    <div>
-      <h1>{profile.fullName}</h1>
-      <p>{profile.description}</p>
-      // ... rest of component
-    </div>
-  );
-}
-
-// Pets List Component
-import { useUserPets } from './utils/api';
-
-function PetsList({ userId }) {
-  const { pets, pagination, loading, error, createPet } = useUserPets(userId);
-
-  const handleCreatePet = async (petData) => {
-    const result = await createPet(petData);
-    if (result.success) {
-      alert('Pet created successfully!');
-    }
-  };
-
-  return (
-    <div>
-      {pets.map(pet => (
-        <div key={pet.id}>
-          <h3>{pet.name}</h3>
-          <p>{pet.type} - {pet.breed}</p>
-        </div>
-      ))}
-    </div>
-  );
-}
-*/

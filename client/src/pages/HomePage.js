@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import apiClient from '../utils/api';
 import likeIcon from '../icons/like.svg';
 import commentIcon from '../icons/comment.svg';
 import shareIcon from '../icons/share.svg';
@@ -30,9 +31,15 @@ function HomePage() {
   const [showUp, setShowUp] = useState(false);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/hello')
-      .then(res => res.json())
-      .then(data => setMessage(data.message));
+    apiClient.healthCheck()
+      .then(data => {
+        if (data.success) {
+          setMessage('API is working!');
+        } else {
+          setMessage('API health check failed');
+        }
+      })
+      .catch(() => setMessage('Failed to connect to API'));
   }, []);
 
   // Simulate fetching news

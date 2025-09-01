@@ -8,7 +8,6 @@ const cookieParser = require('cookie-parser');
 // Import utilities and middleware
 const { pool } = require('./db/index');
 const { apiRateLimiter } = require('./middleware/rateLimiting');
-const { sanitizeInput } = require('./middleware/validation');
 const { cleanupExpiredTokens } = require('./utils/auth');
 const { globalErrorHandler } = require('./utils/errors');
 const { success, errors, send } = require('./utils/response');
@@ -69,7 +68,6 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
-app.use(sanitizeInput);
 app.use('/api', apiRateLimiter);
 
 // Routes

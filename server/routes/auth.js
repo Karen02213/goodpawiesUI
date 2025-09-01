@@ -7,11 +7,10 @@ const delay = require('../middleware/delay');
 // Import custom middleware and utilities
 const { verifyToken, verifyRefreshToken, optionalAuth } = require('../middleware/auth');
 const { 
-  validateRegistration, 
-  validateLogin, 
+  validateUserRegistration, 
+  validateUserLogin, 
   validatePasswordChange, 
-  validateRefreshToken,
-  sanitizeInput 
+  validateRefreshToken
 } = require('../middleware/validation');
 const { 
   authRateLimiter, 
@@ -40,7 +39,6 @@ const logger = require('../utils/logger');
 
 // Apply security middleware
 router.use(helmet());
-router.use(sanitizeInput);
 
 /**
  * POST /api/auth/register
@@ -48,7 +46,7 @@ router.use(sanitizeInput);
  */
 router.post('/register', 
   registrationRateLimiter,
-  validateRegistration,delay,
+  validateUserRegistration,delay,
   async (req, res) => {
     const startTime = Date.now();
     try {
@@ -149,7 +147,7 @@ router.post('/register',
  */
 router.post('/login',delay,
   authRateLimiter,
-  validateLogin,
+  validateUserLogin,
   trackLoginAttempt,
   async (req, res) => {
     const startTime = Date.now();

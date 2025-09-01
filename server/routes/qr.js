@@ -5,11 +5,29 @@ const router = express.Router();
 const fs = require('fs');
 const path = require('path');
 const QRCode = require('qrcode');
+const { body } = require('express-validator');
 const { verifyToken } = require('../middleware/auth');
 const { validateQRGeneration } = require('../middleware/validation');
 const { asyncHandler, auditAction, validateOwnership } = require('../utils/errors');
 const { success, errors, send } = require('../utils/response');
 const petQueries = require('../db/petQueries');
+
+// Handle validation errors
+const handleValidationErrors = (req, res, next) => {
+  const { validationResult } = require('express-validator');
+  const validationErrors = validationResult(req);
+  
+  if (!validationErrors.isEmpty()) {
+    const details = validationErrors.array().map(error => ({
+      field: error.path,
+      message: error.msg,
+      value: error.value
+    }));
+    return send(res, errors.VALIDATION_ERROR(details));
+  }
+  
+  next();
+};
 
 // Ensure temp directory exists
 const tempDir = path.join(__dirname, '..', 'temp');

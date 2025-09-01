@@ -33,21 +33,27 @@ show_help() {
     echo "🐾 GoodPawies Setup Script"
     echo "=========================="
     echo ""
-    echo "Usage: setup.sh [--npm] [--database] [--update] [--docker] [--help]"
+    echo "Usage: setup.sh [--npm] [--database] [--pets] [--update] [--docker] [--help]"
     echo ""
     echo "Options:"
     echo "  --npm        Install npm dependencies for all components"
     echo "  --database   Fresh database setup (drops volume, recreates container & DB)"
+    echo "  --pets       Enhanced pet tables setup (pets, breeds, types, genders, sizes)"
     echo "  --update     Update system packages"
     echo "  --docker     Install/upgrade Docker and update images"
     echo "  --help, -h   Show this help message"
-    echo "  (no args)    Run full setup (npm + database)"
+    echo "  (no args)    Run full setup (npm + database + pets)"
     echo ""
     echo "Database setup includes:"
     echo "  - Removes existing volume and container"
     echo "  - Creates fresh MariaDB container"
     echo "  - Runs all SQL scripts"
     echo "  - Validates tables and stored procedures"
+    echo ""
+    echo "Enhanced pets setup includes:"
+    echo "  - Creates enhanced pet tables with all fields"
+    echo "  - Adds pet types, breeds, genders, and sizes"
+    echo "  - Includes sample data for testing"
     echo ""
 }
 
@@ -209,6 +215,81 @@ run_database() {
     print_status "Database URL: mariadb://$DB_USER:$DB_PASS@localhost:3306/$DB_NAME"
 }
 
+run_enhanced_pets() {
+    print_header "🐾 Enhanced Pet Database Setup"
+    
+    # Database configuration (use Docker container)
+    DB_CONTAINER_NAME="goodpawies-mariadb"
+    DB_USER="goodpawiesuser"
+    DB_PASS="goodpawiespass"
+    DB_NAME="goodpawiesdb"
+
+    print_status "Setting up enhanced pet database..."
+
+    # Check if container is running
+    if ! docker ps | grep -q $DB_CONTAINER_NAME; then
+        print_error "MariaDB container '$DB_CONTAINER_NAME' is not running!"
+        print_error "Please run: ./setup.sh --database first"
+        exit 1
+    fi
+
+    print_status "MariaDB container is running"
+
+    # Test database connection
+    print_status "Testing database connection..."
+    if ! docker exec $DB_CONTAINER_NAME mariadb -u$DB_USER -p$DB_PASS -e "USE $DB_NAME;" 2>/dev/null; then
+        print_error "Cannot connect to database '$DB_NAME' in container"
+        print_error "Please ensure the database was set up correctly"
+        exit 1
+    fi
+
+    print_status "✅ Connected to database successfully"
+
+    # Run the enhanced pets setup
+    print_status "Running enhanced pets database setup..."
+    if [ -f "database/enhanced_pets_setup.sql" ]; then
+        if docker exec -i $DB_CONTAINER_NAME mariadb -u$DB_USER -p$DB_PASS $DB_NAME < "database/enhanced_pets_setup.sql"; then
+            print_status "✅ Enhanced pets database setup completed successfully!"
+            echo ""
+            print_status "📋 Created/Updated tables:"
+            print_status "  - pets_types (with sample data: Dog, Cat, Bird, Rabbit, Fish, Hamster)"
+            print_status "  - pets_breed (with enhanced breed data)"
+            print_status "  - pets_gender (Macho, Hembra)"
+            print_status "  - pets_size (Pequeño, Mediano, Grande)"
+            print_status "  - pets (with enhanced fields: color, age, gender, size, vaccinated, sterilized)"
+            print_status "  - pets_images (unchanged)"
+            echo ""
+            
+            # Validate enhanced tables
+            print_status "Validating enhanced pet tables..."
+            ENHANCED_TABLES=("pets_types" "pets_breed" "pets_gender" "pets_size" "pets")
+            for table in "${ENHANCED_TABLES[@]}"; do
+                if docker exec $DB_CONTAINER_NAME mariadb -u$DB_USER -p$DB_PASS $DB_NAME -e "SHOW TABLES LIKE '$table';" | grep -q "$table"; then
+                    print_status "✅ Table '$table' exists"
+                else
+                    print_error "❌ Table '$table' missing"
+                    exit 1
+                fi
+            done
+            
+            # Check sample data
+            TYPE_COUNT=$(docker exec $DB_CONTAINER_NAME mariadb -u$DB_USER -p$DB_PASS $DB_NAME -e "SELECT COUNT(*) FROM pets_types WHERE b_active=1;" -N)
+            BREED_COUNT=$(docker exec $DB_CONTAINER_NAME mariadb -u$DB_USER -p$DB_PASS $DB_NAME -e "SELECT COUNT(*) FROM pets_breed WHERE b_active=1;" -N)
+            
+            print_status "✅ Pet types loaded: $TYPE_COUNT"
+            print_status "✅ Pet breeds loaded: $BREED_COUNT"
+            
+            print_status "🎉 The enhanced pet registration system is ready!"
+        else
+            print_error "❌ Failed to run enhanced pets database setup"
+            exit 1
+        fi
+    else
+        print_error "❌ Enhanced pets SQL file not found: database/enhanced_pets_setup.sql"
+        exit 1
+    fi
+}
+
 run_update() {
     print_header "🔄 System Update"
     print_status "Updating system packages..."
@@ -336,6 +417,9 @@ main() {
             check_prerequisites "$1"
             run_database
             ;;
+        --pets)
+            run_enhanced_pets
+            ;;
         --update)
             run_update
             ;;
@@ -347,6 +431,7 @@ main() {
             check_prerequisites "$1"
             run_npm
             run_database
+            run_enhanced_pets
             run_security_checks
             ;;
         *)
@@ -371,7 +456,15 @@ main() {
     echo "📚 Useful URLs:"
     echo "   - API Health Check: http://localhost:5000/api/health"
     echo "   - Client App: http://localhost:3000"
+    echo "   - Pet Registration: http://localhost:3000/agregar-mascota"
     echo "   - Database: mariadb://goodpawiesuser:goodpawiespass@localhost:3306/goodpawiesdb"
+    echo "   - phpMyAdmin: http://localhost:8080"
+    echo ""
+    echo "🐾 Pet API Endpoints:"
+    echo "   - GET /api/pets/types - Get all pet types"
+    echo "   - GET /api/pets/breeds - Get all breeds"
+    echo "   - GET /api/pets/genders - Get all genders"
+    echo "   - GET /api/pets/sizes - Get all sizes"
     echo ""
     print_status "Happy coding! 🐾"
 }

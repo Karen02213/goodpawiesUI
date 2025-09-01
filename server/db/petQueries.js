@@ -3,11 +3,12 @@
 const db = require('./index');
 
 /**
- * Get specific pet information
+ * Get specific pet information - enhanced version
  */
 async function getPetById(petid) {
   const query = `
     SELECT p.id, p.userid, p.s_petname, p.s_type, p.s_breed, p.s_description, 
+           p.s_color, p.n_age, p.s_gender, p.s_size, p.b_vaccinated, p.b_sterilized,
            p.dt_created_at, u.s_username, u.s_full_name, u.s_full_surname
     FROM pets p
     JOIN users u ON p.userid = u.id
@@ -27,34 +28,69 @@ async function getPetImages(petid) {
 }
 
 /**
- * Create new pet (atomic)
+ * Create new pet (atomic) - enhanced version
  */
-async function createPet(userid, { petname, type, breed, description }) {
-  const query = 'INSERT INTO pets (userid, s_petname, s_type, s_breed, s_description, b_active) VALUES (?, ?, ?, ?, ?, 1)';
+async function createPet(userid, petData) {
+  const { 
+    s_petname, s_type, s_breed, s_description, 
+    s_color, n_age, s_gender, s_size, 
+    b_vaccinated, b_sterilized 
+  } = petData;
+  
+  const query = `
+    INSERT INTO pets (
+      userid, s_petname, s_type, s_breed, s_description, 
+      s_color, n_age, s_gender, s_size, 
+      b_vaccinated, b_sterilized, b_active
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+  `;
+  
   const results = await db.executeTransaction([{
     query,
-    params: [userid, petname, type, breed, description]
+    params: [
+      userid, s_petname, s_type, s_breed, s_description || null,
+      s_color, parseInt(n_age), s_gender, s_size,
+      b_vaccinated ? 1 : 0, b_sterilized ? 1 : 0
+    ]
   }]);
   
   return results[0].insertId;
 }
 
 /**
- * Update pet information (atomic)
+ * Update pet information (atomic) - enhanced version
  */
-async function updatePet(petid, { petname, type, breed, description }) {
+async function updatePet(petid, petData) {
+  const { 
+    s_petname, s_type, s_breed, s_description,
+    s_color, n_age, s_gender, s_size,
+    b_vaccinated, b_sterilized
+  } = petData;
+  
   const query = `
     UPDATE pets 
     SET s_petname = COALESCE(?, s_petname),
         s_type = COALESCE(?, s_type),
         s_breed = COALESCE(?, s_breed),
-        s_description = COALESCE(?, s_description)
+        s_description = COALESCE(?, s_description),
+        s_color = COALESCE(?, s_color),
+        n_age = COALESCE(?, n_age),
+        s_gender = COALESCE(?, s_gender),
+        s_size = COALESCE(?, s_size),
+        b_vaccinated = COALESCE(?, b_vaccinated),
+        b_sterilized = COALESCE(?, b_sterilized)
     WHERE id = ?
   `;
   
   return await db.executeTransaction([{
     query,
-    params: [petname, type, breed, description, petid]
+    params: [
+      s_petname, s_type, s_breed, s_description,
+      s_color, n_age ? parseInt(n_age) : null, s_gender, s_size,
+      b_vaccinated !== undefined ? (b_vaccinated ? 1 : 0) : null,
+      b_sterilized !== undefined ? (b_sterilized ? 1 : 0) : null,
+      petid
+    ]
   }]);
 }
 
@@ -87,24 +123,68 @@ async function getPetOwnership(petid) {
 
 async function getBreedsByType(petType) {
   const query = `
-    SELECT id, s_breed
-    FROM pets_breed 
-    WHERE id = ? AND b_active = 1
-    ORDER BY s_breed ASC
+    SELECT pb.id, pb.s_breed, pt.s_type
+    FROM pets_breed pb
+    JOIN pets_types pt ON pb.id_type = pt.id
+    WHERE pt.s_type = ? AND pb.b_active = 1 AND pt.b_active = 1
+    ORDER BY pb.s_breed ASC
   `;
   
   return await db.executeWithNoLock(query, [petType]);
 }
 
 /**
- * Get all breeds
+ * Get all pet types
+ */
+async function getAllPetTypes() {
+  const query = `
+    SELECT id, s_type
+    FROM pets_types 
+    WHERE b_active = 1
+    ORDER BY s_type ASC
+  `;
+  
+  return await db.executeWithNoLock(query);
+}
+
+/**
+ * Get all pet genders
+ */
+async function getAllGenders() {
+  const query = `
+    SELECT id, s_gender
+    FROM pets_gender 
+    WHERE b_active = 1
+    ORDER BY s_gender ASC
+  `;
+  
+  return await db.executeWithNoLock(query);
+}
+
+/**
+ * Get all pet sizes
+ */
+async function getAllSizes() {
+  const query = `
+    SELECT id, s_size, s_size_code
+    FROM pets_size 
+    WHERE b_active = 1
+    ORDER BY s_size ASC
+  `;
+  
+  return await db.executeWithNoLock(query);
+}
+
+/**
+ * Get all breeds with their types
  */
 async function getAllBreeds() {
   const query = `
-    SELECT id, s_breed
-    FROM pets_breed 
-    WHERE b_active = 1
-    ORDER BY s_breed ASC
+    SELECT pb.id, pb.s_breed, pt.s_type
+    FROM pets_breed pb
+    JOIN pets_types pt ON pb.id_type = pt.id
+    WHERE pb.b_active = 1 AND pt.b_active = 1
+    ORDER BY pt.s_type, pb.s_breed ASC
   `;
   
   return await db.executeWithNoLock(query);
@@ -119,4 +199,7 @@ module.exports = {
   getPetOwnership,
   getAllBreeds,
   getBreedsByType,
+  getAllPetTypes,
+  getAllGenders,
+  getAllSizes,
 };

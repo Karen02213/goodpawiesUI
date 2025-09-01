@@ -11,6 +11,7 @@
     "bootstrap": "^5.3.7",
     "materialize-css": "^1.0.0",
     "purecss": "^3.0.0",
+    "qr-code-styling": "^1.9.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.7.1",

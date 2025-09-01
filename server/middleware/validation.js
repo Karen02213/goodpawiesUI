@@ -132,6 +132,64 @@ const validatePetRegistration = [
   handleValidationErrors
 ];
 
+// Enhanced pet registration validation with all new fields
+const validateEnhancedPetRegistration = [
+  // Required fields
+  createValidation('s_petname', [
+    { type: 'length', options: { min: 1, max: 30 }, message: 'Pet name must be between 1 and 30 characters' },
+    { type: 'matches', pattern: patterns.petName, message: 'Pet name can only contain letters, spaces, hyphens, and apostrophes' },
+    { type: 'trim' }
+  ]),
+  createValidation('s_type', [
+    { type: 'length', options: { min: 1, max: 30 }, message: 'Pet type must be between 1 and 30 characters' },
+    { type: 'matches', pattern: patterns.petType, message: 'Pet type can only contain letters and spaces' },
+    { type: 'trim' }
+  ]),
+  createValidation('s_breed', [
+    { type: 'length', options: { min: 1, max: 30 }, message: 'Pet breed must be between 1 and 30 characters' },
+    { type: 'matches', pattern: patterns.petBreed, message: 'Pet breed can only contain letters, spaces, hyphens, and apostrophes' },
+    { type: 'trim' }
+  ]),
+  createValidation('s_gender', [
+    { type: 'isIn', values: ['Macho', 'Hembra'], message: 'Gender must be either Macho or Hembra' }
+  ]),
+  createValidation('s_size', [
+    { type: 'isIn', values: ['small', 'medium', 'large'], message: 'Size must be small, medium, or large' }
+  ]),
+  
+  // Optional fields
+  body('s_color')
+    .optional()
+    .isLength({ min: 1, max: 50 })
+    .withMessage('Pet color must be between 1 and 50 characters')
+    .matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-']+$/)
+    .withMessage('Pet color can only contain letters, spaces, hyphens, and apostrophes')
+    .trim(),
+    
+  body('n_age')
+    .optional()
+    .isInt({ min: 0, max: 30 })
+    .withMessage('Pet age must be between 0 and 30 years'),
+    
+  body('s_description')
+    .optional()
+    .isLength({ max: 500 })
+    .withMessage('Pet description must be maximum 500 characters')
+    .trim(),
+    
+  body('b_vaccinated')
+    .optional()
+    .isBoolean()
+    .withMessage('Vaccination status must be true or false'),
+    
+  body('b_sterilized')
+    .optional()
+    .isBoolean()
+    .withMessage('Sterilization status must be true or false'),
+    
+  handleValidationErrors
+];
+
 // Parameter and query validation - simplified using common patterns
 const validateUserId = [param('userid').isInt({ min: 1 }).withMessage('User ID must be a positive integer'), handleValidationErrors];
 const validatePetId = [param('petid').isInt({ min: 1 }).withMessage('Pet ID must be a positive integer'), handleValidationErrors];
@@ -178,15 +236,15 @@ const sanitizeInput = (req, res, next) => {
 };
 
 module.exports = {
-  validateRegistration,
-  validateLogin,
+  validateUserRegistration: validateRegistration,
+  validateUserLogin: validateLogin,
   validatePasswordChange,
   validatePetRegistration,
+  validateEnhancedPetRegistration,
   validateUserId,
   validatePetId,
   validatePagination,
   validateRefreshToken,
   validateQRGeneration,
-  sanitizeInput,
-  handleValidationErrors
+  createValidation
 };

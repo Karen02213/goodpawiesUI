@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const { verifyToken, optionalAuth } = require('../middleware/auth');
-const { validateUserId, validatePetId, validatePetRegistration } = require('../middleware/validation');
+const { validateUserId, validatePetId, validatePetRegistration, validateEnhancedPetRegistration } = require('../middleware/validation');
 const { asyncHandler, auditAction, validateOwnership } = require('../utils/errors');
 const { success, errors, send } = require('../utils/response');
 const petQueries = require('../db/petQueries');
@@ -36,9 +36,54 @@ router.post('/users/:userid/pets',
   })
 );
 
+/**
+ * POST /pets - Create a new pet with enhanced fields
+ */
+router.post('/',
+  verifyToken,
+  validateEnhancedPetRegistration,
+  auditAction('ENHANCED_PET_REGISTRATION'),
+  asyncHandler(async (req, res) => {
+    const {
+      s_petname,
+      s_type,
+      s_breed,
+      s_description,
+      s_color,
+      n_age,
+      s_gender,
+      s_size,
+      b_vaccinated,
+      b_sterilized
+    } = req.body;
+    
+    // Use the authenticated user's ID
+    const userid = req.user.id;
+    
+    const petData = {
+      s_petname,
+      s_type,
+      s_breed,
+      s_description: s_description || null,
+      s_color: s_color || null,
+      n_age: n_age || null,
+      s_gender,
+      s_size,
+      b_vaccinated: b_vaccinated || false,
+      b_sterilized: b_sterilized || false
+    };
+    
+    const petId = await petQueries.createPet(userid, petData);
+    
+    send(res, success({
+      petId,
+      ...petData
+    }, 'Pet registered successfully', 201));
+  })
+);
+
 
 //Get /pets/breeds
-
 router.get('/breeds', async (req, res) => {
   try {
     const breeds = await petQueries.getAllBreeds();
@@ -51,10 +96,49 @@ router.get('/breeds', async (req, res) => {
   }
 });   
 
+//Get /pets/types
+router.get('/types', async (req, res) => {
+  try {
+    const types = await petQueries.getAllPetTypes();
+    res.json({ types });
+  } catch (error) {
+    console.error('Error fetching pet types:', error);
+    res.status(500).json({ 
+      error: 'Error al obtener los tipos de mascotas' 
+    });
+  }
+});
+
+//Get /pets/genders
+router.get('/genders', async (req, res) => {
+  try {
+    const genders = await petQueries.getAllGenders();
+    res.json({ genders });
+  } catch (error) {
+    console.error('Error fetching genders:', error);
+    res.status(500).json({ 
+      error: 'Error al obtener los géneros' 
+    });
+  }
+});
+
+//Get /pets/sizes
+router.get('/sizes', async (req, res) => {
+  try {
+    const sizes = await petQueries.getAllSizes();
+    res.json({ sizes });
+  } catch (error) {
+    console.error('Error fetching sizes:', error);
+    res.status(500).json({ 
+      error: 'Error al obtener los tamaños' 
+    });
+  }
+});
+
 router.get('/breeds/:petType', async (req, res) => {
   try { 
     const { petType } = req.params;
-    const breeds = petQueries.getBreedsByType(petType)
+    const breeds = await petQueries.getBreedsByType(petType);
     res.json({ breeds });
   } catch (error) {
     console.error('Error fetching breeds:', error);

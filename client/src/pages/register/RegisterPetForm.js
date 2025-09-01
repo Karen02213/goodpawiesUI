@@ -1,12 +1,12 @@
-import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../utils/auth';
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { usePetDropdowns, usePetRegistration } from '../../utils/api';
 import '../../styles/FormStyles.css';
 
 function RegisterPage() {
-  const navigate = useNavigate();
-  const [breeds, setBreeds] = useState([]);
-  const { user } = useAuth();
+  const { breeds, petTypes, genders, sizes, loading: dropdownLoading, error: dropdownError } = usePetDropdowns();
+  const { createPet, loading: registrationLoading, error: registrationError } = usePetRegistration();
+  
   const [petData, setPetData] = useState({
     s_petname: '',
     s_type: '',
@@ -19,27 +19,24 @@ function RegisterPage() {
     b_vaccinated: false,
     b_sterilized: false
   });
-  const [showQR, setShowQR] = useState(false);
-  const [qrUrl, setQrUrl] = useState('');
+  const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState('');
-
-  useEffect(() => {
-    const fetchBreeds = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/pets/breeds');
-        const text = await response.text();
-        const data = JSON.parse(text);
-        setBreeds(data.breeds || []);
-      } catch (err) {
-        setBreeds([]);
-      }
-    };
-    fetchBreeds();
-  }, []);
 
   const filteredBreeds = petData.s_type
     ? breeds.filter(breed => breed.s_type === petData.s_type)
     : [];
+
+  // Reset breed selection when pet type changes
+  useEffect(() => {
+    if (petData.s_breed && petData.s_type) {
+      const breedStillValid = breeds.some(
+        breed => breed.s_breed === petData.s_breed && breed.s_type === petData.s_type
+      );
+      if (!breedStillValid) {
+        setPetData(prev => ({ ...prev, s_breed: '' }));
+      }
+    }
+  }, [petData.s_type, breeds, petData.s_breed]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -52,49 +49,103 @@ function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setShowQR(false);
-    setQrUrl('');
+    
     try {
-      // Envía los datos al backend para generar el QR
-      const params = new URLSearchParams({
-        ...petData,
-        n_age: petData.n_age.toString(),
-        b_vaccinated: petData.b_vaccinated ? 'true' : 'false',
-        b_sterilized: petData.b_sterilized ? 'true' : 'false'
-      }).toString();
+      // Get authentication token
+      const token = localStorage.getItem('accessToken');
+      if (!token) {
+        setError('No estás autenticado. Por favor, inicia sesión.');
+        return;
+      }
 
-      const res = await fetch(`http://localhost:5000/api/generate-qr-image?${params}`, {
-        method: 'POST'
-      });
-      const data = await res.json();
-      if (data.filename) {
-        setQrUrl(`http://localhost:5000/api/generate-qr-image/${data.filename}`);
-        setShowQR(true);
+      // Prepare pet data for backend
+      const petPayload = {
+        s_petname: petData.s_petname,
+        s_type: petData.s_type,
+        s_breed: petData.s_breed,
+        s_gender: petData.s_gender,
+        s_size: petData.s_size,
+        // Optional fields - only include if they have values
+        ...(petData.s_description && { s_description: petData.s_description }),
+        ...(petData.s_color && { s_color: petData.s_color }),
+        ...(petData.n_age && { n_age: parseInt(petData.n_age) }),
+        // Booleans - include even if false
+        b_vaccinated: petData.b_vaccinated,
+        b_sterilized: petData.b_sterilized
+      };
+
+      console.log('Sending pet data:', petPayload);
+
+      // Create pet using API utility
+      const result = await createPet(petPayload);
+      console.log('Pet creation response:', result);
+
+      if (result.success && result.data.petId) {
+        // Pet registered successfully, show success message
+        setShowSuccess(true);
+        
+        // Reset form
+        setPetData({
+          s_petname: '',
+          s_type: '',
+          s_breed: '',
+          s_description: '',
+          s_color: '',
+          n_age: '',
+          s_gender: '',
+          s_size: '',
+          b_vaccinated: false,
+          b_sterilized: false
+        });
       } else {
-        setError('No se pudo generar el código QR');
+        setError(result.message || registrationError || 'Error al registrar la mascota');
       }
     } catch (err) {
+      console.error('Error:', err);
       setError('Error al registrar la mascota');
-      console.error(err);
     }
-  };
-
-  const handleDownloadQR = () => {
-    if (!qrUrl) return;
-    const link = document.createElement('a');
-    link.href = qrUrl;
-    link.download = 'codigo_qr_mascota.png';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
   };
 
   return (
     <div>
-      {!showQR ? (
-        <form onSubmit={handleSubmit} className="form-container">
+      {dropdownLoading && (
+        <div style={{ textAlign: 'center', padding: '20px' }}>
+          Cargando datos del formulario...
+        </div>
+      )}
+      
+      {dropdownError && (
+        <div style={{ color: 'red', textAlign: 'center', padding: '20px' }}>
+          Error cargando datos: {dropdownError}
+        </div>
+      )}
+      
+      {showSuccess ? (
+        <div className="form-container" style={{ textAlign: 'center' }}>
+          <h2>¡Mascota registrada exitosamente!</h2>
+          <p>Tu mascota ha sido registrada correctamente.</p>
+          <p>Puedes crear un código QR personalizado para tu mascota desde tu perfil.</p>
+          <Link to="/perfil" style={{ 
+            display: 'inline-block',
+            padding: '10px 20px',
+            backgroundColor: '#007bff',
+            color: 'white',
+            textDecoration: 'none',
+            borderRadius: '5px',
+            marginTop: '20px'
+          }}>
+            Ver Mis Mascotas
+          </Link>
+        </div>
+      ) : (
+        !dropdownLoading && !dropdownError && (
+          <form onSubmit={handleSubmit} className="form-container">
           <h2>Registrar Nueva Mascota</h2>
-          {error && <div style={{ color: 'red' }}>{error}</div>}
+          {(error || registrationError) && (
+            <div style={{ color: 'red' }}>
+              {error || registrationError}
+            </div>
+          )}
           <div className="form-group">
             <label>Nombre de la mascota:</label>
             <input
@@ -105,6 +156,7 @@ function RegisterPage() {
               value={petData.s_petname}
               onChange={handleChange}
               required
+              disabled={registrationLoading}
             />
           </div>
 
@@ -119,10 +171,20 @@ function RegisterPage() {
                 onChange={handleChange}
                 required
                 style={{ maxWidth: "170px", minWidth: "90px" }}
+                disabled={registrationLoading}
               >
                 <option value="">Selecciona el tipo</option>
-                <option value="Perro">🐶 Perro</option>
-                <option value="Gato">🐱 Gato</option>
+                {petTypes.map((type) => (
+                  <option key={type.id} value={type.s_type}>
+                    {type.s_type === 'Dog' ? '🐶 Perro' : 
+                     type.s_type === 'Cat' ? '🐱 Gato' :
+                     type.s_type === 'Bird' ? '🐦 Ave' :
+                     type.s_type === 'Rabbit' ? '🐰 Conejo' :
+                     type.s_type === 'Fish' ? '🐟 Pez' :
+                     type.s_type === 'Hamster' ? '� Hámster' :
+                     type.s_type}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -149,10 +211,9 @@ function RegisterPage() {
             <input
               type="text"
               name="s_color"
-              placeholder="Color de la mascota"
+              placeholder="Color de la mascota (opcional)"
               value={petData.s_color}
               onChange={handleChange}
-              required
             />
           </div>
 
@@ -161,9 +222,9 @@ function RegisterPage() {
             <input
               type="number"
               name="n_age"
+              placeholder="Edad en años (opcional)"
               value={petData.n_age}
               onChange={handleChange}
-              required
               min="0"
               max="30"
             />
@@ -182,8 +243,11 @@ function RegisterPage() {
                 style={{ maxWidth: '195px', minWidth: '90px' }}
               >
                 <option value="">Selecciona el género</option>
-                <option value="Macho"> Macho</option>
-                <option value="Hembra"> Hembra</option>
+                {genders.map((gender) => (
+                  <option key={gender.id} value={gender.s_gender}>
+                    {gender.s_gender}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -199,21 +263,24 @@ function RegisterPage() {
                 style={{ maxWidth: '195px', minWidth: '90px' }}
               >
                 <option value="">Selecciona el tamaño</option>
-                <option value="small">Pequeño</option>
-                <option value="medium">Mediano</option>
-                <option value="large">Grande</option>
+                {sizes.map((size) => (
+                  <option key={size.id} value={size.s_size_code}>
+                    {size.s_size}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
 
           <div className="form-group">
-            <label style={{ paddingBottom: "12px" }}>Descripción:</label>
+            <label style={{ paddingBottom: "12px" }}>Descripción (opcional):</label>
             <textarea
               name="s_description"
               value={petData.s_description}
               onChange={handleChange}
               className="textarea"
               rows="3"
+              placeholder="Describe a tu mascota (opcional)"
             />
           </div>
 
@@ -233,7 +300,7 @@ function RegisterPage() {
                 onChange={handleChange}
                 id="b_vaccinated"
               />
-                <label htmlFor="b_vaccinated" style={{ cursor: "pointer",  marginTop: "22px"  }}>Vacunado</label>
+                <label htmlFor="b_vaccinated" style={{ cursor: "pointer",  marginTop: "22px"  }}>Vacunado (opcional)</label>
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center"}}>
@@ -251,31 +318,17 @@ function RegisterPage() {
                 onChange={handleChange}
                 id="b_sterilized"
               />
-              <label htmlFor="b_sterilized" style={{ cursor: "pointer",  marginTop: "23px"  }}>Esterilizado</label>
+              <label htmlFor="b_sterilized" style={{ cursor: "pointer",  marginTop: "23px"  }}>Esterilizado (opcional)</label>
             </div>
           </div>
 
           
 
-          <button type="submit">
-            Registrar Mascota
+          <button type="submit" disabled={registrationLoading}>
+            {registrationLoading ? 'Registrando...' : 'Registrar Mascota'}
           </button>
         </form>
-      ) : (
-        <div className="form-container" style={{ textAlign: 'center' }}>
-          <h2>¡Mascota registrada!</h2>
-          <p>Escanea o descarga el código QR de tu mascota:</p>
-          {qrUrl && (
-            <img
-              src={qrUrl}
-              alt="QR Mascota"
-              style={{ margin: '20px auto', width: 220, height: 220, background: '#fff', border: '1px solid #ccc' }}
-            />
-          )}
-          <button onClick={handleDownloadQR} style={{ marginTop: 10 }}>
-            Descargar QR
-          </button>
-        </div>
+        )
       )}
     </div>
   );
