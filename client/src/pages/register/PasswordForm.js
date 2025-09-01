@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../utils/auth';
 import { validatePassword } from '../../utils/validation';
-import '../../styles/FormStyles.css';
 
 export default function PasswordForm({ registerDataRef }) {
   const [password, setPassword] = useState('');

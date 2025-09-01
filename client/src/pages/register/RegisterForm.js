@@ -8,7 +8,6 @@ import {
   validateEmail
 } from '../../utils/validation';
 import { useNavigate, useLocation } from 'react-router-dom';
-import '../../styles/FormStyles.css';
 
 
 export default function RegisterForm({ registerDataRef }) {

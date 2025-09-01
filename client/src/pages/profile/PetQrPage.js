@@ -1,9 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../../utils/auth";
 import apiClient from "../../utils/api";
 import QRCodeStyling from "qr-code-styling";
-import "../../styles/PetQrPage.css";
 
 // Initialize QR code styling instance
 const qrCode = new QRCodeStyling({

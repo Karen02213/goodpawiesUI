@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import QRCodeStyling from "qr-code-styling";
-import "../styles/QrPage.css";
 
 // Temporary pet image for testing (will be replaced with API call)
 const TEMP_PET_IMAGE = "/default-avatar.png";

@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { usePetDropdowns, usePetRegistration } from '../../utils/api';
-import '../../styles/FormStyles.css';
+import React, { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import apiClient, { usePetDropdowns, usePetRegistration } from "../../utils/api";
+import { validatePetData } from "../../utils/validation";
 
 function RegisterPage() {
   const { breeds, petTypes, genders, sizes, loading: dropdownLoading, error: dropdownError } = usePetDropdowns();
@@ -109,31 +109,23 @@ function RegisterPage() {
   return (
     <div>
       {dropdownLoading && (
-        <div style={{ textAlign: 'center', padding: '20px' }}>
+        <div className="pet-form-loading-container">
           Cargando datos del formulario...
         </div>
       )}
       
       {dropdownError && (
-        <div style={{ color: 'red', textAlign: 'center', padding: '20px' }}>
+        <div className="pet-form-error-container">
           Error cargando datos: {dropdownError}
         </div>
       )}
       
       {showSuccess ? (
-        <div className="form-container" style={{ textAlign: 'center' }}>
+        <div className="form-container pet-form-success-container">
           <h2>¡Mascota registrada exitosamente!</h2>
           <p>Tu mascota ha sido registrada correctamente.</p>
           <p>Puedes crear un código QR personalizado para tu mascota desde tu perfil.</p>
-          <Link to="/perfil" style={{ 
-            display: 'inline-block',
-            padding: '10px 20px',
-            backgroundColor: '#007bff',
-            color: 'white',
-            textDecoration: 'none',
-            borderRadius: '5px',
-            marginTop: '20px'
-          }}>
+          <Link to="/perfil" className="btn btn-primary mt-5">
             Ver Mis Mascotas
           </Link>
         </div>
@@ -142,7 +134,7 @@ function RegisterPage() {
           <form onSubmit={handleSubmit} className="form-container">
           <h2>Registrar Nueva Mascota</h2>
           {(error || registrationError) && (
-            <div style={{ color: 'red' }}>
+            <div className="form-error">
               {error || registrationError}
             </div>
           )}
@@ -157,20 +149,20 @@ function RegisterPage() {
               onChange={handleChange}
               required
               disabled={registrationLoading}
+              className="form-control"
             />
           </div>
 
-          <div style={{ display: "flex", gap: "2rem" }}>
+          <div className="flex gap-6">
             <div className="form-group">
               <label>Tipo de mascota:</label>
               <select
-                className="form-select"
+                className="form-control pet-form-select-medium"
                 id="s_phone_prefix_bootstrap"
                 name="s_type"
                 value={petData.s_type}
                 onChange={handleChange}
                 required
-                style={{ maxWidth: "170px", minWidth: "90px" }}
                 disabled={registrationLoading}
               >
                 <option value="">Selecciona el tipo</option>
@@ -181,7 +173,7 @@ function RegisterPage() {
                      type.s_type === 'Bird' ? '🐦 Ave' :
                      type.s_type === 'Rabbit' ? '🐰 Conejo' :
                      type.s_type === 'Fish' ? '🐟 Pez' :
-                     type.s_type === 'Hamster' ? '� Hámster' :
+                     type.s_type === 'Hamster' ? '🐹 Hámster' :
                      type.s_type}
                   </option>
                 ))}
@@ -194,7 +186,7 @@ function RegisterPage() {
                 name="s_breed"
                 value={petData.s_breed}
                 onChange={handleChange}
-                className="form-select"
+                className="form-control"
               >
                 <option value="">Selecciona una raza</option>
                 {filteredBreeds.map((breed) => (
@@ -214,6 +206,7 @@ function RegisterPage() {
               placeholder="Color de la mascota (opcional)"
               value={petData.s_color}
               onChange={handleChange}
+              className="form-control"
             />
           </div>
 
@@ -227,20 +220,20 @@ function RegisterPage() {
               onChange={handleChange}
               min="0"
               max="30"
+              className="form-control"
             />
           </div>
 
-          <div style={{ display: "flex", gap: "1rem" }}>
+          <div className="flex gap-3">
             <div className="form-group">
               <label>Género:</label>
               <select
-                className="form-select"
+                className="form-control pet-form-select-small"
                 id="s_gender_bootstrap"
                 name="s_gender"
                 value={petData.s_gender}
                 onChange={handleChange}
                 required
-                style={{ maxWidth: '195px', minWidth: '90px' }}
               >
                 <option value="">Selecciona el género</option>
                 {genders.map((gender) => (
@@ -254,13 +247,12 @@ function RegisterPage() {
             <div className="form-group">
               <label>Tamaño:</label>
               <select
-                className="form-select"
+                className="form-control pet-form-select-small"
                 id="s_size_bootstrap"
                 name="s_size"
                 value={petData.s_size}
                 onChange={handleChange}
                 required
-                style={{ maxWidth: '195px', minWidth: '90px' }}
               >
                 <option value="">Selecciona el tamaño</option>
                 {sizes.map((size) => (
@@ -273,58 +265,46 @@ function RegisterPage() {
           </div>
 
           <div className="form-group">
-            <label style={{ paddingBottom: "12px" }}>Descripción (opcional):</label>
+            <label className="pet-form-description-label">Descripción (opcional):</label>
             <textarea
               name="s_description"
               value={petData.s_description}
               onChange={handleChange}
-              className="textarea"
+              className="form-control pet-form-textarea"
               rows="3"
               placeholder="Describe a tu mascota (opcional)"
             />
           </div>
 
-          <div style={{ display: "flex", gap: "2rem" }}>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center"}}>
+          <div className="flex gap-6">
+            <div className="pet-form-checkbox-container">
               <input
                 type="checkbox"
                 name="b_vaccinated"
-                style={{
-                  opacity: 1,
-                  width: "18px",
-                  height: "18px",
-                  cursor: "pointer",
-                  accentColor: "#2196f3"
-                }}
+                className="pet-form-checkbox"
                 checked={petData.b_vaccinated}
                 onChange={handleChange}
                 id="b_vaccinated"
               />
-                <label htmlFor="b_vaccinated" style={{ cursor: "pointer",  marginTop: "22px"  }}>Vacunado (opcional)</label>
+                <label htmlFor="b_vaccinated" className="pet-form-checkbox-label">Vacunado (opcional)</label>
             </div>
 
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center"}}>
+            <div className="pet-form-checkbox-container">
               <input
                 type="checkbox"
                 name="b_sterilized"
-                style={{
-                  opacity: 1,
-                  width: "18px",
-                  height: "18px",
-                  cursor: "pointer",
-                  accentColor: "#2196f3",
-                }}
+                className="pet-form-checkbox"
                 checked={petData.b_sterilized}
                 onChange={handleChange}
                 id="b_sterilized"
               />
-              <label htmlFor="b_sterilized" style={{ cursor: "pointer",  marginTop: "23px"  }}>Esterilizado (opcional)</label>
+              <label htmlFor="b_sterilized" className="pet-form-checkbox-label-alt">Esterilizado (opcional)</label>
             </div>
           </div>
 
           
 
-          <button type="submit" disabled={registrationLoading}>
+          <button type="submit" disabled={registrationLoading} className="btn btn-primary">
             {registrationLoading ? 'Registrando...' : 'Registrar Mascota'}
           </button>
         </form>

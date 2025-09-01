@@ -12,7 +12,6 @@ import PetProfilePage from "./pages/PetProfilePage";
 import ProtectedRoute from './components/ProtectedRoute';
 import RegisterPetForm from './pages/register/RegisterPetForm';
 import Navbar from './components/Navbar';
-import './App.css';
 
 function App() {
   const registerDataRef = useRef({});

@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import AvatarMenu from './AvatarMenu';
 import { useAuth } from '../utils/auth';
-import { useAuthContext } from './AuthProvider';
 import { useState } from 'react';
 
 export default function Navbar() {
@@ -23,7 +22,26 @@ export default function Navbar() {
           <Link to="/" >GoodPawies</Link>
         </div>
 
-        {/* Toggle para móvil */}
+        {/* Navigation Links (Center) */}
+        {isAuthenticated && (
+          <ul className={`navbar-menu ${menuOpen ? 'mobile-menu-open' : ''}`}>
+            <li><Link to="/" onClick={() => setMenuOpen(false)}>HOME</Link></li>
+            <li><Link to="/qr" onClick={() => setMenuOpen(false)}>QR</Link></li>
+          </ul>
+        )}
+
+        {/* Profile Section (Right) */}
+        {isAuthenticated && (
+          <div className="navbar-profile">
+            <AvatarMenu 
+              imageUrl={userImageUrl} 
+              username={user?.username}
+              onLogout={handleLogout}
+            />
+          </div>
+        )}
+
+        {/* Mobile Toggle */}
         <input
           type="checkbox"
           id="menu-toggle"
@@ -32,23 +50,6 @@ export default function Navbar() {
           onChange={() => setMenuOpen(!menuOpen)}
         />
         <label htmlFor="menu-toggle" className="hamburger">☰</label>
-
-        {/* Menú */}
-        <ul className="navbar-menu">
-          {isAuthenticated && (
-            <>
-              <li><Link to="/qr" onClick={() => setMenuOpen(false)}>QR</Link></li>
-              <li><Link to="/" onClick={() => setMenuOpen(false)}>HOME</Link></li>
-              <li className="avatar">
-                <AvatarMenu 
-                  imageUrl={userImageUrl} 
-                  username={user?.username}
-                  onLogout={handleLogout}
-                />
-              </li>
-            </>
-          )}
-        </ul>
       </div>
     </nav>
   );

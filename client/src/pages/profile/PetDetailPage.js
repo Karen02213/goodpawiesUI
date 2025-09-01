@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../utils/auth";
 import apiClient from "../../utils/api";
-import "../../styles/PetDetailPage.css";
 
 export default function PetDetailPage() {
   const { uid, petid } = useParams();

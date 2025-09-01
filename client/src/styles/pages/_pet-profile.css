@@ -1,0 +1,204 @@
+/* ==========================================================================
+   Pet Profile Page Styles
+   ========================================================================== */
+
+.pet-profile-page {
+  min-height: 100vh;
+  background: var(--gradient-primary);
+  padding: var(--spacing-lg);
+}
+
+.pet-profile-page .container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: var(--color-bg-primary);
+  border-radius: var(--border-radius-3xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-2xl);
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Profile header */
+.pet-profile-header {
+  background: var(--gradient-secondary);
+  color: var(--color-text-light);
+  padding: var(--spacing-3xl) var(--spacing-2xl);
+  text-align: center;
+  position: relative;
+}
+
+.pet-image-section {
+  margin-bottom: var(--spacing-lg);
+}
+
+.pet-profile-image {
+  width: 150px;
+  height: 150px;
+  border-radius: var(--border-radius-full);
+  object-fit: cover;
+  border: 5px solid var(--color-text-light);
+  box-shadow: var(--shadow-xl);
+  transition: transform var(--transition-base);
+}
+
+.pet-profile-image:hover {
+  transform: scale(1.05);
+}
+
+.pet-basic-info {
+  text-align: center;
+}
+
+.pet-name {
+  font-size: 2.5rem;
+  margin: 0 0 var(--spacing-md) 0;
+  font-weight: var(--font-weight-bold);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: var(--font-family-secondary);
+}
+
+.pet-type-breed {
+  font-size: var(--font-size-xl);
+  opacity: 0.9;
+  font-weight: var(--font-weight-light);
+  margin: 0;
+}
+
+/* Details grid */
+.pet-details-grid {
+  padding: var(--spacing-2xl);
+  display: grid;
+  gap: var(--spacing-lg);
+}
+
+/* Pet description */
+.pet-description {
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  font-size: var(--font-size-base);
+  margin: 0;
+}
+
+.no-description {
+  color: var(--color-text-muted);
+  font-style: italic;
+  margin: 0;
+}
+
+/* Info list */
+.info-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md) 0;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.info-value {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-normal);
+  font-size: var(--font-size-base);
+}
+
+/* Owner info */
+.owner-info {
+  text-align: center;
+}
+
+.owner-name {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.owner-username {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+  margin: 0;
+}
+
+/* Contact section */
+.contact-section {
+  padding: 0 var(--spacing-2xl) var(--spacing-2xl);
+}
+
+/* Footer section */
+.footer-section {
+  background: var(--color-bg-secondary);
+  padding: var(--spacing-lg) var(--spacing-2xl);
+  text-align: center;
+  border-top: 1px solid var(--color-border-light);
+}
+
+.footer-section p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .pet-profile-page {
+    padding: var(--spacing-md);
+  }
+
+  .pet-profile-header {
+    padding: var(--spacing-2xl) var(--spacing-lg);
+  }
+
+  .pet-profile-image {
+    width: 120px;
+    height: 120px;
+  }
+
+  .pet-name {
+    font-size: 2rem;
+  }
+
+  .pet-type-breed {
+    font-size: var(--font-size-lg);
+  }
+
+  .pet-details-grid {
+    padding: var(--spacing-lg);
+    gap: var(--spacing-md);
+  }
+
+  .contact-section {
+    padding: 0 var(--spacing-lg) var(--spacing-lg);
+  }
+
+  .footer-section {
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+
+  .info-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+    text-align: left;
+  }
+
+  .info-label {
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
