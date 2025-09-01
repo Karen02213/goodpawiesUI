@@ -1,8 +1,33 @@
+
 #!/bin/bash
 
 # GoodPawies Setup Script - Merged Version
 # NOTE: Use 'bash setup.sh' instead of 'sh setup.sh' for proper functionality
 set -e
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Function to print colored output
+print_status() {
+    echo -e "${GREEN}[INFO]${NC} $1"
+}
+
+print_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
+print_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+print_header() {
+    echo -e "${BLUE}$1${NC}"
+}
 
 # Colors for output
 RED='\033[0;31m'
@@ -124,7 +149,7 @@ run_npm() {
 }
 
 run_database() {
-    print_header "🗄️  Fresh Database Setup"
+    print_header "�️  Fresh Database Setup"
     # Database configuration
     DB_CONTAINER_NAME="goodpawies-mariadb"
     DB_VOLUME_NAME="goodpawiesui_mariadb-data"
@@ -138,23 +163,6 @@ run_database() {
         print_error "Please ensure you are running this script from the project root"
         exit 1
     fi
-    
-    # Validate all required SQL files exist
-    print_status "Validating SQL files..."
-    SQL_FILES=(
-        "database/user_setup.sql"
-        "database/enhanced_auth_setup.sql"
-        "database/access_setup.sql"
-        "database/social_media_setup.sql"
-    )
-    
-    for sql_file in "${SQL_FILES[@]}"; do
-        if [ ! -f "$sql_file" ]; then
-            print_error "Required SQL file not found: $sql_file"
-            exit 1
-        fi
-        print_status "✅ Found: $(basename $sql_file)"
-    done
 
     print_status "Starting fresh database setup..."
 
@@ -210,6 +218,14 @@ run_database() {
     # Run SQL scripts
     print_status "Running SQL setup scripts..."
 
+    # Array of SQL files in order
+    SQL_FILES=(
+        "database/user_setup.sql"
+        "database/enhanced_auth_setup.sql"
+        "database/access_setup.sql"
+        "database/social_media_setup.sql"
+    )
+
     for sql_file in "${SQL_FILES[@]}"; do
         print_status "Running $(basename $sql_file)..."
         if docker exec -i $DB_CONTAINER_NAME mariadb -u$DB_USER -p$DB_PASS $DB_NAME < "$sql_file"; then
@@ -236,7 +252,7 @@ run_database() {
     done
 
     # Check required stored procedures
-    REQUIRED_PROCEDURES=("sp_register_user" "sp_authenticate_user" "sp_validate_user")
+    REQUIRED_PROCEDURES=("sp_register_user" "sp_login_user" "sp_get_user_profile")
     for proc in "${REQUIRED_PROCEDURES[@]}"; do
         if docker exec $DB_CONTAINER_NAME mariadb -u$DB_USER -p$DB_PASS $DB_NAME -e "SHOW PROCEDURE STATUS WHERE Name='$proc';" | grep -q "$proc"; then
             print_status "✅ Stored procedure '$proc' exists"

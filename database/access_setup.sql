@@ -33,28 +33,38 @@ CREATE PROCEDURE sp_validate_user(
 BEGIN
     DECLARE v_count INT DEFAULT 0;
     DECLARE v_password_match INT DEFAULT 0;
+    DECLARE v_user_exists INT DEFAULT 0;
 
-    -- Check uniqueness of username, email, or phone (excluding current user)
-    SELECT COUNT(*) INTO v_count
+    -- Check if the user exists
+    SELECT COUNT(*) INTO v_user_exists
     FROM users
-    WHERE ( (p_username IS NOT NULL AND s_username = p_username)
-         OR (p_email IS NOT NULL AND s_email = p_email)
-         OR (p_phone IS NOT NULL AND s_phone_number = p_phone) )
-      AND id <> p_userid;
+    WHERE id = p_userid AND b_active = 1;
 
-    IF v_count = 0 THEN
-        -- No user, email, or phone found, return an error
-        SET p_result = 'INVALID USER';
+    IF v_user_exists = 0 THEN
+        SET p_result = 'USER_NOT_FOUND';
     ELSE
-        -- Validate password for the user
-        SELECT COUNT(*) INTO v_password_match
+        -- Check uniqueness of username, email, or phone (excluding current user)
+        SELECT COUNT(*) INTO v_count
         FROM users
-        WHERE id = p_userid AND s_password_hash = p_password_hash;
+        WHERE ( (p_username IS NOT NULL AND s_username = p_username)
+             OR (p_email IS NOT NULL AND s_email = p_email)
+             OR (p_phone IS NOT NULL AND s_phone_number = p_phone) )
+          AND id <> p_userid
+          AND b_active = 1;
 
-        IF v_password_match > 0 THEN
-            SET p_result = 'VALID USER';
+        IF v_count > 0 THEN
+            SET p_result = 'DUPLICATE_CREDENTIALS';
         ELSE
-            SET p_result = 'INVALID CREDENTIALS';
+            -- Validate password for the user
+            SELECT COUNT(*) INTO v_password_match
+            FROM users
+            WHERE id = p_userid AND s_password_hash = p_password_hash AND b_active = 1;
+
+            IF v_password_match > 0 THEN
+                SET p_result = 'VALID_USER';
+            ELSE
+                SET p_result = 'INVALID_PASSWORD';
+            END IF;
         END IF;
     END IF;
 END //

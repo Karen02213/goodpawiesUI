@@ -1,13 +1,27 @@
 -- Enhanced Pet Management System Database Schema
 -- This file contains the updated schema with additional fields for pets
 
+-- First, check if we have the basic tables from user_setup.sql
+-- If not, this script will fail gracefully
+
+-- Check if users table exists
+SET @table_exists = 0;
+SELECT COUNT(*) INTO @table_exists 
+FROM information_schema.tables 
+WHERE table_schema = DATABASE() 
+AND table_name = 'users';
+
+-- If users table doesn't exist, exit with error
+-- Note: This is a safeguard, user_setup.sql should be run first
+
 -- Drop existing tables if they exist (in reverse dependency order)
+-- Only drop the enhanced pet tables, not the basic ones from user_setup.sql
 DROP TABLE IF EXISTS pets_images;
 DROP TABLE IF EXISTS pets;
 DROP TABLE IF EXISTS pets_breed;
-DROP TABLE IF EXISTS pets_types;
 DROP TABLE IF EXISTS pets_gender;
 DROP TABLE IF EXISTS pets_size;
+-- Keep pets_types from user_setup.sql but we'll update it
 
 -- Create pets gender table
 CREATE TABLE pets_gender (
@@ -28,7 +42,8 @@ CREATE TABLE pets_size (
     b_active BIT DEFAULT 1
 );
 
--- Create pets types table
+-- Create pets types table (enhanced version, replacing the one from user_setup.sql)
+DROP TABLE IF EXISTS pets_types;
 CREATE TABLE pets_types (
     id INT PRIMARY KEY AUTO_INCREMENT,
     s_type VARCHAR(30) NOT NULL,    -- Dog, Cat, etc...
@@ -141,8 +156,39 @@ INSERT INTO pets_breed (id_type, s_breed, b_active) VALUES
 (6, 'Dwarf', 1),
 (6, 'Chinese', 1);
 
--- Insert sample pets data with enhanced fields (using existing user ID)
--- Note: Update userid values to match actual users in your database
-INSERT INTO pets (userid, s_petname, s_type, s_breed, s_description, s_color, n_age, s_gender, s_size, b_vaccinated, b_sterilized, b_active) VALUES
-(16, 'Buddy', 'Dog', 'Golden Retriever', 'Very friendly and loves to play fetch', 'Golden', 3, 'Macho', 'large', 1, 1, 1),
-(16, 'Mittens', 'Cat', 'Tabby', 'Loves to sleep in sunny spots', 'Brown and white', 2, 'Hembra', 'medium', 1, 1, 1);
+-- Insert sample pets data with enhanced fields (using existing user IDs)
+-- First, get the first available user ID from the users table
+SET @first_user_id = (SELECT MIN(id) FROM users WHERE b_active = 1 LIMIT 1);
+
+-- Only insert sample data if we have at least one user
+INSERT INTO pets (userid, s_petname, s_type, s_breed, s_description, s_color, n_age, s_gender, s_size, b_vaccinated, b_sterilized, b_active) 
+SELECT 
+    @first_user_id,
+    'Buddy',
+    'Dog',
+    'Golden Retriever',
+    'Very friendly and loves to play fetch',
+    'Golden',
+    3,
+    'Macho',
+    'large',
+    1,
+    1,
+    1
+WHERE @first_user_id IS NOT NULL;
+
+INSERT INTO pets (userid, s_petname, s_type, s_breed, s_description, s_color, n_age, s_gender, s_size, b_vaccinated, b_sterilized, b_active)
+SELECT 
+    @first_user_id,
+    'Mittens',
+    'Cat',
+    'Tabby',
+    'Loves to sleep in sunny spots',
+    'Brown and white',
+    2,
+    'Hembra',
+    'medium',
+    1,
+    1,
+    1
+WHERE @first_user_id IS NOT NULL;
