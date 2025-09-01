@@ -14,49 +14,49 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: var(--color-bg-dark);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: var(--color-text-light);
 }
 
 /* NAVBAR STYLES */
 .navbar {
-  background-color: #f1889b;
-  color: white;
-  padding: 0.8rem 2rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  padding: var(--spacing-sm) var(--spacing-2xl);
+  box-shadow: var(--shadow-md);
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: var(--z-index-sticky);
 }
 
 .navbar-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1200px;
+  max-width: var(--container-xl);
   margin: auto;
 }
 
 /* Logo */
 .navbar-logo a {
-  font-family: 'Poppins', sans-serif;
-  font-weight: bold;
-  font-size: 1.5rem;
+  font-family: var(--font-family-secondary);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-2xl);
   text-decoration: none;
-  color: white;
+  color: var(--color-text-light);
 }
 
 /* Menu */
 .navbar-menu {
   list-style: none;
   display: flex;
-  gap: 1.5rem;
+  gap: var(--spacing-lg);
   align-items: center;
   margin: 0;
   padding: 0;
@@ -65,21 +65,21 @@
 /* Links */
 .navbar-menu a {
   text-decoration: none;
-  color: white;
-  font-weight: 500;
-  transition: color 0.3s;
+  color: var(--color-text-light);
+  font-weight: var(--font-weight-medium);
+  transition: color var(--transition-base);
 }
 
 .navbar-menu a:hover {
-  color: #00bcd4;
+  color: var(--color-secondary);
 }
 
 /* Avatar */
 .avatar img {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  border: 2px solid #00bcd4;
+  width: var(--width-nav-avatar);
+  height: var(--height-nav-avatar);
+  border-radius: var(--border-radius-full);
+  border: 2px solid var(--color-secondary);
   object-fit: cover;
   cursor: pointer;
 }
@@ -87,7 +87,7 @@
 /* Botón hamburguesa */
 .hamburger {
   display: none;
-  font-size: 1.8rem;
+  font-size: var(--font-size-3xl);
   cursor: pointer;
 }
 
@@ -95,7 +95,7 @@
 @media screen and (max-width: 768px) {
   .hamburger {
     display: block;
-    color: white;
+    color: var(--color-text-light);
     margin-left: 77px;
   }
 
@@ -107,13 +107,13 @@
     position: absolute;
     top: 100%;
     right: 0;
-    background-color: #f1889b;
+    background-color: var(--color-primary);
     width: 100%;
     flex-direction: column;
     align-items: flex-start;
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.3s ease-in-out;
+    transition: max-height var(--transition-base);
   }
 
   .menu-toggle:checked + .hamburger + .navbar-menu {

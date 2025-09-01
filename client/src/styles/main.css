@@ -20,7 +20,12 @@
 @import './base/_variables.css';
 
 /* ==========================================================================
-   2. GENERIC - Reset and normalize
+   2. FRAMEWORK INTEGRATION - Multi-framework harmony
+   ========================================================================== */
+@import './base/_framework-integration.css';
+
+/* ==========================================================================
+   3. GENERIC - Reset and normalize
    ========================================================================== */
 @import './base/_reset.css';
 
@@ -36,10 +41,12 @@
    ========================================================================== */
 @import './components/_buttons.css';
 @import './components/_forms.css';
+@import './components/_enhanced_forms.css';
 @import './components/_navigation.css';
 @import './components/_profile.css';
 @import './components/_cards.css';
 @import './components/_modals.css';
+@import './components/_footer.css';
 @import './components/_states.css';
 
 /* ==========================================================================
@@ -48,6 +55,7 @@
 @import './pages/_pet-profile.css';
 @import './pages/_pet-detail.css';
 @import './pages/_qr-pages.css';
+@import './pages/_demo.css';
 
 /* ==========================================================================
    6. UTILITIES - Helper classes and overrides
@@ -58,6 +66,19 @@
 /* ==========================================================================
    Legacy App Styles (Temporary - to be refactored)
    ========================================================================== */
+
+/* App Layout Structure */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
 
 /* App component specific styles */
 .App {
@@ -87,7 +108,7 @@
 }
 
 .App-link {
-  color: #61dafb;
+  color: var(--color-info);
 }
 
 @keyframes App-logo-spin {

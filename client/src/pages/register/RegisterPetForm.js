@@ -134,179 +134,252 @@ function RegisterPage() {
           <form onSubmit={handleSubmit} className="form-container">
           <h2>Registrar Nueva Mascota</h2>
           {(error || registrationError) && (
-            <div className="form-error">
+            <div className="invalid-feedback" style={{ display: 'block', marginBottom: '1rem' }}>
               {error || registrationError}
             </div>
           )}
           <div className="form-group">
-            <label>Nombre de la mascota:</label>
-            <input
-              type="text"
-              name="s_petname"
-              placeholder="Mascota"
-              maxLength={30}
-              value={petData.s_petname}
-              onChange={handleChange}
-              required
-              disabled={registrationLoading}
-              className="form-control"
-            />
-          </div>
-
-          <div className="flex gap-6">
-            <div className="form-group">
-              <label>Tipo de mascota:</label>
-              <select
-                className="form-control pet-form-select-medium"
-                id="s_phone_prefix_bootstrap"
-                name="s_type"
-                value={petData.s_type}
+            <div className="form-floating">
+              <input
+                type="text"
+                name="s_petname"
+                placeholder="Nombre de la mascota"
+                maxLength={30}
+                value={petData.s_petname}
                 onChange={handleChange}
                 required
                 disabled={registrationLoading}
-              >
-                <option value="">Selecciona el tipo</option>
-                {petTypes.map((type) => (
-                  <option key={type.id} value={type.s_type}>
-                    {type.s_type === 'Dog' ? '🐶 Perro' : 
-                     type.s_type === 'Cat' ? '🐱 Gato' :
-                     type.s_type === 'Bird' ? '🐦 Ave' :
-                     type.s_type === 'Rabbit' ? '🐰 Conejo' :
-                     type.s_type === 'Fish' ? '🐟 Pez' :
-                     type.s_type === 'Hamster' ? '🐹 Hámster' :
-                     type.s_type}
-                  </option>
-                ))}
-              </select>
+                className="form-control"
+                id="s_petname"
+              />
+              <label htmlFor="s_petname">
+                <i className="material-icons">pets</i>
+                Nombre de la mascota
+              </label>
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="col-md-6">
+              <div className="form-group">
+                <div className="form-floating">
+                  <select
+                    className="form-control"
+                    name="s_type"
+                    value={petData.s_type}
+                    onChange={handleChange}
+                    required
+                    disabled={registrationLoading}
+                    id="s_type"
+                  >
+                    <option value="">Selecciona el tipo</option>
+                    {petTypes.map((type) => (
+                      <option key={type.id} value={type.s_type}>
+                        {type.s_type === 'Dog' ? '🐶 Perro' : 
+                         type.s_type === 'Cat' ? '🐱 Gato' :
+                         type.s_type === 'Bird' ? '🐦 Ave' :
+                         type.s_type === 'Rabbit' ? '🐰 Conejo' :
+                         type.s_type === 'Fish' ? '🐟 Pez' :
+                         type.s_type === 'Hamster' ? '🐹 Hámster' :
+                         type.s_type}
+                      </option>
+                    ))}
+                  </select>
+                  <label htmlFor="s_type">
+                    <i className="material-icons">category</i>
+                    Tipo de mascota
+                  </label>
+                </div>
+              </div>
             </div>
 
-            <div className="form-group">
-              <label>Raza:</label>
-              <select
-                name="s_breed"
-                value={petData.s_breed}
+            <div className="col-md-6">
+              <div className="form-group">
+                <div className="form-floating">
+                  <select
+                    name="s_breed"
+                    value={petData.s_breed}
+                    onChange={handleChange}
+                    className="form-control"
+                    id="s_breed"
+                  >
+                    <option value="">Selecciona una raza</option>
+                    {filteredBreeds.map((breed) => (
+                      <option key={breed.id} value={breed.s_breed}>
+                        {breed.s_breed}
+                      </option>
+                    ))}
+                  </select>
+                  <label htmlFor="s_breed">
+                    <i className="material-icons">list</i>
+                    Raza
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="col-md-6">
+              <div className="form-group">
+                <div className="form-floating">
+                  <input
+                    type="text"
+                    name="s_color"
+                    placeholder="Color de la mascota (opcional)"
+                    value={petData.s_color}
+                    onChange={handleChange}
+                    className="form-control"
+                    id="s_color"
+                  />
+                  <label htmlFor="s_color">
+                    <i className="material-icons">palette</i>
+                    Color
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-md-6">
+              <div className="form-group">
+                <div className="form-floating">
+                  <input
+                    type="number"
+                    name="n_age"
+                    placeholder="Edad en años (opcional)"
+                    value={petData.n_age}
+                    onChange={handleChange}
+                    min="0"
+                    max="30"
+                    className="form-control"
+                    id="n_age"
+                  />
+                  <label htmlFor="n_age">
+                    <i className="material-icons">cake</i>
+                    Edad (años)
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="col-md-6">
+              <div className="form-group">
+                <div className="form-floating">
+                  <select
+                    className="form-control"
+                    name="s_gender"
+                    value={petData.s_gender}
+                    onChange={handleChange}
+                    required
+                    id="s_gender"
+                  >
+                    <option value="">Selecciona el género</option>
+                    {genders.map((gender) => (
+                      <option key={gender.id} value={gender.s_gender}>
+                        {gender.s_gender}
+                      </option>
+                    ))}
+                  </select>
+                  <label htmlFor="s_gender">
+                    <i className="material-icons">wc</i>
+                    Género
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-md-6">
+              <div className="form-group">
+                <div className="form-floating">
+                  <select
+                    className="form-control"
+                    name="s_size"
+                    value={petData.s_size}
+                    onChange={handleChange}
+                    required
+                    id="s_size"
+                  >
+                    <option value="">Selecciona el tamaño</option>
+                    {sizes.map((size) => (
+                      <option key={size.id} value={size.s_size_code}>
+                        {size.s_size}
+                      </option>
+                    ))}
+                  </select>
+                  <label htmlFor="s_size">
+                    <i className="material-icons">straighten</i>
+                    Tamaño
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <div className="form-floating">
+              <textarea
+                name="s_description"
+                value={petData.s_description}
                 onChange={handleChange}
                 className="form-control"
-              >
-                <option value="">Selecciona una raza</option>
-                {filteredBreeds.map((breed) => (
-                  <option key={breed.id} value={breed.s_breed}>
-                    {breed.s_breed}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label>Color:</label>
-            <input
-              type="text"
-              name="s_color"
-              placeholder="Color de la mascota (opcional)"
-              value={petData.s_color}
-              onChange={handleChange}
-              className="form-control"
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Edad (años):</label>
-            <input
-              type="number"
-              name="n_age"
-              placeholder="Edad en años (opcional)"
-              value={petData.n_age}
-              onChange={handleChange}
-              min="0"
-              max="30"
-              className="form-control"
-            />
-          </div>
-
-          <div className="flex gap-3">
-            <div className="form-group">
-              <label>Género:</label>
-              <select
-                className="form-control pet-form-select-small"
-                id="s_gender_bootstrap"
-                name="s_gender"
-                value={petData.s_gender}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Selecciona el género</option>
-                {genders.map((gender) => (
-                  <option key={gender.id} value={gender.s_gender}>
-                    {gender.s_gender}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label>Tamaño:</label>
-              <select
-                className="form-control pet-form-select-small"
-                id="s_size_bootstrap"
-                name="s_size"
-                value={petData.s_size}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Selecciona el tamaño</option>
-                {sizes.map((size) => (
-                  <option key={size.id} value={size.s_size_code}>
-                    {size.s_size}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label className="pet-form-description-label">Descripción (opcional):</label>
-            <textarea
-              name="s_description"
-              value={petData.s_description}
-              onChange={handleChange}
-              className="form-control pet-form-textarea"
-              rows="3"
-              placeholder="Describe a tu mascota (opcional)"
-            />
-          </div>
-
-          <div className="flex gap-6">
-            <div className="pet-form-checkbox-container">
-              <input
-                type="checkbox"
-                name="b_vaccinated"
-                className="pet-form-checkbox"
-                checked={petData.b_vaccinated}
-                onChange={handleChange}
-                id="b_vaccinated"
+                rows="3"
+                placeholder="Describe a tu mascota (opcional)"
+                id="s_description"
+                style={{ height: '100px' }}
               />
-                <label htmlFor="b_vaccinated" className="pet-form-checkbox-label">Vacunado (opcional)</label>
+              <label htmlFor="s_description">
+                <i className="material-icons">description</i>
+                Descripción (opcional)
+              </label>
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="col-md-6">
+              <div className="form-check">
+                <input
+                  type="checkbox"
+                  name="b_vaccinated"
+                  className="form-check-input"
+                  checked={petData.b_vaccinated}
+                  onChange={handleChange}
+                  id="b_vaccinated"
+                />
+                <label htmlFor="b_vaccinated" className="form-check-label">
+                  <i className="material-icons">health_and_safety</i>
+                  Vacunado
+                </label>
+              </div>
             </div>
 
-            <div className="pet-form-checkbox-container">
-              <input
-                type="checkbox"
-                name="b_sterilized"
-                className="pet-form-checkbox"
-                checked={petData.b_sterilized}
-                onChange={handleChange}
-                id="b_sterilized"
-              />
-              <label htmlFor="b_sterilized" className="pet-form-checkbox-label-alt">Esterilizado (opcional)</label>
+            <div className="col-md-6">
+              <div className="form-check">
+                <input
+                  type="checkbox"
+                  name="b_sterilized"
+                  className="form-check-input"
+                  checked={petData.b_sterilized}
+                  onChange={handleChange}
+                  id="b_sterilized"
+                />
+                <label htmlFor="b_sterilized" className="form-check-label">
+                  <i className="material-icons">medical_services</i>
+                  Esterilizado
+                </label>
+              </div>
             </div>
           </div>
 
           
 
-          <button type="submit" disabled={registrationLoading} className="btn btn-primary">
-            {registrationLoading ? 'Registrando...' : 'Registrar Mascota'}
-          </button>
+          <div className="text-center">
+            <button type="submit" disabled={registrationLoading} className="btn btn-primary btn-lg waves-effect">
+              <i className="material-icons">pets</i>
+              {registrationLoading ? 'Registrando...' : 'Registrar Mascota'}
+            </button>
+          </div>
         </form>
         )
       )}

@@ -72,69 +72,45 @@ function LoginPage() {
   };
 
   return (
-    <div style={{
-      width: '90%',
-      maxWidth: '400px',
-      margin: '80px auto',
-      padding: '30px',
-      border: '1px solid #ccc',
-      borderRadius: '10px',
-      boxShadow: '0 0 10px rgba(0,0,0,0.1)'
-    }}>
-      <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>Inicio de sesión</h1>
+    <div className="form-container">
+      <h2>Inicio de sesión</h2>
 
       {/* Success message after registration */}
       {showSuccess && (
-        <div style={{
-          backgroundColor: '#d4edda',
-          border: '1px solid #c3e6cb',
-          color: '#155724',
-          padding: '10px',
-          borderRadius: '5px',
-          marginBottom: '20px',
-          textAlign: 'center',
-          fontWeight: 'bold'
-        }}>
+        <div className="valid-feedback" style={{ display: 'block', marginBottom: '1rem' }}>
           ¡Usuario creado exitosamente! Ahora puedes iniciar sesión.
         </div>
       )}
 
       {error && (
-        <div style={{
-          backgroundColor: '#f8d7da',
-          border: '1px solid #f5c6cb',
-          color: '#721c24',
-          padding: '10px',
-          borderRadius: '5px',
-          marginBottom: '20px',
-          textAlign: 'center'
-        }}>
+        <div className="invalid-feedback" style={{ display: 'block', marginBottom: '1rem' }}>
           {error}
         </div>
       )}
 
       <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px' }}>Usuario/Email/Teléfono:</label>
-          <input
-            name="identifier"
-            type="text"
-            value={form.identifier}
-            onChange={handleChange}
-            disabled={loading}
-            style={{
-              width: '100%',
-              padding: '10px',
-              fontSize: '1rem',
-              boxSizing: 'border-box',
-              opacity: loading ? 0.6 : 1
-            }}
-          />
+        <div className="form-group">
+          <div className="form-floating">
+            <input
+              name="identifier"
+              type="text"
+              value={form.identifier}
+              onChange={handleChange}
+              disabled={loading}
+              className="form-control"
+              placeholder="Usuario/Email/Teléfono"
+              id="identifier"
+            />
+            <label htmlFor="identifier">
+              <i className="material-icons">person</i>
+              Usuario/Email/Teléfono
+            </label>
+          </div>
         </div>
 
         <div className="form-group">
-          <label htmlFor="password">Contraseña:</label>
-          <div className="password-input-container">
+          <label htmlFor="password" className="form-label">Contraseña:</label>
+          <div className="form-floating">
             <input
               id="password"
               name="password"
@@ -143,13 +119,18 @@ function LoginPage() {
               onChange={handleChange}
               disabled={loading}
               required
-              className="password-input"
+              className="form-control"
+              placeholder="Contraseña"
             />
+            <label htmlFor="password">
+              <i className="material-icons">lock</i>
+              Contraseña
+            </label>
             <button
               type="button"
               tabIndex={-1}
               onClick={() => setShowPassword((v) => !v)}
-              className="password-toggle-btn"
+              className="btn btn-link password-toggle"
               aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
             >
               {showPassword ? (
@@ -165,34 +146,27 @@ function LoginPage() {
               )}
             </button>
           </div>
-          <div style={{ textAlign: 'right', marginTop: '8px' }}>
-            <Link to="" style={{ fontSize: '14px', color: '#007bff' }}>
+          <div className="form-text text-end">
+            <Link to="" style={{ fontSize: '14px', color: 'var(--color-primary)' }}>
               ¿Se te olvidó la contraseña?
             </Link>
           </div>
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            width: '100%',
-            padding: '12px',
-            backgroundColor: loading ? '#6c757d' : '#007bff',
-            color: '#fff',
-            fontSize: '1rem',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: loading ? 'not-allowed' : 'pointer',
-            opacity: loading ? 0.8 : 1
-          }}
-        >
-          {loading ? 'Iniciando sesión...' : 'Entrar'}
-        </button>
+        <div className="text-center">
+          <button
+            type="submit"
+            disabled={loading}
+            className="btn btn-primary btn-lg waves-effect"
+          >
+            <i className="material-icons">login</i>
+            {loading ? 'Iniciando sesión...' : 'Entrar'}
+          </button>
+        </div>
       </form>
-      <div style={{ textAlign: 'center', marginTop: '20px' }}>
+      <div className="form-text text-center" style={{ marginTop: '1rem' }}>
         <span>¿No tienes cuenta? </span>
-        <Link to="/registrarse" style={{ color: '#007bff', fontWeight: 'bold' }}>
+        <Link to="/registrarse" style={{ color: 'var(--color-primary)', fontWeight: 'bold' }}>
             Regístrate aquí
         </Link>
       </div>

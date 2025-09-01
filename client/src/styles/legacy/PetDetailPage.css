@@ -1,53 +1,53 @@
 .pet-detail-page {
-  padding: 20px;
-  max-width: 1200px;
+  padding: var(--spacing-xl);
+  max-width: var(--container-xl);
   margin: 0 auto;
 }
 
 .pet-detail-page .container {
-  background: #f8f9fa;
-  border-radius: 10px;
-  padding: 30px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background: var(--color-bg-secondary);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-2xl);
+  box-shadow: var(--shadow-lg);
 }
 
 .pet-header {
-  margin-bottom: 30px;
+  margin-bottom: var(--spacing-2xl);
 }
 
 .back-link {
   display: inline-block;
-  color: #007bff;
+  color: var(--color-blue-bootstrap);
   text-decoration: none;
-  margin-bottom: 15px;
-  font-weight: 500;
-  transition: color 0.3s ease;
+  margin-bottom: var(--spacing-lg);
+  font-weight: var(--font-weight-medium);
+  transition: color var(--transition-base);
 }
 
 .back-link:hover {
-  color: #0056b3;
+  color: var(--color-blue-bootstrap-dark);
 }
 
 .pet-header h1 {
   margin: 0;
-  color: #333;
-  font-size: 2.5rem;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-4xl);
 }
 
 .pet-content {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 30px;
+  gap: var(--spacing-2xl);
 }
 
 .pet-info-card {
-  background: white;
-  border-radius: 10px;
-  padding: 30px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: var(--color-bg-primary);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-2xl);
+  box-shadow: var(--shadow-md);
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 30px;
+  gap: var(--spacing-2xl);
   align-items: start;
 }
 

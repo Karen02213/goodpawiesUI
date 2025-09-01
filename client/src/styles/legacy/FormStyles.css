@@ -1,11 +1,11 @@
 /* Ensure select elements are visible and styled like inputs */
 .form-container select {
-  padding: 12px;
-  margin: 8px 0;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 1rem;
-  background: #fff;
+  padding: var(--spacing-md);
+  margin: var(--spacing-sm) 0;
+  border: 1px solid var(--color-border-medium);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
+  background: var(--color-bg-primary);
   width: 100%;
   box-sizing: border-box;
   appearance: auto;
@@ -14,24 +14,24 @@
 
 .form-container {
   max-width: 500px;
-  margin: 30px auto;
-  padding: 20px;
-  border-radius: 10px;
-  background: #f8f8f8;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin: var(--spacing-2xl) auto;
+  padding: var(--spacing-xl);
+  border-radius: var(--border-radius-xl);
+  background: var(--color-bg-tertiary);
+  box-shadow: var(--shadow-lg);
   width: 100%;
   box-sizing: border-box;
 }
 
 .form-group {
   position: relative;
-  margin-bottom: 18px;
+  margin-bottom: var(--spacing-lg);
 }
 
 .form-container h2 {
   text-align: center;
-  margin-bottom: 20px;
-  font-size: 1.8rem;
+  margin-bottom: var(--spacing-xl);
+  font-size: var(--font-size-3xl);
 }
 
 .form-container form {
@@ -40,23 +40,23 @@
 }
 
 .form-container label {
-  font-weight: 600;
-  color:dimgrey;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
 }
 
 .form-container input {
-  padding: 12px;
-  margin: 8px 0;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 1rem;
+  padding: var(--spacing-md);
+  margin: var(--spacing-sm) 0;
+  border: 1px solid var(--color-border-medium);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
   width: 100%;
   box-sizing: border-box;
 }
 
 .textarea {
-    padding: 8px;
-    border-radius: 4px;
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
   }
 
 /* Password input with eye icon */
@@ -69,11 +69,11 @@
 }
 
 .password-input {
-  padding: 12px 45px 12px 12px !important;
-  margin: 8px 0;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 1rem;
+  padding: var(--spacing-md) 45px var(--spacing-md) var(--spacing-md) !important;
+  margin: var(--spacing-sm) 0;
+  border: 1px solid var(--color-border-medium);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
   width: 100%;
   box-sizing: border-box;
   flex: 1 1 auto;
@@ -81,27 +81,27 @@
 
 .password-toggle-btn {
   position: absolute;
-  right: 12px;
+  right: var(--spacing-md);
   top: 0;
   bottom: 0;
   margin: auto 0;
   background: none !important;
   border: none;
   cursor: pointer;
-  padding: 4px;
+  padding: var(--spacing-xs);
   outline: none;
-  height: 24px;
-  width: 24px;
+  height: var(--spacing-lg);
+  width: var(--spacing-lg);
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 3px;
-  color: #666;
+  border-radius: var(--border-radius-sm);
+  color: var(--color-text-secondary);
   z-index: 2;
 }
 
 .password-toggle-btn:hover {
-  background-color: rgba(0, 0, 0, 0.05) !important;
+  background-color: rgba(var(--color-primary-rgb), 0.05) !important;
 }
 
 .password-toggle-btn:focus {
@@ -111,34 +111,34 @@
 }
 
 .form-container button {
-  padding: 12px;
-  margin-top: 15px;
-  margin-left: auto; /* Sin comillas */
-  background-color: #2196f3;
-  color: white;
-  font-size: 1rem;
+  padding: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+  margin-left: auto;
+  background-color: var(--color-secondary);
+  color: var(--color-text-light);
+  font-size: var(--font-size-base);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--border-radius-md);
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: background var(--transition-base);
   display: block;
 }
 
 .form-container button:hover {
-  background-color: #1976d2;
+  background-color: var(--color-secondary-dark);
 }
 
 .form-container p {
-  color: red;
-  font-size: 0.9rem;
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
   text-align: center;
 }
 
 .form-checkbox {
-  width: 18px;
-  height: 18px;
-  accent-color: #2196f3; /* color azul para el check */
-  margin-right: 6px;
+  width: var(--spacing-lg);
+  height: var(--spacing-lg);
+  accent-color: var(--color-secondary);
+  margin-right: var(--spacing-sm);
   opacity: 1;
   cursor: pointer;
 }
@@ -147,19 +147,19 @@
 /* Responsive */
 @media (max-width: 600px) {
   .form-container {
-    padding: 15px;
-    margin: 10px;
+    padding: var(--spacing-lg);
+    margin: var(--spacing-md);
   }
 
   .form-container h2 {
-    font-size: 1.5rem;
+    font-size: var(--font-size-2xl);
   }
 
   .form-container input {
-    font-size: 0.95rem;
+    font-size: var(--font-size-sm);
   }
 
   .form-container button {
-    font-size: 0.95rem;
+    font-size: var(--font-size-sm);
   }
 }

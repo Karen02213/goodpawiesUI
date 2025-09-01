@@ -1,349 +1,315 @@
 /* ==========================================================================
-   Navigation Component Styles
+   Navigation Components
+   Using Pure CSS for menu structure with custom enhancements
    ========================================================================== */
 
-/* Main navbar */
+/* ==========================================================================
+   Custom Navbar (Not using Bootstrap navbar)
+   ========================================================================== */
+
 .navbar {
-  background-color: var(--color-primary);
-  color: var(--color-text-light);
-  padding: var(--spacing-sm) var(--spacing-xl);
-  box-shadow: var(--shadow-md);
   position: sticky;
   top: 0;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-md);
+  border-bottom: 1px solid var(--color-border-light);
   z-index: var(--z-index-sticky);
-  transition: background-color var(--transition-base);
-  width: 100%;
+  padding: var(--spacing-sm) 0;
+  transition: all var(--transition-base);
 }
 
 .navbar-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   max-width: var(--container-xl);
   margin: 0 auto;
-  width: 100%;
-  height: 60px;
-}
-
-/* Logo - Left */
-.navbar-logo {
+  padding: 0 var(--spacing-md);
   display: flex;
   align-items: center;
-  flex: 1;
-  justify-content: flex-start;
+  justify-content: space-between;
+  height: 60px;
 }
 
 .navbar-logo a {
   font-family: var(--font-family-secondary);
   font-weight: var(--font-weight-bold);
-  font-size: var(--font-size-2xl);
+  font-size: var(--font-size-xl);
+  color: var(--color-primary);
   text-decoration: none;
-  color: var(--color-text-light);
-  transition: color var(--transition-base);
+  transition: all var(--transition-base);
+  position: relative;
 }
 
-.navbar-logo a:hover {
-  color: var(--color-secondary);
+.navbar-logo a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+  transition: width var(--transition-base);
 }
 
-/* Navigation menu - Center */
+.navbar-logo a:hover::after {
+  width: 100%;
+}
+
+/* ==========================================================================
+   Pure CSS Menu Integration
+   ========================================================================== */
+
 .navbar-menu {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-xl);
   list-style: none;
   margin: 0;
   padding: 0;
-  flex: 1;
-}
-
-/* Profile section - Right */
-.navbar-profile {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  flex: 1;
+  gap: var(--spacing-lg);
 }
 
-.navbar-menu a {
-  text-decoration: none;
-  color: var(--color-text-light);
+.navbar-menu li a {
   font-weight: var(--font-weight-medium);
-  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  text-decoration: none;
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--border-radius-md);
   transition: all var(--transition-base);
   position: relative;
+  overflow: hidden;
 }
 
-.navbar-menu a:hover {
-  color: var(--color-secondary);
-  background-color: rgba(255, 255, 255, 0.1);
+.navbar-menu li a::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(var(--color-primary-rgb), 0.1), transparent);
+  transition: left var(--transition-base);
 }
 
-.navbar-menu a.active {
-  color: var(--color-secondary);
-  background-color: rgba(255, 255, 255, 0.15);
+.navbar-menu li a:hover {
+  color: var(--color-primary);
+  background-color: rgba(var(--color-primary-rgb), 0.05);
 }
 
-/* Avatar menu */
-.avatar {
-  display: flex;
-  align-items: center;
+.navbar-menu li a:hover::before {
+  left: 100%;
+}
+
+/* ==========================================================================
+   Avatar Menu (Custom Dropdown)
+   ========================================================================== */
+
+.navbar-profile {
   position: relative;
 }
 
-.avatar img {
-  width: 38px;
-  height: 38px;
+.profile-avatar-menu {
+  position: relative;
+}
+
+.profile-avatar-image {
+  width: 40px;
+  height: 40px;
   border-radius: var(--border-radius-full);
-  border: 2px solid var(--color-secondary);
+  border: 2px solid var(--color-primary);
+  cursor: pointer;
+  transition: all var(--transition-base);
   object-fit: cover;
-  cursor: pointer;
-  transition: border-color var(--transition-base);
-  margin-left: 14px;
 }
 
-.avatar:hover img {
-  border-color: var(--color-text-light);
+.profile-avatar-image:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 0 4px rgba(var(--color-primary-rgb), 0.2);
 }
 
-/* Mobile hamburger menu */
-.hamburger {
-  display: none;
-  font-size: 1.8rem;
-  cursor: pointer;
-  color: var(--color-text-light);
+/* Bootstrap-inspired dropdown with custom styling */
+.profile-dropdown-menu {
+  position: absolute;
+  top: calc(100% + var(--spacing-sm));
+  right: 0;
+  background: white;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--color-border-light);
+  min-width: 220px;
+  padding: var(--spacing-md);
+  z-index: var(--z-index-dropdown);
+  animation: slideInFromTop 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform-origin: top right;
+}
+
+.profile-dropdown-menu::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  right: 12px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid white;
+}
+
+.profile-user-greeting {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid var(--color-border-light);
+  margin-bottom: var(--spacing-sm);
+}
+
+.profile-dropdown-link {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  border-radius: var(--border-radius-md);
+  transition: all var(--transition-base);
+  margin-bottom: var(--spacing-xs);
+}
+
+.profile-dropdown-link:hover {
+  background-color: rgba(var(--color-primary-rgb), 0.05);
+  color: var(--color-primary);
+  transform: translateX(4px);
+}
+
+.profile-logout-button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
   background: none;
   border: none;
-  padding: var(--spacing-sm);
-  margin-left: 77px;
+  color: var(--color-danger);
+  border-radius: var(--border-radius-md);
+  transition: all var(--transition-base);
+  cursor: pointer;
+  margin-top: var(--spacing-sm);
+  border-top: 1px solid var(--color-border-light);
+  padding-top: var(--spacing-md);
 }
 
-.hamburger:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: var(--border-radius-sm);
+.profile-logout-button:hover {
+  background-color: rgba(var(--color-danger-rgb), 0.05);
+  transform: translateX(4px);
 }
 
-/* Mobile menu toggle */
+/* ==========================================================================
+   Mobile Navigation
+   ========================================================================== */
+
 .menu-toggle {
   display: none;
 }
 
-/* Responsive navigation */
-@media screen and (max-width: 768px) {
-  .navbar {
-    padding: var(--spacing-sm) var(--spacing-md);
-  }
+.hamburger {
+  display: none;
+  font-size: var(--font-size-2xl);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius-md);
+  transition: all var(--transition-base);
+}
 
-  .navbar-container {
-    height: 50px;
-  }
+.hamburger:hover {
+  background-color: rgba(var(--color-primary-rgb), 0.1);
+  color: var(--color-primary);
+}
 
-  .navbar-logo {
-    flex: 0 0 auto;
-    justify-content: flex-start;
-  }
-
-  .navbar-profile {
-    flex: 0 0 auto;
-    justify-content: flex-end;
-    order: 2;
-  }
-
+/* Mobile Responsive */
+@media (max-width: 768px) {
   .hamburger {
     display: block;
-    color: var(--color-text-light);
-    order: 3;
-    margin-left: var(--spacing-md);
   }
 
   .navbar-menu {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 1px);
     left: 0;
     right: 0;
-    background-color: var(--color-primary);
+    background: white;
     flex-direction: column;
     align-items: stretch;
-    justify-content: flex-start;
-    flex: none;
-    padding: var(--spacing-md) 0;
+    padding: var(--spacing-md);
     box-shadow: var(--shadow-lg);
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height var(--transition-base);
+    border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition-base);
   }
 
-  .menu-toggle:checked ~ .navbar-menu,
-  .navbar-menu.mobile-menu-open {
-    max-height: 500px;
+  .mobile-menu-open .navbar-menu {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
   }
 
   .navbar-menu li {
-    width: 100%;
+    margin: 0;
   }
 
-  .navbar-menu a {
+  .navbar-menu li a {
+    padding: var(--spacing-md);
     display: block;
-    padding: var(--spacing-md) var(--spacing-xl);
-    border-radius: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    border-bottom: 1px solid var(--color-border-light);
   }
 
-  .navbar-menu a:hover {
-    background-color: rgba(255, 255, 255, 0.15);
+  .navbar-menu li:last-child a {
+    border-bottom: none;
   }
 
-  .navbar-logo a {
-    font-size: var(--font-size-xl);
+  .navbar-profile {
+    position: static;
   }
 
-  .avatar img {
-    width: 32px;
-    height: 32px;
+  .profile-dropdown-menu {
+    position: fixed;
+    top: 80px;
+    right: var(--spacing-md);
+    left: var(--spacing-md);
+    width: auto;
   }
 }
 
-/* Breadcrumb navigation */
-.breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md) 0;
-  font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
+/* ==========================================================================
+   Scroll Effects
+   ========================================================================== */
+
+.navbar.scrolled {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  box-shadow: var(--shadow-lg);
 }
 
-.breadcrumb-item {
-  display: flex;
-  align-items: center;
+/* ==========================================================================
+   Navigation Animations
+   ========================================================================== */
+
+.navbar-menu li {
+  animation: slideInFromTop 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.breadcrumb-item:not(:last-child)::after {
-  content: '/';
-  margin-left: var(--spacing-sm);
-  color: var(--color-text-muted);
+.navbar-menu li:nth-child(1) { animation-delay: 0.1s; }
+.navbar-menu li:nth-child(2) { animation-delay: 0.2s; }
+.navbar-menu li:nth-child(3) { animation-delay: 0.3s; }
+.navbar-menu li:nth-child(4) { animation-delay: 0.4s; }
+
+.navbar-logo {
+  animation: slideInFromLeft 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.breadcrumb-item a {
-  color: var(--color-accent);
-  transition: color var(--transition-base);
-}
-
-.breadcrumb-item a:hover {
-  color: var(--color-accent-dark);
-}
-
-.breadcrumb-item.active {
-  color: var(--color-text-secondary);
-}
-
-/* Back link component */
-.back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  color: var(--color-accent);
-  text-decoration: none;
-  margin-bottom: var(--spacing-lg);
-  font-weight: var(--font-weight-medium);
-  transition: color var(--transition-base);
-  font-size: var(--font-size-sm);
-}
-
-.back-link:hover {
-  color: var(--color-accent-dark);
-}
-
-.back-link::before {
-  content: '←';
-  font-size: var(--font-size-lg);
-}
-
-/* Avatar Menu Dropdown */
-.avatar-menu {
-  position: relative;
-  display: inline-block;
-  max-width: 100%;
-}
-
-.avatar-menu-trigger {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--border-radius-full);
-  object-fit: cover;
-  cursor: pointer;
-  border: 2px solid #ccc;
-  margin-left: 14px;
-  transition: border-color var(--transition-base);
-}
-
-.avatar-menu-trigger:hover {
-  border-color: var(--color-accent);
-}
-
-.avatar-menu-dropdown {
-  position: absolute;
-  top: 50px;
-  right: 0;
-  background: var(--color-bg-primary);
-  border: 1px solid var(--color-border-light);
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-xl);
-  min-width: 180px;
-  text-align: left;
-  z-index: 9999;
-  animation: fadeInDown 0.2s ease-out;
-  overflow: hidden;
-}
-
-.avatar-menu-user {
-  display: block;
-  padding: var(--spacing-md);
-  font-weight: var(--font-weight-bold);
-  border-bottom: 1px solid var(--color-border-light);
-  color: var(--color-text-primary);
-  background: var(--color-bg-secondary);
-  font-size: var(--font-size-sm);
-}
-
-.avatar-menu-link {
-  display: block;
-  padding: var(--spacing-md) var(--spacing-lg);
-  text-decoration: none;
-  color: var(--color-text-primary);
-  transition: all var(--transition-base);
-  font-size: var(--font-size-sm);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.avatar-menu-link:last-of-type {
-  border-bottom: none;
-}
-
-.avatar-menu-link:hover {
-  background-color: var(--color-bg-secondary);
-  color: var(--color-accent);
-  padding-left: var(--spacing-xl);
-}
-
-.avatar-menu-button {
-  display: block;
-  padding: var(--spacing-md) var(--spacing-lg);
-  width: 100%;
-  background: transparent;
-  border: none;
-  text-align: left;
-  cursor: pointer;
-  color: var(--color-text-primary);
-  transition: all var(--transition-base);
-  font-size: var(--font-size-sm);
-}
-
-.avatar-menu-button:hover {
-  background-color: #ffe6e6;
-  color: var(--color-danger);
-  padding-left: var(--spacing-xl);
+.navbar-profile {
+  animation: slideInFromRight 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }

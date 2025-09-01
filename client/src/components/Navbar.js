@@ -27,6 +27,7 @@ export default function Navbar() {
           <ul className={`navbar-menu ${menuOpen ? 'mobile-menu-open' : ''}`}>
             <li><Link to="/" onClick={() => setMenuOpen(false)}>HOME</Link></li>
             <li><Link to="/qr" onClick={() => setMenuOpen(false)}>QR</Link></li>
+            <li><Link to="/demo" onClick={() => setMenuOpen(false)}>DEMO</Link></li>
           </ul>
         )}
 

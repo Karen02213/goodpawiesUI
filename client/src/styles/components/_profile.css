@@ -111,50 +111,96 @@
    Profile Page Styles
    ========================================================================== */
 
-/* Main Profile Container */
+/* Profile Page Layout - Following pet-detail-page structure */
 .profile-page-container {
-  max-width: 600px;
-  margin: 50px auto;
-  padding: var(--spacing-xl);
-  border: 1px solid var(--color-border-light);
-  border-radius: var(--border-radius-xl);
-  text-align: center;
-  background: var(--color-bg-primary);
-  box-shadow: var(--shadow-md);
+  padding: var(--spacing-lg);
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 95%;
 }
 
-/* User Info Card */
-.profile-user-card {
-  margin-bottom: 30px;
-  padding: var(--spacing-lg);
+.profile-page-container .container {
   background: var(--color-bg-secondary);
-  border-radius: var(--border-radius-lg);
+  border-radius: var(--border-radius-xl);
+  padding: 3rem;
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  text-align: center;
+}
+
+/* User Info Card - Following pet-info-card layout */
+.profile-user-card {
+  background: var(--color-bg-primary);
+  border-radius: var(--border-radius-xl);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-md);
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 2rem;
+  align-items: center;
+  margin-bottom: 40px;
+  max-width: 100%;
+  text-align: left;
+}
+
+.profile-user-image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .profile-user-avatar {
-  width: 100px;
-  height: 100px;
+  width: 150px;
+  height: 150px;
   border-radius: var(--border-radius-full);
   object-fit: cover;
-  border: 2px solid var(--color-border-light);
-  margin-bottom: var(--spacing-md);
+  border: 4px solid var(--color-primary);
+  box-shadow: var(--shadow-lg);
   transition: transform var(--transition-base);
+  margin-bottom: 0;
 }
 
 .profile-user-avatar:hover {
   transform: scale(1.05);
 }
 
+.profile-user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 .profile-user-name {
-  font-size: var(--font-size-2xl);
+  font-size: var(--font-size-3xl);
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
-  margin: var(--spacing-sm) 0;
+  margin: 0 0 1rem 0;
+  border-bottom: 2px solid var(--color-primary);
+  padding-bottom: 0.5rem;
 }
 
 .profile-user-info {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  color: var(--color-text-primary);
+  margin: 0;
+  font-size: var(--font-size-base);
+}
+
+.profile-user-info .label {
+  font-weight: var(--font-weight-semibold);
   color: var(--color-text-secondary);
-  margin: var(--spacing-xs) 0;
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.profile-user-info .value {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-base);
 }
 
 /* Pets Section */
@@ -185,10 +231,11 @@
 /* Pets Grid */
 .profile-pets-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: var(--spacing-lg);
-  padding: var(--spacing-lg) 0;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 2.5rem;
+  padding: 2rem 0;
   justify-items: center;
+  max-width: 100%;
 }
 
 /* Pet Card */
@@ -200,36 +247,59 @@
   color: var(--color-text-primary);
   transition: all var(--transition-base);
   cursor: pointer;
-  padding: var(--spacing-md);
-  border-radius: var(--border-radius-lg);
+  padding: 1.5rem;
+  border-radius: var(--border-radius-xl);
   background-color: var(--color-bg-secondary);
   border: 2px solid transparent;
-  min-width: 100px;
+  min-width: 180px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
 .profile-pet-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-8px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
   border-color: var(--color-accent);
   text-decoration: none;
   color: var(--color-text-primary);
 }
 
 .profile-pet-image-container {
-  margin-bottom: var(--spacing-md);
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.profile-pet-image-container::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: var(--border-radius-full);
+  background: linear-gradient(45deg, var(--color-primary), var(--color-secondary));
+  opacity: 0;
+  transition: opacity var(--transition-base);
+  z-index: -1;
+}
+
+.profile-pet-card:hover .profile-pet-image-container::before {
+  opacity: 0.2;
 }
 
 .profile-pet-image {
-  width: 80px;
-  height: 80px;
+  width: 120px;
+  height: 120px;
   border-radius: var(--border-radius-full);
   object-fit: cover;
-  border: 3px solid var(--color-accent);
-  box-shadow: var(--shadow-sm);
+  border: 4px solid var(--color-accent);
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-base);
+}
+
+.profile-pet-card:hover .profile-pet-image {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-lg);
 }
 
 .profile-pet-name {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-base);
   font-weight: var(--font-weight-bold);
   margin-bottom: var(--spacing-xs);
   text-align: center;
@@ -237,9 +307,11 @@
 }
 
 .profile-pet-type {
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
   text-align: center;
+  text-transform: capitalize;
+  font-weight: var(--font-weight-medium);
 }
 
 /* Add Pet Card */
@@ -251,29 +323,38 @@
   color: var(--color-text-secondary);
   transition: all var(--transition-base);
   cursor: pointer;
-  padding: var(--spacing-md);
-  border-radius: var(--border-radius-lg);
+  padding: 1.5rem;
+  border-radius: var(--border-radius-xl);
   background-color: var(--color-bg-secondary);
   border: 2px dashed var(--color-border-light);
-  min-width: 100px;
+  min-width: 180px;
   text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
 .profile-add-pet-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-8px);
   color: var(--color-accent);
   border-color: var(--color-accent);
   text-decoration: none;
+  background-color: rgba(var(--color-accent-rgb), 0.05);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
 }
 
 .profile-add-pet-icon {
-  font-size: 40px;
-  margin-bottom: var(--spacing-sm);
+  font-size: 60px;
+  margin-bottom: 1rem;
   color: var(--color-accent);
+  font-weight: var(--font-weight-light);
+  transition: transform var(--transition-base);
+}
+
+.profile-add-pet-card:hover .profile-add-pet-icon {
+  transform: scale(1.1);
 }
 
 .profile-add-pet-text {
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-base);
   font-weight: var(--font-weight-medium);
 }
 
@@ -313,6 +394,26 @@
 }
 
 /* Mobile Responsive */
+@media screen and (max-width: 1024px) {
+  .profile-page-container {
+    max-width: 95%;
+  }
+  
+  .profile-page-container .container {
+    padding: 2.5rem;
+  }
+
+  .profile-pets-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 2rem;
+  }
+  
+  .profile-user-card {
+    grid-template-columns: 180px 1fr;
+    gap: 1.5rem;
+  }
+}
+
 @media screen and (max-width: 768px) {
   .profile-avatar-image {
     width: 32px;
@@ -337,23 +438,50 @@
   }
 
   .profile-page-container {
-    margin: var(--spacing-lg) auto;
-    padding: var(--spacing-lg);
+    margin: 1rem auto;
+    padding: 2rem;
+    width: 98%;
+  }
+  
+  .profile-page-container .container {
+    padding: 2rem;
+  }
+
+  .profile-user-card {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 1.5rem;
   }
 
   .profile-user-avatar {
-    width: 80px;
-    height: 80px;
+    width: 120px;
+    height: 120px;
+  }
+  
+  .profile-user-info {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 0.3rem;
   }
 
   .profile-pets-grid {
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: var(--spacing-md);
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1.5rem;
   }
 
   .profile-pet-image {
-    width: 60px;
-    height: 60px;
+    width: 100px;
+    height: 100px;
+  }
+
+  .profile-add-pet-icon {
+    font-size: 50px;
+  }
+
+  .profile-pet-card,
+  .profile-add-pet-card {
+    min-width: 140px;
+    padding: 1rem;
   }
 }
 

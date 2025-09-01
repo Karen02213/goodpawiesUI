@@ -7,10 +7,40 @@
   --color-primary: #f1889b;
   --color-primary-dark: #e06b85;
   --color-primary-light: #f5a3b5;
-  --color-secondary: #00bcd4;
-  --color-secondary-dark: #0097a7;
-  --color-accent: #007bff;
-  --color-accent-dark: #0056b3;
+  --color-secondary: #667eea;           /* Material Blue 500 */
+  --color-secondary-dark: #764ba2;      /* Material Blue 800 */
+  --color-accent: #f093fb;              /* Material Orange 500 */
+  --color-accent-dark: #f5576c;         /* Material Orange 800 */
+
+  /* RGB Color Values (for rgba usage) */
+  --color-primary-rgb: 241, 136, 155;
+  --color-secondary-rgb: 33, 150, 243;
+  --color-accent-rgb: 199, 16, 255;
+  --color-success-rgb: 40, 167, 69;
+  --color-warning-rgb: 255, 193, 7;
+  --color-danger-rgb: 220, 53, 69;
+  
+  /* Additional color variants used in legacy files */
+  --color-blue-500: #2196f3;
+  --color-blue-600: #1976d2;
+  --color-blue-700: #1565c0;
+  --color-blue-800: #0d47a1;
+  --color-blue-bootstrap: #007bff;
+  --color-blue-bootstrap-dark: #0056b3;
+  --color-gray-50: #fafafa;
+  --color-gray-100: #f5f5f5;
+  --color-gray-200: #eeeeee;
+  --color-gray-300: #e0e0e0;
+  --color-gray-400: #bdbdbd;
+  --color-gray-500: #9e9e9e;
+  --color-gray-600: #757575;
+  --color-gray-700: #616161;
+  --color-gray-800: #424242;
+  --color-gray-900: #212121;
+  
+  /* Additional warning/amber colors */
+  --color-warning-text: #856404;
+  --color-warning-border: #ffeaa7;
   
   /* Text Colors */
   --color-text-primary: #333333;
@@ -114,4 +144,19 @@
   --container-lg: 960px;
   --container-xl: 1140px;
   --container-2xl: 1320px;
+  
+  /* Additional frequently used values from legacy files */
+  --width-qr-code: 300px;
+  --height-qr-code: 300px;
+  --width-pet-avatar: 150px;
+  --height-pet-avatar: 150px;
+  --width-pet-avatar-sm: 120px;
+  --height-pet-avatar-sm: 120px;
+  --width-nav-avatar: 38px;
+  --height-nav-avatar: 38px;
+  --min-height-touch: 44px;
+  --min-height-button-sm: 36px;
+  --min-height-button-lg: 52px;
+  --min-height-button-xl: 60px;
+  --min-height-input: 50px;
 }

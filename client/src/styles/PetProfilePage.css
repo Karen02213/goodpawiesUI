@@ -1,38 +1,38 @@
 
 .pet-profile-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px;
+  background: var(--gradient-primary);
+  padding: var(--spacing-xl);
 }
 
 .pet-profile-page .container {
-  max-width: 800px;
+  max-width: var(--container-md);
   margin: 0 auto;
-  background: white;
-  border-radius: 20px;
+  background: var(--color-bg-primary);
+  border-radius: var(--border-radius-3xl);
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-2xl);
 }
 
 .pet-profile-header {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  color: white;
-  padding: 40px 30px;
+  background: var(--gradient-secondary);
+  color: var(--color-text-light);
+  padding: var(--spacing-3xl) var(--spacing-2xl);
   text-align: center;
   position: relative;
 }
 
 .pet-image-section {
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-xl);
 }
 
 .pet-profile-image {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
+  width: var(--width-pet-avatar);
+  height: var(--height-pet-avatar);
+  border-radius: var(--border-radius-full);
   object-fit: cover;
-  border: 5px solid white;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  border: 5px solid var(--color-text-light);
+  box-shadow: var(--shadow-xl);
 }
 
 .pet-basic-info {
@@ -41,47 +41,47 @@
 
 .pet-name {
   font-size: 2.5rem;
-  margin: 0 0 10px 0;
-  font-weight: bold;
+  margin: 0 0 var(--spacing-md) 0;
+  font-weight: var(--font-weight-bold);
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .pet-type-breed {
-  font-size: 1.3rem;
+  font-size: var(--font-size-xl);
   opacity: 0.9;
-  font-weight: 300;
+  font-weight: var(--font-weight-light);
 }
 
 .pet-details-grid {
-  padding: 30px;
+  padding: var(--spacing-2xl);
   display: grid;
-  gap: 20px;
+  gap: var(--spacing-xl);
 }
 
 .detail-card {
-  background: #f8f9fa;
-  border-radius: 15px;
-  padding: 25px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e9ecef;
+  background: var(--color-bg-secondary);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border-light);
 }
 
 .detail-card h3 {
-  margin: 0 0 15px 0;
-  color: #333;
-  font-size: 1.3rem;
-  font-weight: 600;
+  margin: 0 0 var(--spacing-lg) 0;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
 }
 
 .pet-description {
-  color: #666;
+  color: var(--color-text-secondary);
   line-height: 1.6;
-  font-size: 1rem;
+  font-size: var(--font-size-base);
   margin: 0;
 }
 
 .no-description {
-  color: #999;
+  color: var(--color-text-muted);
   font-style: italic;
   margin: 0;
 }
@@ -89,15 +89,15 @@
 .info-list {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: var(--spacing-lg);
 }
 
 .info-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid #e9ecef;
+  padding: var(--spacing-md) 0;
+  border-bottom: 1px solid var(--color-border-light);
 }
 
 .info-item:last-child {
@@ -105,17 +105,17 @@
 }
 
 .info-label {
-  font-weight: 600;
-  color: #555;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
 }
 
 .info-value {
-  color: #333;
-  font-weight: 400;
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-normal);
 }
 
 .owner-card {
-  background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+  background: var(--gradient-tertiary);
   border: none;
 }
 
@@ -124,51 +124,51 @@
 }
 
 .owner-name {
-  font-size: 1.3rem;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 5px;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-xs);
 }
 
 .owner-username {
-  color: #666;
-  font-size: 1rem;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
 }
 
 .contact-section {
-  padding: 0 30px 30px;
+  padding: 0 var(--spacing-2xl) var(--spacing-2xl);
 }
 
 .contact-card {
-  background: #fff3cd;
-  border: 2px solid #ffeaa7;
-  border-radius: 15px;
-  padding: 25px;
+  background: var(--color-warning);
+  border: 2px solid var(--color-warning-border);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-xl);
   text-align: center;
 }
 
 .contact-card h3 {
-  color: #856404;
-  margin: 0 0 15px 0;
-  font-size: 1.4rem;
+  color: var(--color-warning-text);
+  margin: 0 0 var(--spacing-lg) 0;
+  font-size: var(--font-size-xl);
 }
 
 .contact-card p {
-  color: #856404;
-  margin: 0 0 15px 0;
+  color: var(--color-warning-text);
+  margin: 0 0 var(--spacing-lg) 0;
   line-height: 1.6;
 }
 
 .contact-info {
-  background: white;
-  border-radius: 10px;
-  padding: 20px;
-  margin-top: 15px;
+  background: var(--color-bg-primary);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-xl);
+  margin-top: var(--spacing-lg);
 }
 
 .contact-info p {
-  margin: 0 0 10px 0;
-  color: #333;
+  margin: 0 0 var(--spacing-md) 0;
+  color: var(--color-text-primary);
 }
 
 .contact-info p:last-child {
@@ -176,22 +176,22 @@
 }
 
 .contact-note {
-  font-size: 0.9rem;
-  color: #666 !important;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary) !important;
   font-style: italic;
 }
 
 .footer-section {
-  background: #f8f9fa;
-  padding: 20px 30px;
+  background: var(--color-bg-secondary);
+  padding: var(--spacing-xl) var(--spacing-2xl);
   text-align: center;
-  border-top: 1px solid #e9ecef;
+  border-top: 1px solid var(--color-border-light);
 }
 
 .footer-section p {
   margin: 0;
-  color: #666;
-  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
 }
 
 .loading,
@@ -201,80 +201,80 @@
   justify-content: center;
   min-height: 60vh;
   text-align: center;
-  padding: 40px;
+  padding: var(--spacing-3xl);
 }
 
 .loading {
-  color: white;
-  font-size: 1.2rem;
+  color: var(--color-text-light);
+  font-size: var(--font-size-lg);
   font-style: italic;
 }
 
 .error {
-  background: white;
-  border-radius: 20px;
+  background: var(--color-bg-primary);
+  border-radius: var(--border-radius-3xl);
   max-width: 500px;
   margin: 0 auto;
   flex-direction: column;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-2xl);
 }
 
 .error h2 {
-  color: #dc3545;
-  margin: 0 0 15px 0;
-  font-size: 2rem;
+  color: var(--color-danger);
+  margin: 0 0 var(--spacing-lg) 0;
+  font-size: var(--font-size-4xl);
 }
 
 .error p {
-  color: #666;
+  color: var(--color-text-secondary);
   margin: 0;
-  font-size: 1.1rem;
+  font-size: var(--font-size-lg);
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
   .pet-profile-page {
-    padding: 10px;
+    padding: var(--spacing-md);
   }
 
   .pet-profile-header {
-    padding: 30px 20px;
+    padding: var(--spacing-2xl) var(--spacing-xl);
   }
 
   .pet-profile-image {
-    width: 120px;
-    height: 120px;
+    width: var(--width-pet-avatar-sm);
+    height: var(--height-pet-avatar-sm);
   }
 
   .pet-name {
-    font-size: 2rem;
+    font-size: var(--font-size-4xl);
   }
 
   .pet-type-breed {
-    font-size: 1.1rem;
+    font-size: var(--font-size-lg);
   }
 
   .pet-details-grid {
-    padding: 20px;
-    gap: 15px;
+    padding: var(--spacing-xl);
+    gap: var(--spacing-lg);
   }
 
   .detail-card {
-    padding: 20px;
+    padding: var(--spacing-xl);
   }
 
   .contact-section {
-    padding: 0 20px 20px;
+    padding: 0 var(--spacing-xl) var(--spacing-xl);
   }
 
   .footer-section {
-    padding: 15px 20px;
+    padding: var(--spacing-lg) var(--spacing-xl);
   }
 
   .info-item {
     flex-direction: column;
     align-items: flex-start;
-    gap: 5px;
+    gap: var(--spacing-xs);
   }
 }
 

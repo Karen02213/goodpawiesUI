@@ -79,23 +79,14 @@ export default function PasswordForm({ registerDataRef }) {
       <h2>Establecer Contraseña</h2>
       
       {error && (
-        <div style={{
-          backgroundColor: '#f8d7da',
-          border: '1px solid #f5c6cb',
-          color: '#721c24',
-          padding: '10px',
-          borderRadius: '5px',
-          marginBottom: '20px',
-          textAlign: 'center'
-        }}>
+        <div className="invalid-feedback" style={{ display: 'block', marginBottom: '1rem' }}>
           {error}
         </div>
       )}
       
 
         <div className="form-group">
-          <label>Contraseña:</label>
-          <div className="password-input-container">
+          <div className="form-floating">
             <input
               type={showPassword ? 'text' : 'password'}
               placeholder="Contraseña (mínimo 8 caracteres)"
@@ -103,13 +94,18 @@ export default function PasswordForm({ registerDataRef }) {
               onChange={(e) => setPassword(e.target.value)}
               disabled={loading}
               required
-              className="password-input"
+              className="form-control"
+              id="password"
             />
+            <label htmlFor="password">
+              <i className="material-icons">lock</i>
+              Contraseña (mínimo 8 caracteres)
+            </label>
             <button
               type="button"
               tabIndex={-1}
               onClick={() => setShowPassword((v) => !v)}
-              className="password-toggle-btn"
+              className="btn btn-link password-toggle"
               aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
             >
               {showPassword ? (
@@ -127,8 +123,7 @@ export default function PasswordForm({ registerDataRef }) {
           </div>
         </div>
         <div className="form-group">
-          <label>Confirmar Contraseña:</label>
-          <div className="password-input-container">
+          <div className="form-floating">
             <input
               type={showConfirm ? 'text' : 'password'}
               placeholder="Confirmar Contraseña"
@@ -136,13 +131,18 @@ export default function PasswordForm({ registerDataRef }) {
               onChange={(e) => setConfirm(e.target.value)}
               disabled={loading}
               required
-              className="password-input"
+              className="form-control"
+              id="confirmPassword"
             />
+            <label htmlFor="confirmPassword">
+              <i className="material-icons">lock_outline</i>
+              Confirmar Contraseña
+            </label>
             <button
               type="button"
               tabIndex={-1}
               onClick={() => setShowConfirm((v) => !v)}
-              className="password-toggle-btn"
+              className="btn btn-link password-toggle"
               aria-label={showConfirm ? 'Ocultar confirmación' : 'Mostrar confirmación'}
             >
               {showConfirm ? (
@@ -164,16 +164,7 @@ export default function PasswordForm({ registerDataRef }) {
         <button
           type="button"
           disabled={loading}
-          style={{
-            flex: 1,
-            backgroundColor: '#6c757d',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '5px',
-            padding: '10px',
-            cursor: loading ? 'not-allowed' : 'pointer',
-            opacity: loading ? 0.8 : 1
-          }}
+          className="btn btn-secondary flex-fill waves-effect"
           onClick={() => {
             // Pass registration data back to previous form for prefill
             if (registerDataRef.current) {
@@ -183,22 +174,15 @@ export default function PasswordForm({ registerDataRef }) {
             }
           }}
         >
+          <i className="material-icons">arrow_back</i>
           Volver
         </button>
         <button 
           type="submit" 
           disabled={loading}
-          style={{
-            flex: 2,
-            backgroundColor: '#007bff',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '5px',
-            padding: '10px',
-            cursor: loading ? 'not-allowed' : 'pointer',
-            opacity: loading ? 0.8 : 1
-          }}
+          className="btn btn-primary flex-fill waves-effect"
         >
+          <i className="material-icons">check</i>
           {loading ? 'Registrando...' : 'Finalizar Registro'}
         </button>
       </div>

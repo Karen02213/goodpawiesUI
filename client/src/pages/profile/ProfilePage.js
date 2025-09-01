@@ -37,16 +37,34 @@ export default function ProfilePage() {
 
   return (
     <div className="profile-page-container">
-      <div className="profile-user-card">
-        <img 
-          src={"/default-avatar.png"} 
-          alt="Avatar" 
-          className="profile-user-avatar" 
-        />
-        <h2 className="profile-user-name">{user?.username}</h2>
-        <p className="profile-user-info">{user?.fullName}  {user?.fullSurname}</p>
-        <p className="profile-user-info">{user?.email}</p>
-      </div>
+      <div className="container">
+        <div className="profile-user-card">
+          <div className="profile-user-image">
+            <img 
+              src={"/default-avatar.png"} 
+              alt="Avatar" 
+              className="profile-user-avatar" 
+            />
+          </div>
+          
+          <div className="profile-user-details">
+            <h2 className="profile-user-name">{user?.username}</h2>
+            <div className="profile-user-info">
+              <span className="label">Nombre:</span>
+              <span className="value">{user?.fullName} {user?.fullSurname}</span>
+            </div>
+            <div className="profile-user-info">
+              <span className="label">Email:</span>
+              <span className="value">{user?.email}</span>
+            </div>
+            <div className="profile-user-info">
+              <span className="label">Miembro desde:</span>
+              <span className="value">
+                {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Fecha no disponible'}
+              </span>
+            </div>
+          </div>
+        </div>
       
       <div className="profile-pets-section">
         <h3 className="profile-pets-title">🐾 Mis Mascotas</h3>
@@ -97,6 +115,7 @@ export default function ProfilePage() {
             </Link>
           </div>
         )}
+      </div>
       </div>
     </div>
   );

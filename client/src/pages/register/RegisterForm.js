@@ -68,108 +68,153 @@ export default function RegisterForm({ registerDataRef }) {
       <h2>Registro de Usuario</h2>
 
       {errors.length > 0 && (
-        <div className="form-errors" style={{ color: 'red', marginBottom: 10 }}>
+        <div className="invalid-feedback" style={{ display: 'block', marginBottom: '1rem' }}>
           {errors.map((err, idx) => <div key={idx}>{err}</div>)}
         </div>
       )}
 
 
       <div className="form-group">
-        <label>Usuario:</label>
-        <input
-          type="text"
-          name="s_username"
-          placeholder="Usuario"
-          required
-          maxLength={30}
-          value={formData.s_username}
-          onChange={handleChange}
-        />
-      </div>
-
-      <div className="form-group">
-        <label>Nombre(s):</label>
-        <input
-          type="text"
-          name="s_full_name"
-          placeholder="Nombre(s)"
-          required
-          maxLength={30}
-          value={formData.s_full_name}
-          onChange={handleChange}
-        />
-      </div>
-
-      <div className="form-group">
-        <label>Apellidos:</label>
-        <input
-          type="text"
-          name="s_full_surname"
-          placeholder="Apellidos"
-          required
-          maxLength={30}
-          value={formData.s_full_surname}
-          onChange={handleChange}
-        />
-      </div>
-
-      <div className="form-group">
-        <label htmlFor="s_phone_number">Teléfono:</label>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px' }}>
-          <select
-            className="form-select"
-            id="s_phone_prefix_bootstrap"
-            name="s_phone_prefix"
-            value={formData.s_phone_prefix}
-            onChange={handleChange}
-            required
-            style={{ maxWidth: '110px', minWidth: '90px' }}
-          >
-            <option value="+52">🇲🇽 +52</option>
-            <option value="+1">🇺🇸 +1</option>
-            <option value="+44">🇬🇧 +44</option>
-            <option value="+34">🇪🇸 +34</option>
-            <option value="+57">🇨🇴 +57</option>
-            <option value="+55">🇧🇷 +55</option>
-            <option value="+91">🇮🇳 +91</option>
-            <option value="+81">🇯🇵 +81</option>
-            <option value="+49">🇩🇪 +49</option>
-            <option value="+33">🇫🇷 +33</option>
-          </select>
+        <div className="form-floating">
           <input
-            type="tel"
-            id="s_phone_number"
-            name="s_phone_number"
-            placeholder="Teléfono"
+            type="text"
+            name="s_username"
+            placeholder="Usuario"
             required
-            minLength={10}
-            maxLength={10}
-            value={formData.s_phone_number}
-            onChange={(e) => {
-              const onlyNums = e.target.value.replace(/\D/g, "");
-              setFormData(prev => ({ ...prev, s_phone_number: onlyNums }));
-            }}
+            maxLength={30}
+            value={formData.s_username}
+            onChange={handleChange}
             className="form-control"
-            style={{ flex: 1 }}
+            id="s_username"
           />
+          <label htmlFor="s_username">
+            <i className="material-icons">person</i>
+            Usuario
+          </label>
         </div>
       </div>
 
       <div className="form-group">
-        <label>Email:</label>
-        <input
-          type="email"
-          name="s_email"
-          placeholder="Email"
-          maxLength={50}
-          value={formData.s_email}
-          onChange={handleChange}
-        />  
+        <div className="form-floating">
+          <input
+            type="text"
+            name="s_full_name"
+            placeholder="Nombre(s)"
+            required
+            maxLength={30}
+            value={formData.s_full_name}
+            onChange={handleChange}
+            className="form-control"
+            id="s_full_name"
+          />
+          <label htmlFor="s_full_name">
+            <i className="material-icons">badge</i>
+            Nombre(s)
+          </label>
+        </div>
+      </div>
+
+      <div className="form-group">
+        <div className="form-floating">
+          <input
+            type="text"
+            name="s_full_surname"
+            placeholder="Apellidos"
+            required
+            maxLength={30}
+            value={formData.s_full_surname}
+            onChange={handleChange}
+            className="form-control"
+            id="s_full_surname"
+          />
+          <label htmlFor="s_full_surname">
+            <i className="material-icons">family_restroom</i>
+            Apellidos
+          </label>
+        </div>
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="s_phone_number" className="form-label">Teléfono:</label>
+        <div className="row">
+          <div className="col-4">
+            <div className="form-floating">
+              <select
+                className="form-control"
+                id="s_phone_prefix_bootstrap"
+                name="s_phone_prefix"
+                value={formData.s_phone_prefix}
+                onChange={handleChange}
+                required
+              >
+                <option value="+52">🇲🇽 +52</option>
+                <option value="+1">🇺🇸 +1</option>
+                <option value="+44">🇬🇧 +44</option>
+                <option value="+34">🇪🇸 +34</option>
+                <option value="+57">🇨🇴 +57</option>
+                <option value="+55">🇧🇷 +55</option>
+                <option value="+91">🇮🇳 +91</option>
+                <option value="+81">🇯🇵 +81</option>
+                <option value="+49">🇩🇪 +49</option>
+                <option value="+33">🇫🇷 +33</option>
+              </select>
+              <label htmlFor="s_phone_prefix_bootstrap">
+                <i className="material-icons">flag</i>
+                País
+              </label>
+            </div>
+          </div>
+          <div className="col-8">
+            <div className="form-floating">
+              <input
+                type="tel"
+                id="s_phone_number"
+                name="s_phone_number"
+                placeholder="Teléfono"
+                required
+                minLength={10}
+                maxLength={10}
+                value={formData.s_phone_number}
+                onChange={(e) => {
+                  const onlyNums = e.target.value.replace(/\D/g, "");
+                  setFormData(prev => ({ ...prev, s_phone_number: onlyNums }));
+                }}
+                className="form-control"
+              />
+              <label htmlFor="s_phone_number">
+                <i className="material-icons">phone</i>
+                Teléfono
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="form-group">
+        <div className="form-floating">
+          <input
+            type="email"
+            name="s_email"
+            placeholder="Email"
+            maxLength={50}
+            value={formData.s_email}
+            onChange={handleChange}
+            className="form-control"
+            id="s_email"
+          />
+          <label htmlFor="s_email">
+            <i className="material-icons">email</i>
+            Email
+          </label>
+        </div>
       </div>
 
   {/* ...existing code... */}
-      <div>
-        <button type="submit" style={{display:'flex'}}>Siguiente</button>
+      <div className="text-center">
+        <button type="submit" className="btn btn-primary btn-lg waves-effect">
+          <i className="material-icons">arrow_forward</i>
+          Siguiente
+        </button>
       </div>
     </form>
   );
