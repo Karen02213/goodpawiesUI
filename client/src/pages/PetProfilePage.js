@@ -1,35 +1,49 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import apiClient from "../utils/api";
+import { useError } from "../contexts/ErrorContext";
 
 export default function PetProfilePage() {
   const { petid } = useParams();
+  const navigate = useNavigate();
+  const { 
+    wrapApiCall 
+  } = useError();
   
   const [pet, setPet] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchPetProfile = async () => {
-      try {
-        setLoading(true);
-        const response = await apiClient.getPet(petid);
-        
-        if (response.success) {
-          setPet(response.data);
-        } else {
-          setError("Pet not found");
-        }
-      } catch (err) {
-        console.error("Error fetching pet profile:", err);
-        setError("Error loading pet profile");
-      } finally {
+    const fetchPetProfile = wrapApiCall(async () => {
+      setLoading(true);
+      const response = await apiClient.getPet(petid);
+      
+      if (response.success) {
+        setPet(response.data);
+        setError(null);
+      } else {
+        setError("Pet not found");
+        // Navigate to error page with specific error
+        navigate('/error', { 
+          state: { 
+            error: { 
+              status: 404, 
+              message: "The pet profile you're looking for doesn't exist." 
+            } 
+          } 
+        });
+      }
+      setLoading(false);
+    }, {
+      onError: (processedError) => {
+        setError(processedError.message);
         setLoading(false);
       }
-    };
+    });
 
     fetchPetProfile();
-  }, [petid]);
+  }, [petid, navigate, wrapApiCall]);
 
   if (loading) {
     return (
@@ -52,7 +66,7 @@ export default function PetProfilePage() {
 
   return (
     <div className="pet-profile-page">
-      <div className="container">
+      <div className="detail-card container">
         <div className="pet-profile-header">
           <div className="pet-image-section">
             <img 
@@ -68,39 +82,60 @@ export default function PetProfilePage() {
             </div>
           </div>
         </div>
-
+        
         <div className="pet-details-grid">
+          
           <div className="detail-card">
-            <h3>About {pet.name}</h3>
+            <h3>Meet {pet.name} - A Special Story</h3>
             {pet.description ? (
-              <p className="pet-description">{pet.description}</p>
+              <p className="pet-description">"{pet.description}"</p>
             ) : (
-              <p className="no-description">No description available</p>
+              <p className="no-description">Every pet has a story waiting to be told...</p>
             )}
           </div>
 
           <div className="detail-card">
-            <h3>Pet Information</h3>
+            <h3>What Makes {pet.name} Unique</h3>
             <div className="info-list">
-              <div className="info-item">
-                <span className="info-label">Type:</span>
-                <span className="info-value">{pet.type}</span>
+              <div className="pet-description">
+                <span className="info-label">Species</span>
+                <span className="info">{pet.type}</span>
               </div>
-              <div className="info-item">
-                <span className="info-label">Breed:</span>
-                <span className="info-value">{pet.breed}</span>
+              <div className="pet-description">
+                <span className="info-label">Breed</span>
+                <span className="info">{pet.breed}</span>
               </div>
-              <div className="info-item">
-                <span className="info-label">Profile Created:</span>
-                <span className="info-value">
-                  {new Date(pet.createdAt).toLocaleDateString()}
+              <div className="pet-description">
+                <span className="info-label">Member Since</span>
+                <span className="info">
+                  {new Date(pet.createdAt).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                  })}
                 </span>
               </div>
             </div>
           </div>
 
+        <div className="contact-section">
+          <div className="contact-card">
+            <h3>Have You Seen {pet.name}?</h3>
+            <p>
+              <strong>URGENT:</strong> If you found {pet.name}, you can be the hero who reunites them with their loving family! 
+              Every minute counts when a beloved pet is missing. 🏠💕
+            </p>
+            <div className="contact-info">
+              <p><strong>🔍 Owner Looking For:</strong> {pet.owner.fullName} {pet.owner.fullSurname}</p>
+              <p className="contact-note">
+                ⚡ <strong>Quick Action Needed:</strong> Contact local animal services immediately or post on community boards with this pet's information. 
+                Your help could make all the difference in bringing {pet.name} home safely!
+              </p>
+            </div>
+          </div>
+        </div>
           <div className="detail-card owner-card">
-            <h3>Owner Information</h3>
+            <h3>Beloved Family Member Of</h3>
             <div className="owner-info">
               <div className="owner-name">
                 {pet.owner.fullName} {pet.owner.fullSurname}
@@ -112,27 +147,10 @@ export default function PetProfilePage() {
           </div>
         </div>
 
-        <div className="contact-section">
-          <div className="contact-card">
-            <h3>Found this pet?</h3>
-            <p>
-              If you found {pet.name}, please contact their owner. 
-              This QR code helps reunite lost pets with their families.
-            </p>
-            <div className="contact-info">
-              <p><strong>Owner:</strong> {pet.owner.fullName} {pet.owner.fullSurname}</p>
-              <p className="contact-note">
-                Contact information may be available through local animal services 
-                or by posting on community boards with this pet's information.
-              </p>
-            </div>
-          </div>
-        </div>
-
         <div className="footer-section">
           <p>
-            This profile was created with ❤️ by GoodPawies - 
-            helping keep pets and families together.
+            💝 This profile was lovingly created with GoodPawies - 
+            where every pet matters and every reunion story begins ✨
           </p>
         </div>
       </div>

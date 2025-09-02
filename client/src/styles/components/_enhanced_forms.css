@@ -408,6 +408,13 @@
 .form-check-input:checked {
   background-color: var(--color-primary);
   border-color: var(--color-primary);
+
+}
+
+.form-check-input[type="checkbox"] {
+  border-radius: var(--border-radius-sm);
+  opacity: 1 !important;
+  position: relative;
 }
 
 .form-check-label {
@@ -531,7 +538,7 @@
    ========================================================================== */
 
 .form-container {
-  max-width: 500px;
+  max-width: 600px;
   margin: var(--spacing-2xl) auto;
   padding: var(--spacing-xl);
   border-radius: var(--border-radius-xl);

@@ -337,7 +337,7 @@ function RegisterPage() {
           </div>
 
           <div className="row">
-            <div className="col-md-6">
+            <div className="col-md-3">
               <div className="form-check">
                 <input
                   type="checkbox"
@@ -354,7 +354,7 @@ function RegisterPage() {
               </div>
             </div>
 
-            <div className="col-md-6">
+            <div className="col-md-3">
               <div className="form-check">
                 <input
                   type="checkbox"

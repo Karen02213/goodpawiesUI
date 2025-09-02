@@ -2,38 +2,40 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../utils/auth";
 import apiClient from "../../utils/api";
+import { useError } from "../../contexts/ErrorContext";
 
 export default function ProfilePage() {
   const { user } = useAuth();
+  const { wrapApiCall } = useError();
   const [pets, setPets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchUserPets = async () => {
-      if (!user?.id) return;
+    if (!user?.id) return;
+    
+    const fetchUserPets = wrapApiCall(async () => {
+      setLoading(true);
+      const response = await apiClient.getUserPets(user.id);
       
-      try {
-        setLoading(true);
-        const response = await apiClient.getUserPets(user.id);
-        
-        console.log('API Response:', response); // Debug log
-        
-        if (response.success) {
-          setPets(response.data?.items || []);
-        } else {
-          setError("Error loading pets");
-        }
-      } catch (err) {
-        console.error("Error fetching pets:", err);
+      console.log('API Response:', response); // Debug log
+      
+      if (response.success) {
+        setPets(response.data?.items || []);
+        setError(null);
+      } else {
         setError("Error loading pets");
-      } finally {
+      }
+      setLoading(false);
+    }, {
+      onError: (processedError) => {
+        setError(processedError.message);
         setLoading(false);
       }
-    };
+    });
 
     fetchUserPets();
-  }, [user]);
+  }, [user, wrapApiCall]);
 
   return (
     <div className="profile-page-container">

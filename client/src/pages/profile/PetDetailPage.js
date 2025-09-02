@@ -2,60 +2,78 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../utils/auth";
 import apiClient from "../../utils/api";
+import { useError } from "../../contexts/ErrorContext";
+import ModalContainer from "../../components/ModalContainer";
 
 export default function PetDetailPage() {
   const { uid, petid } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { 
+    modals, 
+    hideModal, 
+    showNotImplemented, 
+    showDeleteConfirm,
+    showError,
+    wrapApiCall
+  } = useError();
   
   const [pet, setPet] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deleting, setDeleting] = useState(false);
 
   // Check if current user owns this pet
   const isOwner = user && user.id === parseInt(uid);
 
   useEffect(() => {
-    const fetchPetDetails = async () => {
-      try {
-        setLoading(true);
-        const response = await apiClient.getPet(petid);
-        
-        if (response.success) {
-          setPet(response.data);
-        } else {
-          setError("Pet not found");
-        }
-      } catch (err) {
-        console.error("Error fetching pet details:", err);
-        setError("Error loading pet details");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPetDetails();
-  }, [petid]);
-
-  const handleDeletePet = async () => {
-    try {
-      setDeleting(true);
-      const response = await apiClient.deletePet(petid);
+    const fetchPetDetails = wrapApiCall(async () => {
+      setLoading(true);
+      const response = await apiClient.getPet(petid);
       
       if (response.success) {
-        navigate(`/perfil`);
+        setPet(response.data);
+        setError(null);
       } else {
-        setError("Error deleting pet");
+        setError("Pet not found");
       }
-    } catch (err) {
-      console.error("Error deleting pet:", err);
-      setError("Error deleting pet");
-    } finally {
-      setDeleting(false);
-      setShowDeleteModal(false);
-    }
+      setLoading(false);
+    }, {
+      onError: (processedError) => {
+        setError(processedError.message);
+        setLoading(false);
+      }
+    });
+
+    fetchPetDetails();
+  }, [petid, wrapApiCall]);
+
+  const handleDeletePet = () => {
+    showDeleteConfirm(
+      `Delete ${pet?.name}?`,
+      `Are you sure you want to delete ${pet?.name}? This action cannot be undone.`,
+      async () => {
+        const deleteApiCall = wrapApiCall(async () => {
+          const response = await apiClient.deletePet(petid);
+          
+          if (response.success) {
+            // Navigate immediately after successful deletion
+            navigate('/perfil', { replace: true });
+          } else {
+            showError('Delete Failed', 'Unable to delete pet. Please try again.');
+          }
+        }, {
+          onError: () => {
+            showError('Delete Failed', 'An error occurred while deleting the pet.');
+          }
+        });
+        
+        deleteApiCall();
+      }
+    );
+  };
+
+  const handleEditPet = () => {
+    showNotImplemented('Pet editing');
   };
 
   if (loading) {
@@ -163,10 +181,7 @@ export default function PetDetailPage() {
                   <p>Update {pet.name}'s information</p>
                   <button 
                     className="btn btn-secondary"
-                    onClick={() => {
-                      // TODO: Implement edit functionality
-                      alert("Edit functionality coming soon!");
-                    }}
+                    onClick={handleEditPet}
                   >
                     Edit Pet
                   </button>
@@ -177,7 +192,7 @@ export default function PetDetailPage() {
                   <p>Permanently remove {pet.name} from your profile</p>
                   <button 
                     className="btn btn-danger"
-                    onClick={() => setShowDeleteModal(true)}
+                    onClick={handleDeletePet}
                   >
                     Delete Pet
                   </button>
@@ -187,34 +202,8 @@ export default function PetDetailPage() {
           </div>
         </div>
 
-        {/* Delete Confirmation Modal */}
-        {showDeleteModal && (
-          <div className="modal-overlay">
-            <div className="modal">
-              <h3>Delete {pet.name}?</h3>
-              <p>
-                Are you sure you want to delete {pet.name}? 
-                This action cannot be undone.
-              </p>
-              <div className="modal-actions">
-                <button 
-                  className="btn btn-secondary"
-                  onClick={() => setShowDeleteModal(false)}
-                  disabled={deleting}
-                >
-                  Cancel
-                </button>
-                <button 
-                  className="btn btn-danger"
-                  onClick={handleDeletePet}
-                  disabled={deleting}
-                >
-                  {deleting ? "Deleting..." : "Delete"}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Modal Container for this page */}
+        <ModalContainer modals={modals} onHideModal={hideModal} />
       </div>
     </div>
   );

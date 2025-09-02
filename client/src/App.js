@@ -10,13 +10,18 @@ import PetDetailPage from "./pages/profile/PetDetailPage";
 import PetQrPage from "./pages/profile/PetQrPage";
 import PetProfilePage from "./pages/PetProfilePage";
 import DemoPage from "./pages/DemoPage";
+import ErrorPage from "./pages/ErrorPage";
 import ProtectedRoute from './components/ProtectedRoute';
 import RegisterPetForm from './pages/register/RegisterPetForm';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import ErrorBoundary from './components/ErrorBoundary';
+import ModalContainer from './components/ModalContainer';
+import { ErrorProvider, useError } from './contexts/ErrorContext';
 
-function App() {
+function AppContent() {
   const registerDataRef = useRef({});
+  const { modals, hideModal } = useError();
 
   return (
     <div className="app-container">
@@ -40,11 +45,28 @@ function App() {
           <Route path="/registrarse/password" element={<PasswordForm registerDataRef={registerDataRef} />} />
           <Route path="/pet/:petid" element={<PetProfilePage />} />
           <Route path="/demo" element={<DemoPage />} />
+          
+          {/* Error routes */}
+          <Route path="/error" element={<ErrorPage />} />
+          <Route path="*" element={<ErrorPage />} />
         </Routes>
       </main>
 
       <Footer />
+      
+      {/* Modal Container for global modals */}
+      <ModalContainer modals={modals} onHideModal={hideModal} />
     </div>
+  );
+}
+
+function App() {
+  return (
+    <ErrorBoundary>
+      <ErrorProvider>
+        <AppContent />
+      </ErrorProvider>
+    </ErrorBoundary>
   );
 }
 

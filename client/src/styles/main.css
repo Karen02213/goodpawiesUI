@@ -48,6 +48,7 @@
 @import './components/_modals.css';
 @import './components/_footer.css';
 @import './components/_states.css';
+@import './components/_error-modal.css';
 
 /* ==========================================================================
    5. PAGES - Page-specific styles
