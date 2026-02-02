@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../utils/auth';
+import { useAuth } from '../components/AuthProvider';
 
 function LandingPage() {
   const { isAuthenticated, loading } = useAuth();
   const navigate = useNavigate();
 
-  // Redirect to /chat if already logged in
+  // Redirect to /home if already logged in
   useEffect(() => {
     if (!loading && isAuthenticated) {
-      navigate('/chat', { replace: true });
+      navigate('/home', { replace: true });
     }
   }, [isAuthenticated, loading, navigate]);
 

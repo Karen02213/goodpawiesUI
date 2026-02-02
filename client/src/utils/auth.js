@@ -1,8 +1,18 @@
 // client/src/utils/auth.js - Client-side Authentication Helper
-import { useState, useEffect } from 'react';
+const normalizeApiBaseUrl = (url) => {
+  const fallback = 'http://localhost:5000/api';
+  if (!url || typeof url !== 'string') return fallback;
+
+  let normalized = url.trim().replace(/\/+$/, '');
+  if (!normalized.endsWith('/api')) {
+    normalized = `${normalized}/api`;
+  }
+  return normalized;
+};
+
 class AuthService {
   constructor() {
-    this.baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+    this.baseURL = normalizeApiBaseUrl(process.env.REACT_APP_API_URL);
     this.tokenKey = 'accessToken';
   }
 
@@ -241,81 +251,6 @@ class AuthService {
 const authService = new AuthService();
 
 export default authService;
-
-// React Hook for authentication
-export const useAuth = () => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      if (authService.isAuthenticated()) {
-        const result = await authService.getCurrentUser();
-        if (result.success) {
-          setUser(result.user);
-          setIsAuthenticated(true);
-        } else {
-          authService.removeToken();
-          setIsAuthenticated(false);
-        }
-      } else {
-        setIsAuthenticated(false);
-      }
-      setLoading(false);
-    };
-
-    checkAuth();
-  }, []); // Remove location.pathname dependency
-
-  const login = async (identifier, password) => {
-    setLoading(true);
-    const result = await authService.login(identifier, password);
-    
-    if (result.success) {
-      setUser(result.user);
-      setIsAuthenticated(true);
-    }
-    
-    setLoading(false);
-    return result;
-  };
-
-  const register = async (userData) => {
-    setLoading(true);
-    const result = await authService.register(userData);
-    
-    if (result.success) {
-      setUser(result.user);
-      setIsAuthenticated(true);
-    }
-    
-    setLoading(false);
-    return result;
-  };
-
-  const logout = async () => {
-    try {
-      await authService.logout();
-      setUser(null);
-      setIsAuthenticated(false);
-      authService.removeToken(); // <-- Asegúrate de tener esto
-      sessionStorage.clear();
-    } catch (error) {
-      console.error('Error during logout:', error);
-    }
-  };
-
-  return {
-    user,
-    loading,
-    isAuthenticated,
-    login,
-    register,
-    logout,
-    authService,
-  };
-};
 
 // Example usage in React components:
 /*

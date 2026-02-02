@@ -211,7 +211,7 @@ export default function RegisterForm({ registerDataRef }) {
 
   {/* ...existing code... */}
       <div className="text-center">
-        <button type="submit" className="btn btn-primary btn-lg waves-effect">
+        <button type="submit" className="btn btn-primary btn-lg">
           <i className="material-icons">arrow_forward</i>
           Siguiente
         </button>

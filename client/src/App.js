@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
+import HomePage from './pages/HomePage';
 import ChatPage from './pages/ChatPage';
 import QrPage from './pages/QrPage';
 import LoginPage from './pages/login/LoginPage';
@@ -19,6 +20,7 @@ import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
 import ModalContainer from './components/ModalContainer';
 import { ErrorProvider, useError } from './contexts/ErrorContext';
+import { AuthProvider } from './components/AuthProvider';
 
 function AppContent() {
   const registerDataRef = useRef({});
@@ -34,6 +36,7 @@ function AppContent() {
           <Route path="/" element={<LandingPage />} />
           
           {/* Protected routes */}
+          <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
           <Route path="/chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
           <Route path="/perfil" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
           <Route path="/profile/:uid" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
@@ -67,9 +70,11 @@ function AppContent() {
 function App() {
   return (
     <ErrorBoundary>
-      <ErrorProvider>
-        <AppContent />
-      </ErrorProvider>
+      <AuthProvider>
+        <ErrorProvider>
+          <AppContent />
+        </ErrorProvider>
+      </AuthProvider>
     </ErrorBoundary>
   );
 }

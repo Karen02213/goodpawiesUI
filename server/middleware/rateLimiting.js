@@ -108,6 +108,7 @@ const createRateLimiter = (options = {}) => {
     keyGenerator,
     standardHeaders,
     legacyHeaders,
+    skip: (req) => req.method === 'OPTIONS',
   });
 };
 

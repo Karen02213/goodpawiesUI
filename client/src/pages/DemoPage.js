@@ -71,12 +71,12 @@ const DemoPage = () => {
           <div className="row">
             <div className="col-md-12">
               <div className="demo-buttons">
-                <button className="btn btn-primary waves-effect">Primario</button>
-                <button className="btn btn-secondary waves-effect">Secundario</button>
-                <button className="btn btn-success waves-effect">Éxito</button>
-                <button className="btn btn-warning waves-effect">Advertencia</button>
-                <button className="btn btn-danger waves-effect">Peligro</button>
-                <button className="btn btn-info waves-effect">Info</button>
+                <button className="btn btn-primary">Primario</button>
+                <button className="btn btn-secondary">Secundario</button>
+                <button className="btn btn-success">Éxito</button>
+                <button className="btn btn-warning">Advertencia</button>
+                <button className="btn btn-danger">Peligro</button>
+                <button className="btn btn-info">Info</button>
               </div>
               
               <div className="demo-buttons mt-3">
@@ -164,7 +164,7 @@ const DemoPage = () => {
                 </div>
 
                 <div className="text-center">
-                  <button type="submit" className="btn btn-primary btn-lg waves-effect">
+                  <button type="submit" className="btn btn-primary btn-lg">
                     <i className="material-icons">send</i>
                     Enviar Formulario
                   </button>

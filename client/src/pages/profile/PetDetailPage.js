@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../utils/auth";
+import { useAuth } from "../../components/AuthProvider";
 import apiClient from "../../utils/api";
 import { useError } from "../../contexts/ErrorContext";
 import ModalContainer from "../../components/ModalContainer";

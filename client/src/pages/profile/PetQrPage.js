@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
-import { useAuth } from "../../utils/auth";
+import { useAuth } from "../../components/AuthProvider";
 import apiClient from "../../utils/api";
 import QRCodeStyling from "qr-code-styling";
 

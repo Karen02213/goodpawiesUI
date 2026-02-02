@@ -1,10 +1,10 @@
 /* ==========================================================================
    Button Components
-   Using Materialize CSS for colors and Bootstrap structure
+   GoodPawies Custom Design System - Pure CSS Implementation
    ========================================================================== */
 
 /* ==========================================================================
-   Base Button Styles (Bootstrap compatible)
+   Base Button Styles
    ========================================================================== */
 
 .btn {
@@ -31,6 +31,37 @@
   min-height: 44px; /* Touch-friendly minimum */
 }
 
+/* ==========================================================================
+   Pure CSS Ripple Effect (replaces waves-effect)
+   ========================================================================== */
+.btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transform: translate(-50%, -50%);
+  transition: width 0.4s ease-out, height 0.4s ease-out, opacity 0.4s ease-out;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.btn:active::after {
+  width: 200%;
+  height: 200%;
+  opacity: 1;
+  transition: width 0s, height 0s, opacity 0s;
+}
+
+/* Active/Pressed State */
+.btn:active {
+  transform: scale(0.97);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
 .btn:disabled,
 .btn.disabled {
   opacity: 0.6;
@@ -45,10 +76,10 @@
 }
 
 /* ==========================================================================
-   Materialize-inspired Color Schemes
+   Button Variants
    ========================================================================== */
 
-/* Primary Buttons (Materialize Pink) */
+/* Primary Buttons */
 .btn-primary {
   background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   border-color: var(--color-primary);
@@ -64,10 +95,11 @@
 
 .btn-primary:active {
   background: var(--color-primary-dark);
-  transform: translateY(0);
+  transform: translateY(0) scale(0.97);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
-/* Secondary Buttons (Materialize Teal) */
+/* Secondary Buttons */
 .btn-secondary {
   background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-secondary-dark) 100%);
   border-color: var(--color-secondary);
@@ -75,13 +107,19 @@
 }
 
 .btn-secondary:hover {
-  background: linear-gradient(135deg, var(--color-secondary-dark) 0%, #00838f 100%);
+  background: linear-gradient(135deg, var(--color-secondary-dark) 0%, #5a4a8a 100%);
   border-color: var(--color-secondary-dark);
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
 }
 
-/* Success Buttons (Material Green) */
+.btn-secondary:active {
+  background: var(--color-secondary-dark);
+  transform: translateY(0) scale(0.97);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+/* Success Buttons */
 .btn-success {
   background: linear-gradient(135deg, var(--color-success) 0%, #388e3c 100%);
   border-color: var(--color-success);
@@ -95,11 +133,21 @@
   box-shadow: var(--shadow-lg);
 }
 
-/* Warning Buttons (Material Amber) */
+.btn-success:active {
+  background: #2e7d32;
+  transform: translateY(0) scale(0.97);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+/* Warning Buttons */
 .btn-warning {
   background: linear-gradient(135deg, var(--color-warning) 0%, #f57c00 100%);
   border-color: var(--color-warning);
   color: var(--color-text-primary);
+}
+
+.btn-warning::after {
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .btn-warning:hover {
@@ -109,7 +157,13 @@
   box-shadow: var(--shadow-lg);
 }
 
-/* Danger Buttons (Material Red) */
+.btn-warning:active {
+  background: #ef6c00;
+  transform: translateY(0) scale(0.97);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+/* Danger Buttons */
 .btn-danger {
   background: linear-gradient(135deg, var(--color-danger) 0%, #d32f2f 100%);
   border-color: var(--color-danger);
@@ -123,7 +177,13 @@
   box-shadow: var(--shadow-lg);
 }
 
-/* Info Buttons (Material Light Blue) */
+.btn-danger:active {
+  background: #c62828;
+  transform: translateY(0) scale(0.97);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+/* Info Buttons */
 .btn-info {
   background: linear-gradient(135deg, var(--color-info) 0%, var(--color-secondary-dark) 100%);
   border-color: var(--color-info);
@@ -135,6 +195,12 @@
   border-color: var(--color-secondary-dark);
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
+}
+
+.btn-info:active {
+  background: var(--color-secondary);
+  transform: translateY(0) scale(0.97);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
 /* Light Buttons */
@@ -169,10 +235,38 @@
    Outline Buttons
    ========================================================================== */
 
+/* Generic Outline Button (uses primary color) */
+.btn-outline {
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
+  background: transparent;
+}
+
+.btn-outline::after {
+  background: rgba(var(--color-primary-rgb), 0.3);
+}
+
+.btn-outline:hover {
+  background: var(--color-primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-outline:active {
+  background: var(--color-primary-dark);
+  transform: translateY(0) scale(0.97);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
 .btn-outline-primary {
   border: 2px solid var(--color-primary);
   color: var(--color-primary);
   background: transparent;
+}
+
+.btn-outline-primary::after {
+  background: rgba(var(--color-primary-rgb), 0.3);
 }
 
 .btn-outline-primary:hover {
@@ -182,10 +276,20 @@
   box-shadow: var(--shadow-md);
 }
 
+.btn-outline-primary:active {
+  background: var(--color-primary-dark);
+  transform: translateY(0) scale(0.97);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
 .btn-outline-secondary {
   border: 2px solid var(--color-secondary);
   color: var(--color-secondary);
   background: transparent;
+}
+
+.btn-outline-secondary::after {
+  background: rgba(var(--color-secondary-rgb), 0.3);
 }
 
 .btn-outline-secondary:hover {
@@ -193,6 +297,35 @@
   color: white;
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
+}
+
+.btn-outline-secondary:active {
+  background: var(--color-secondary-dark);
+  transform: translateY(0) scale(0.97);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.btn-outline-danger {
+  border: 2px solid var(--color-danger);
+  color: var(--color-danger);
+  background: transparent;
+}
+
+.btn-outline-danger::after {
+  background: rgba(var(--color-danger-rgb), 0.3);
+}
+
+.btn-outline-danger:hover {
+  background: var(--color-danger);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-outline-danger:active {
+  background: #c62828;
+  transform: translateY(0) scale(0.97);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
 /* ==========================================================================

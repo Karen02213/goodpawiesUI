@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../utils/auth';
+import { useAuth } from '../../components/AuthProvider';
 import { validatePassword } from '../../utils/validation';
 
 export default function PasswordForm({ registerDataRef }) {
@@ -164,7 +164,7 @@ export default function PasswordForm({ registerDataRef }) {
         <button
           type="button"
           disabled={loading}
-          className="btn btn-secondary flex-fill waves-effect"
+          className="btn btn-secondary flex-fill"
           onClick={() => {
             // Pass registration data back to previous form for prefill
             if (registerDataRef.current) {
@@ -180,7 +180,7 @@ export default function PasswordForm({ registerDataRef }) {
         <button 
           type="submit" 
           disabled={loading}
-          className="btn btn-primary flex-fill waves-effect"
+          className="btn btn-primary flex-fill"
         >
           <i className="material-icons">check</i>
           {loading ? 'Registrando...' : 'Finalizar Registro'}

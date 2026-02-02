@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import apiClient, { usePetDropdowns, usePetRegistration } from "../../utils/api";
-import { validatePetData } from "../../utils/validation";
+import { Link } from "react-router-dom";
+import { usePetDropdowns, usePetRegistration } from "../../utils/api";
 
 function RegisterPage() {
   const { breeds, petTypes, genders, sizes, loading: dropdownLoading, error: dropdownError } = usePetDropdowns();
@@ -375,7 +374,7 @@ function RegisterPage() {
           
 
           <div className="text-center">
-            <button type="submit" disabled={registrationLoading} className="btn btn-primary btn-lg waves-effect">
+            <button type="submit" disabled={registrationLoading} className="btn btn-primary btn-lg">
               <i className="material-icons">pets</i>
               {registrationLoading ? 'Registrando...' : 'Registrar Mascota'}
             </button>

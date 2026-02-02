@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../utils/auth";
+import { useAuth } from "../../components/AuthProvider";
 import apiClient from "../../utils/api";
 import { useError } from "../../contexts/ErrorContext";
 

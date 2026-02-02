@@ -2,9 +2,20 @@
 import { useState, useEffect } from 'react';
 import authService from './auth';
 
+const normalizeApiBaseUrl = (url) => {
+  const fallback = 'http://localhost:5000/api';
+  if (!url || typeof url !== 'string') return fallback;
+
+  let normalized = url.trim().replace(/\/+$/, '');
+  if (!normalized.endsWith('/api')) {
+    normalized = `${normalized}/api`;
+  }
+  return normalized;
+};
+
 class ApiClient {
   constructor() {
-    this.baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+    this.baseURL = normalizeApiBaseUrl(process.env.REACT_APP_API_URL);
   }
 
   // User API methods
@@ -123,6 +134,18 @@ class ApiClient {
     } catch (error) {
       return { success: false, error: 'NETWORK_ERROR' };
     }
+  }
+
+  // Chat API methods
+  async sendChatMessage(messages) {
+    return await authService.apiRequest('/chat', {
+      method: 'POST',
+      body: JSON.stringify({ messages }),
+    });
+  }
+
+  async getChatStatus() {
+    return await authService.apiRequest('/chat/status');
   }
 }
 
