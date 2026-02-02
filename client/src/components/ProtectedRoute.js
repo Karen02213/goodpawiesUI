@@ -8,13 +8,7 @@ function ProtectedRoute({ children }) {
 
   if (loading) {
     return (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '50vh',
-        fontSize: '1.2rem'
-      }}>
+      <div className="loading-screen">
         Cargando...
       </div>
     );

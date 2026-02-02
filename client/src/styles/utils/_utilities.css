@@ -208,3 +208,113 @@
   .dark\:bg-dark { background-color: var(--color-bg-dark); }
   .dark\:text-light { color: var(--color-text-light); }
 }
+
+/* ==========================================================================
+   Additional Text and Display Utilities
+   ========================================================================== */
+
+/* Font weight utilities */
+.font-normal { font-weight: var(--font-weight-normal); }
+.font-medium { font-weight: var(--font-weight-medium); }
+.font-semibold { font-weight: var(--font-weight-semibold); }
+.font-bold { font-weight: var(--font-weight-bold); }
+
+/* Font size utilities */
+.text-xs { font-size: var(--font-size-xs); }
+.text-sm { font-size: var(--font-size-sm); }
+.text-base { font-size: var(--font-size-base); }
+.text-lg { font-size: var(--font-size-lg); }
+.text-xl { font-size: var(--font-size-xl); }
+.text-2xl { font-size: var(--font-size-2xl); }
+.text-3xl { font-size: var(--font-size-3xl); }
+.text-4xl { font-size: var(--font-size-4xl); }
+
+/* Text color utilities */
+.text-primary { color: var(--color-primary); }
+.text-secondary { color: var(--color-text-secondary); }
+.text-muted { color: var(--color-text-muted); }
+.text-success { color: var(--color-success); }
+.text-danger { color: var(--color-danger); }
+.text-warning { color: var(--color-warning); }
+.text-info { color: var(--color-info); }
+
+/* Text decoration */
+.no-underline { text-decoration: none; }
+.underline { text-decoration: underline; }
+
+/* Vertical alignment */
+.align-baseline { vertical-align: baseline; }
+.align-top { vertical-align: top; }
+.align-middle { vertical-align: middle; }
+.align-bottom { vertical-align: bottom; }
+
+/* White space */
+.whitespace-nowrap { white-space: nowrap; }
+.whitespace-normal { white-space: normal; }
+
+/* ==========================================================================
+   Loading Screen Utility (for ProtectedRoute, etc.)
+   ========================================================================== */
+
+.loading-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+  font-size: var(--font-size-lg);
+  color: var(--color-text-secondary);
+}
+
+/* ==========================================================================
+   Form Button Row Utilities
+   ========================================================================== */
+
+.form-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+}
+
+.form-actions .btn {
+  flex: 1;
+}
+
+/* Forgot password link styling */
+.forgot-password-link {
+  font-size: var(--font-size-sm);
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-base);
+}
+
+.forgot-password-link:hover {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+}
+
+/* Register link styling */
+.register-link-text {
+  margin-top: var(--spacing-md);
+  text-align: center;
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+}
+
+.register-link-text a {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-bold);
+  text-decoration: none;
+}
+
+.register-link-text a:hover {
+  text-decoration: underline;
+}
+
+/* Textarea height utility */
+.textarea-md {
+  height: 100px;
+}
+
+.textarea-lg {
+  height: 150px;
+}

@@ -133,7 +133,7 @@ function RegisterPage() {
           <form onSubmit={handleSubmit} className="form-container">
           <h2>Registrar Nueva Mascota</h2>
           {(error || registrationError) && (
-            <div className="invalid-feedback" style={{ display: 'block', marginBottom: '1rem' }}>
+            <div className="invalid-feedback show">
               {error || registrationError}
             </div>
           )}
@@ -322,11 +322,10 @@ function RegisterPage() {
                 name="s_description"
                 value={petData.s_description}
                 onChange={handleChange}
-                className="form-control"
+                className="form-control textarea-md"
                 rows="3"
                 placeholder="Describe a tu mascota (opcional)"
                 id="s_description"
-                style={{ height: '100px' }}
               />
               <label htmlFor="s_description">
                 <i className="material-icons">description</i>

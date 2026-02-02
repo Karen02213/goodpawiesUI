@@ -78,13 +78,13 @@ function LoginPage() {
 
       {/* Success message after registration */}
       {showSuccess && (
-        <div className="valid-feedback" style={{ display: 'block', marginBottom: '1rem' }}>
+        <div className="valid-feedback show">
           ¡Usuario creado exitosamente! Ahora puedes iniciar sesión.
         </div>
       )}
 
       {error && (
-        <div className="invalid-feedback" style={{ display: 'block', marginBottom: '1rem' }}>
+        <div className="invalid-feedback show">
           {error}
         </div>
       )}
@@ -155,7 +155,7 @@ function LoginPage() {
             </button>
           </div>
           <div className="form-text text-end">
-            <Link to="" style={{ fontSize: '14px', color: 'var(--color-primary)' }}>
+            <Link to="" className="forgot-password-link">
               ¿Se te olvidó la contraseña?
             </Link>
           </div>
@@ -176,9 +176,9 @@ function LoginPage() {
           </button>
         </div>
       </form>
-      <div className="form-text text-center" style={{ marginTop: '1rem' }}>
+      <div className="register-link-text">
         <span>¿No tienes cuenta? </span>
-        <Link to="/registrarse" style={{ color: 'var(--color-primary)', fontWeight: 'bold' }}>
+        <Link to="/registrarse">
             Regístrate aquí
         </Link>
       </div>

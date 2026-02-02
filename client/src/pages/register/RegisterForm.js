@@ -68,7 +68,7 @@ export default function RegisterForm({ registerDataRef }) {
       <h2>Registro de Usuario</h2>
 
       {errors.length > 0 && (
-        <div className="invalid-feedback" style={{ display: 'block', marginBottom: '1rem' }}>
+        <div className="invalid-feedback show">
           {errors.map((err, idx) => <div key={idx}>{err}</div>)}
         </div>
       )}

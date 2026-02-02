@@ -1,4 +1,256 @@
-/* Footer Component Styles with Multi-Framework Integration */
+/* ==========================================================================
+   Footer Component Styles - Compact & Modern
+   ========================================================================== */
+
+.custom-footer {
+  margin-top: auto;
+  background: var(--color-bg-primary);
+  border-top: 1px solid var(--color-border-light);
+  color: var(--color-text-primary);
+}
+
+.custom-footer .container {
+  max-width: var(--container-xl);
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+.footer-content {
+  padding: var(--spacing-lg) 0;
+}
+
+.footer-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+}
+
+.footer-branding {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.footer-brand {
+  font-family: var(--font-family-secondary);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-lg);
+  color: var(--color-primary);
+}
+
+.footer-tagline {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.footer-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.social-links {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--border-radius-full);
+  border: 1px solid var(--color-border-light);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-secondary);
+  transition: all var(--transition-base);
+  cursor: pointer;
+}
+
+.social-link:hover {
+  color: var(--color-primary);
+  border-color: rgba(var(--color-primary-rgb), 0.4);
+  box-shadow: var(--shadow-sm);
+}
+
+.footer-bottom {
+  border-top: 1px solid var(--color-border-light);
+  padding: var(--spacing-sm) 0;
+  background: var(--color-bg-secondary);
+}
+
+.footer-bottom-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.footer-bottom-content p {
+  margin: 0;
+}
+
+.footer-bottom-links {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.footer-bottom-link {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 0;
+  font-size: var(--font-size-sm);
+  transition: color var(--transition-base);
+}
+
+.footer-bottom-link:hover {
+  color: var(--color-primary);
+}
+
+@media (max-width: 768px) {
+  .footer-main {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .footer-bottom-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}/* ==========================================================================
+   Footer Component Styles - Compact & Modern
+   ========================================================================== */
+
+.custom-footer {
+  margin-top: auto;
+  background: var(--color-bg-primary);
+  border-top: 1px solid var(--color-border-light);
+  color: var(--color-text-primary);
+}
+
+.custom-footer .container {
+  max-width: var(--container-xl);
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+.footer-content {
+  padding: var(--spacing-lg) 0;
+}
+
+.footer-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+}
+
+.footer-branding {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.footer-brand {
+  font-family: var(--font-family-secondary);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-lg);
+  color: var(--color-primary);
+}
+
+.footer-tagline {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.footer-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.social-links {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--border-radius-full);
+  border: 1px solid var(--color-border-light);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-secondary);
+  transition: all var(--transition-base);
+  cursor: pointer;
+}
+
+.social-link:hover {
+  color: var(--color-primary);
+  border-color: rgba(var(--color-primary-rgb), 0.4);
+  box-shadow: var(--shadow-sm);
+}
+
+.footer-bottom {
+  border-top: 1px solid var(--color-border-light);
+  padding: var(--spacing-sm) 0;
+  background: var(--color-bg-secondary);
+}
+
+.footer-bottom-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.footer-bottom-content p {
+  margin: 0;
+}
+
+.footer-bottom-links {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.footer-bottom-link {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 0;
+  font-size: var(--font-size-sm);
+  transition: color var(--transition-base);
+}
+
+.footer-bottom-link:hover {
+  color: var(--color-primary);
+}
+
+@media (max-width: 768px) {
+  .footer-main {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .footer-bottom-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}/* Footer Component Styles with Multi-Framework Integration */
 /* Using navbar color scheme and gradients */
 
 .custom-footer {

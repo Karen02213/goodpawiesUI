@@ -1,45 +1,14 @@
 /* ==========================================================================
-   Critical CSS - Above the fold content
+   GoodPawies UI - Build Entry Point
    ========================================================================== */
 
-/* These styles should be inlined for better performance */
+/*
+  This file exists for build tools that may need a separate entry point.
+  All styles are consolidated in main.css following ITCSS methodology.
+  
+  For development and production, import main.css via index.css.
+  This file can be used for extracting critical CSS if needed.
+*/
 
-/* Navbar - appears on every page */
-.navbar {
-  background-color: var(--color-primary);
-  color: var(--color-text-light);
-  padding: var(--spacing-sm) var(--spacing-xl);
-  box-shadow: var(--shadow-md);
-  position: sticky;
-  top: 0;
-  z-index: var(--z-index-sticky);
-}
-
-/* Loading states - shown while content loads */
-.loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 60vh;
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-lg);
-}
-
-/* Basic layout containers */
-.container {
-  width: 100%;
-  max-width: var(--container-xl);
-  margin: 0 auto;
-  padding: 0 var(--spacing-md);
-}
-
-/* Primary button styles - frequently used */
-.btn-primary {
-  background-color: var(--color-accent);
-  color: var(--color-text-light);
-  padding: var(--spacing-sm) var(--spacing-lg);
-  border: none;
-  border-radius: var(--border-radius-md);
-  cursor: pointer;
-  transition: all var(--transition-base);
-}
+/* Import main stylesheet - contains all ITCSS layers */
+@import './main.css';

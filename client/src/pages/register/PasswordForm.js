@@ -79,7 +79,7 @@ export default function PasswordForm({ registerDataRef }) {
       <h2>Establecer Contraseña</h2>
       
       {error && (
-        <div className="invalid-feedback" style={{ display: 'block', marginBottom: '1rem' }}>
+        <div className="invalid-feedback show">
           {error}
         </div>
       )}
@@ -160,7 +160,7 @@ export default function PasswordForm({ registerDataRef }) {
           </div>
         </div>
 
-      <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+      <div className="form-actions">
         <button
           type="button"
           disabled={loading}

@@ -46,13 +46,10 @@
    ========================================================================== */
 @import './components/_buttons.css';
 @import './components/_forms.css';
-@import './components/_enhanced_forms.css';
 @import './components/_navigation.css';
 @import './components/_profile.css';
 @import './components/_cards.css';
-@import './components/_enhanced_cards.css';
 @import './components/_modals.css';
-@import './components/_enhanced_modals.css';
 @import './components/_footer.css';
 @import './components/_states.css';
 @import './components/_error-modal.css';
@@ -73,10 +70,9 @@
 @import './utils/_responsive.css';
 
 /* ==========================================================================
-   Legacy App Styles (Temporary - to be refactored)
+   App Layout Structure
    ========================================================================== */
 
-/* App Layout Structure */
 .app-container {
   min-height: 100vh;
   display: flex;
@@ -89,56 +85,11 @@
   flex-direction: column;
 }
 
-/* App component specific styles */
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: var(--color-bg-dark);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: var(--color-text-light);
-}
-
-.App-link {
-  color: var(--color-info);
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 /* ==========================================================================
    Performance Optimizations
    ========================================================================== */
 
-/* Improve rendering performance */
-* {
-  will-change: auto;
-}
-
-/* GPU acceleration for transforms */
+/* GPU acceleration for interactive elements */
 .card-interactive,
 .action-card,
 .btn,
@@ -147,22 +98,14 @@
   backface-visibility: hidden;
 }
 
-/* Contain layout shifts */
+/* Contain layout shifts for images */
 .pet-profile-image,
 .pet-avatar,
 .avatar img {
   contain: layout style;
 }
 
-/* ==========================================================================
-   Critical CSS - Above the fold content
-   ========================================================================== */
-
 /* Ensure navbar renders immediately */
 .navbar {
   contain: layout style;
 }
-
-/* Font loading optimization */
-/* Poppins font will be loaded via Google Fonts or CDN */
-/* font-display: swap; will be handled by the font service */

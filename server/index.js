@@ -55,11 +55,40 @@ app.use(helmet({
   hsts: { maxAge: 31536000, includeSubDomains: true, preload: true }
 }));
 
+const isDev = (process.env.NODE_ENV || 'development') === 'development';
+const envAllowedOrigins = (process.env.CORS_ALLOWED_ORIGINS || '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+const defaultAllowedOrigins = [
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'http://goodpawies.local'
+];
+
+const allowedOrigins = new Set([...defaultAllowedOrigins, ...envAllowedOrigins]);
+
+const isAllowedDevOrigin = (origin) => {
+  if (!origin) return true;
+  if (!isDev) return false;
+  try {
+    const { hostname, protocol, port } = new URL(origin);
+    const isHttp = protocol === 'http:';
+    const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
+    const isLan = /^192\.168\.\d{1,3}\.\d{1,3}$/.test(hostname) || /^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(hostname);
+    return isHttp && (isLocalhost || isLan) && (!port || port === '3000');
+  } catch {
+    return false;
+  }
+};
+
 const corsOptions = {
   origin: (origin, callback) => {
-    const allowedOrigins = ['http://localhost:3000', 'http://goodpawies.local'];
-    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
-    callback(new Error('Not allowed by CORS'));
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.has(origin)) return callback(null, true);
+    if (isAllowedDevOrigin(origin)) return callback(null, true);
+    return callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],

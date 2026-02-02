@@ -149,13 +149,12 @@ const DemoPage = () => {
 
                 <div className="form-floating mb-3">
                   <textarea
-                    className="form-control"
+                    className="form-control textarea-md"
                     id="textarea"
                     name="textarea"
                     value={formData.textarea}
                     onChange={handleInputChange}
                     placeholder="Escribe tu mensaje aquí..."
-                    style={{ height: '100px' }}
                   />
                   <label htmlFor="textarea">
                     <i className="material-icons">message</i>
@@ -202,7 +201,7 @@ const DemoPage = () => {
               <div className="card card-flip">
                 <div className="card-front">
                   <div className="card-body text-center">
-                    <i className="material-icons" style={{fontSize: '3rem'}}>pets</i>
+                    <i className="material-icons text-4xl">pets</i>
                     <h5>Tarjeta con Flip</h5>
                     <p>Hover para voltear</p>
                   </div>

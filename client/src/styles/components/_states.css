@@ -2,6 +2,58 @@
    Loading and Error State Styles
    ========================================================================== */
 
+/* ==========================================================================
+   Form Feedback States
+   ========================================================================== */
+
+.valid-feedback {
+  display: none;
+  width: 100%;
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-success);
+  background: rgba(var(--color-success-rgb), 0.1);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  border-left: 3px solid var(--color-success);
+}
+
+.valid-feedback.show,
+.was-validated .form-control:valid ~ .valid-feedback,
+.form-control.is-valid ~ .valid-feedback {
+  display: block;
+}
+
+.invalid-feedback {
+  display: none;
+  width: 100%;
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-danger);
+  background: rgba(var(--color-danger-rgb), 0.1);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  border-left: 3px solid var(--color-danger);
+}
+
+.invalid-feedback.show,
+.was-validated .form-control:invalid ~ .invalid-feedback,
+.form-control.is-invalid ~ .invalid-feedback {
+  display: block;
+}
+
+/* Form helper text */
+.form-text {
+  display: block;
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   Loading States
+   ========================================================================== */
+
 /* Loading states */
 .loading {
   display: flex;
