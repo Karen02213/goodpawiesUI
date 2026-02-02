@@ -501,16 +501,16 @@
 }
 
 /* ==========================================================================
-   Form Container (Legacy compatibility)
+   Form Container (Enhanced Medical Aesthetic)
    ========================================================================== */
 
 .form-container {
-  max-width: 500px;
+  max-width: 480px;
   margin: var(--spacing-2xl) auto;
-  padding: var(--spacing-xl);
-  border-radius: var(--border-radius-xl);
-  background: var(--color-bg-tertiary);
-  box-shadow: var(--shadow-lg);
+  padding: var(--spacing-2xl);
+  border-radius: 20px;
+  background: white;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
   width: 100%;
   box-sizing: border-box;
   animation: slideInFromBottom 0.6s ease-out;
@@ -519,14 +519,137 @@
 .form-container h2 {
   text-align: center;
   margin-bottom: var(--spacing-xl);
-  font-size: var(--font-size-3xl);
+  font-size: 1.75rem;
+  font-weight: 700;
   color: var(--color-text-primary);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .form-container form {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
+}
+
+/* Enhanced Form Control Styling for Medical Theme */
+.form-container .form-control {
+  border: 2px solid var(--color-border-light);
+  border-radius: 12px;
+  padding: 1rem;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.form-container .form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+}
+
+.form-container .form-floating > .form-control {
+  padding-top: 1.5rem;
+  padding-bottom: 0.625rem;
+}
+
+.form-container .form-floating > label {
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.form-container .form-floating > label .material-icons {
+  font-size: 1.25rem;
+  color: #667eea;
+}
+
+.form-container .btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.form-container .btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.form-container .btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.form-container .form-text {
+  color: var(--color-text-secondary);
+}
+
+.form-container .form-text a {
+  color: #667eea;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.form-container .form-text a:hover {
+  color: #764ba2;
+}
+
+/* Feedback Messages */
+.form-container .valid-feedback {
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  color: #155724;
+  padding: 1rem;
+  border-radius: 12px;
+  border-left: 4px solid #28a745;
+}
+
+.form-container .invalid-feedback {
+  background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+  color: #721c24;
+  padding: 1rem;
+  border-radius: 12px;
+  border-left: 4px solid #dc3545;
+}
+
+/* Password Toggle Enhancement */
+.form-container .password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.form-container .password-toggle:hover {
+  opacity: 1;
+}
+
+/* Responsive Form Container */
+@media (max-width: 576px) {
+  .form-container {
+    margin: var(--spacing-lg) var(--spacing-md);
+    padding: var(--spacing-lg);
+    border-radius: 16px;
+  }
+
+  .form-container h2 {
+    font-size: 1.5rem;
+  }
 }
 
 /* ==========================================================================

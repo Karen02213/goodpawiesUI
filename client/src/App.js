@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import HomePage from './pages/HomePage';
+import LandingPage from './pages/LandingPage';
+import ChatPage from './pages/ChatPage';
 import QrPage from './pages/QrPage';
 import LoginPage from './pages/login/LoginPage';
 import RegisterForm from './pages/register/RegisterForm';
@@ -29,8 +30,11 @@ function AppContent() {
 
       <main className="main-content">
         <Routes>
-          {/* Rutas protegidas */}
-          <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+          {/* Public landing page */}
+          <Route path="/" element={<LandingPage />} />
+          
+          {/* Protected routes */}
+          <Route path="/chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
           <Route path="/perfil" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
           <Route path="/profile/:uid" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
           <Route path="/profile/:uid/qr" element={<ProtectedRoute><QrPage /></ProtectedRoute>} />
@@ -39,7 +43,7 @@ function AppContent() {
           <Route path="/agregar-mascota" element={<ProtectedRoute><RegisterPetForm /></ProtectedRoute>} />
           <Route path="/register/pet" element={<ProtectedRoute><RegisterPetForm /></ProtectedRoute>} />
           
-          {/* Rutas públicas */}
+          {/* Public routes */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/registrarse" element={<RegisterForm registerDataRef={registerDataRef} />} />
           <Route path="/registrarse/password" element={<PasswordForm registerDataRef={registerDataRef} />} />

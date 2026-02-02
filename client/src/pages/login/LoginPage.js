@@ -16,8 +16,8 @@ function LoginPage() {
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  // Redirect to intended page after login
-  const from = location.state?.from?.pathname || '/';
+  // Redirect to /chat after login (or intended page if specified)
+  const from = location.state?.from?.pathname || '/chat';
 
   useEffect(() => {
     if (isAuthenticated) {

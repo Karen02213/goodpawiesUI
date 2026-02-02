@@ -12,9 +12,10 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "concurrently": "^9.2.0"
+    "concurrently": "^9.2.0",
+    "nodemon": "^3.1.11"
   },
   "dependencies": {
-
+    "moment": "^2.30.1"
   }
 }
