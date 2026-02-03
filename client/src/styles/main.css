@@ -58,6 +58,7 @@
    7. PAGES - Page-specific styles
    ========================================================================== */
 @import './pages/_landing.css';
+@import './pages/_chat.css';
 @import './pages/_pet-profile.css';
 @import './pages/_pet-detail.css';
 @import './pages/_qr-pages.css';

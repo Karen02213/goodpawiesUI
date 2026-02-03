@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 import { useAuth } from '../components/AuthProvider';
 import apiClient from '../utils/api';
 
@@ -15,10 +15,52 @@ function ChatPage() {
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  // Initialize based on screen width
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768);
   const [error, setError] = useState(null);
+  const [userPets, setUserPets] = useState([]);
+  const [selectedPetId, setSelectedPetId] = useState('');
+  
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+
+  const suggestions = [
+    "My dog ate chocolate, what do I do?",
+    "How can I tell if my cat is sick?",
+    "Why is my dog scratching so much?",
+    "Vaccination schedule for puppies"
+  ];
+
+  // Fetch user pets for context selector
+  useEffect(() => {
+    // Wait for user to be populated
+    if (user && user.id) {
+      apiClient.getUserPets(user.id)
+        .then(response => {
+          if (response.success) {
+            // Check for various response structures:
+            // 1. response.data.pets (typical)
+            // 2. response.data.items (paginated)
+            // 3. response.pets (legacy)
+            // 4. response.data (direct array)
+            let petsData = response.data?.pets || response.data?.items || response.pets || response.data || [];
+            
+            // Double check if we got a pagination object wrapper that wasn't caught
+            if (!Array.isArray(petsData) && petsData.items && Array.isArray(petsData.items)) {
+              petsData = petsData.items;
+            }
+
+            if (Array.isArray(petsData)) {
+              setUserPets(petsData);
+            } else {
+              console.warn('Unexpected pets data format:', petsData);
+              setUserPets([]);
+            }
+          }
+        })
+        .catch(err => console.error('Error loading pets:', err));
+    }
+  }, [user]); // Re-run when user object changes
 
   // Auto-scroll to bottom when new messages arrive
   const scrollToBottom = () => {
@@ -75,8 +117,8 @@ function ChatPage() {
       // Prepare messages for API (only role and content)
       const apiMessages = updatedMessages.map(({ role, content }) => ({ role, content }));
       
-      // Call backend API
-      const response = await apiClient.sendChatMessage(apiMessages);
+      // Call backend API with selected pet context
+      const response = await apiClient.sendChatMessage(apiMessages, selectedPetId || null);
 
       if (response.success) {
         const assistantMessage = {
@@ -120,6 +162,13 @@ function ChatPage() {
 
   return (
     <div className="chat-interface">
+      {/* Mobile Overlay Backdrop */}
+      <div 
+        className={`chat-overlay ${sidebarOpen ? 'visible' : ''}`} 
+        onClick={() => setSidebarOpen(false)}
+        aria-hidden="true"
+      />
+
       {/* Sidebar */}
       <aside className={`chat-sidebar ${sidebarOpen ? 'open' : 'collapsed'}`}>
         <div className="sidebar-header">
@@ -156,6 +205,37 @@ function ChatPage() {
             </button>
 
             {/* User Info */}
+            <div className="sidebar-section">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                 <h4 className="sidebar-section-title" style={{ margin: 0 }}>Context</h4>
+                 <p className="text-muted" style={{ fontSize: '0.75rem', margin: 0 }}>Select a pet to discuss</p>
+              </div>
+              <div className="pet-selector">
+                <select 
+                  id="pet-select"
+                  className="form-select pet-select"
+                  value={selectedPetId}
+                  onChange={(e) => setSelectedPetId(e.target.value)}
+                  aria-label="Select Pet Context"
+                >
+                  <option value="">General (No specific pet)</option>
+                  {userPets.map(pet => (
+                    <option key={pet.id} value={pet.id}>
+                      {pet.name || pet.s_petname} ({pet.type || pet.s_type})
+                    </option>
+                  ))}
+                </select>
+                {selectedPetId && (
+                   <small className="text-muted" style={{ display: 'block', marginTop: '5px', fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>
+                     Discussing: {(() => {
+                        const pet = userPets.find(p => String(p.id) === selectedPetId);
+                        return pet ? (pet.name || pet.s_petname) : '';
+                     })()}
+                   </small>
+                )}
+              </div>
+            </div>
+
             <div className="sidebar-user-info">
               <div className="user-avatar-small">
                 {user?.avatar ? (
@@ -171,32 +251,6 @@ function ChatPage() {
                 <span className="user-email">{user?.email || ''}</span>
               </div>
             </div>
-
-            {/* Sidebar Navigation */}
-            <nav className="sidebar-nav">
-              <Link to="/home" className="sidebar-link">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                  <polyline points="9 22 9 12 15 12 15 22"/>
-                </svg>
-                Home
-              </Link>
-              <Link to="/perfil" className="sidebar-link">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                  <circle cx="12" cy="7" r="4"/>
-                </svg>
-                Profile
-              </Link>
-              <Link to="/register/pet" className="sidebar-link">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="10"/>
-                  <line x1="12" y1="8" x2="12" y2="16"/>
-                  <line x1="8" y1="12" x2="16" y2="12"/>
-                </svg>
-                Add Pet
-              </Link>
-            </nav>
 
             {/* Sidebar Footer */}
             <div className="sidebar-footer">
@@ -259,7 +313,11 @@ function ChatPage() {
                 </div>
               )}
               <div className="message-content">
-                <p>{message.content}</p>
+                {message.role === 'assistant' && !message.isError ? (
+                  <ReactMarkdown>{message.content}</ReactMarkdown>
+                ) : (
+                  <p>{message.content}</p>
+                )}
                 <span className="message-time">{formatTime(message.timestamp)}</span>
               </div>
               {message.role === 'user' && (
@@ -273,6 +331,28 @@ function ChatPage() {
               )}
             </div>
           ))}
+
+          {messages.length === 1 && (
+            <div className="chat-suggestions">
+              <p className="suggestions-label">Suggested questions:</p>
+              <div className="suggestions-grid">
+                {suggestions.map((suggestion, index) => (
+                  <button 
+                    key={index} 
+                    className="suggestion-chip"
+                    onClick={() => {
+                      setInputValue(suggestion);
+                      // Optional: auto-send
+                      // handleSendMessage({ preventDefault: () => {} }); // tricky with state updates so just set input
+                      if (inputRef.current) inputRef.current.focus();
+                    }}
+                  >
+                    {suggestion}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
           
           {/* Typing Indicator */}
           {isLoading && (
@@ -331,7 +411,7 @@ function ChatPage() {
               {isLoading ? (
                 <div className="send-loading"></div>
               ) : (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
                   <line x1="22" y1="2" x2="11" y2="13"/>
                   <polygon points="22 2 15 22 11 13 2 9 22 2"/>
                 </svg>

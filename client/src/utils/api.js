@@ -137,10 +137,10 @@ class ApiClient {
   }
 
   // Chat API methods
-  async sendChatMessage(messages) {
+  async sendChatMessage(messages, petId = null) {
     return await authService.apiRequest('/chat', {
       method: 'POST',
-      body: JSON.stringify({ messages }),
+      body: JSON.stringify({ messages, petId }),
     });
   }
 

@@ -5,7 +5,7 @@
 /* Avatar Menu Container */
 .profile-avatar-menu {
   position: relative;
-  display: inline-block;
+  display: flex;
   max-width: 100%;
 }
 

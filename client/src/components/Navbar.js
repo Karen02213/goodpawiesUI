@@ -87,12 +87,6 @@ export default function Navbar() {
               />
             </div>
           )}
-          {!loading && !isAuthenticated && (
-            <div className="navbar-auth-links">
-              <Link to="/login" className="nav-link login-link">Login</Link>
-              <Link to="/registrarse" className="nav-link register-link">Register</Link>
-            </div>
-          )}
         </div>
       </div>
 
@@ -140,7 +134,6 @@ export default function Navbar() {
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                   </svg>
                   AI Chat
-                  <span className="menu-badge">New</span>
                 </Link>
               </li>
               

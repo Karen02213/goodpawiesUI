@@ -4,6 +4,7 @@ const router = express.Router();
 const { verifyToken } = require('../middleware/auth');
 const { success, errors, send } = require('../utils/response');
 const logger = require('../utils/logger');
+const { getPetById } = require('../db/petQueries');
 
 // System prompt for the veterinary AI assistant
 const SYSTEM_PROMPT = `You are a veterinary AI assistant named GoodPawies. You ONLY answer medical questions regarding Dogs and Cats. 
@@ -17,11 +18,18 @@ Important guidelines:
 6. Provide practical first-aid advice when appropriate, but emphasize professional care.
 7. Never recommend specific prescription medications - only a vet can prescribe.
 8. If symptoms suggest an emergency (difficulty breathing, seizures, severe bleeding, toxin ingestion), urge immediate veterinary care.
-
-Remember: You are a helpful guide, not a replacement for professional veterinary care.`;
+9. Asume the user is seeking advice for their pet's health and wellbeing.
+10. User can be anywhere in the world, so avoid location-specific advice.
+11. Use layman's terms - avoid medical jargon unless explained simply.
+12. Always remind users that your advice does not replace professional veterinary care. 
+13. Maintain a friendly and approachable tone throughout the conversation.
+Remember: You are a helpful guide, not a replacement for professional veterinary care.
+14. Your responses should be concise, informative, and empathetic.
+15. Responses should be in markdown format for better readability.
+16. Response must be short but informative`;
 
 // Helper function to call Google Gemini API
-async function callGeminiAPI(messages) {
+async function callGeminiAPI(messages, context = '') {
   const apiKey = process.env.GEMINI_API_KEY;
   
   if (!apiKey) {
@@ -34,17 +42,19 @@ async function callGeminiAPI(messages) {
     parts: [{ text: msg.content }]
   }));
 
+  const fullSystemPrompt = context ? `${SYSTEM_PROMPT}\n\nCurrent Pet Context:\n${context}` : SYSTEM_PROMPT;
+
   // Add system instruction
   const requestBody = {
     contents: formattedMessages,
     systemInstruction: {
-      parts: [{ text: SYSTEM_PROMPT }]
+      parts: [{ text: fullSystemPrompt }]
     },
     generationConfig: {
       temperature: 0.7,
       topK: 40,
       topP: 0.95,
-      maxOutputTokens: 1024,
+      maxOutputTokens: 2048,
     },
     safetySettings: [
       { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
@@ -55,7 +65,7 @@ async function callGeminiAPI(messages) {
   };
 
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -79,16 +89,18 @@ async function callGeminiAPI(messages) {
 }
 
 // Helper function to call OpenAI API
-async function callOpenAIAPI(messages) {
+async function callOpenAIAPI(messages, context = '') {
   const apiKey = process.env.OPENAI_API_KEY;
   
   if (!apiKey) {
     throw new Error('OPENAI_API_KEY not configured');
   }
 
+  const fullSystemPrompt = context ? `${SYSTEM_PROMPT}\n\nCurrent Pet Context:\n${context}` : SYSTEM_PROMPT;
+
   // Format messages for OpenAI
   const formattedMessages = [
-    { role: 'system', content: SYSTEM_PROMPT },
+    { role: 'system', content: fullSystemPrompt },
     ...messages.map(msg => ({
       role: msg.role,
       content: msg.content
@@ -163,11 +175,36 @@ To enable full AI responses, configure the GEMINI_API_KEY or OPENAI_API_KEY in t
 // POST /api/chat - Main chat endpoint
 router.post('/', verifyToken, async (req, res) => {
   try {
-    const { messages } = req.body;
+    const { messages, petId } = req.body;
 
     // Validate input
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return send(res, errors.VALIDATION_ERROR('Messages array is required'));
+    }
+
+    // Build context if petId provided
+    let context = '';
+    if (petId) {
+      try {
+        const pet = await getPetById(petId);
+        // Verify ownership
+        if (pet && pet.userid === req.user.id) {
+          context = `
+Name: ${pet.s_petname}
+Type: ${pet.s_type}
+Breed: ${pet.s_breed || 'Unknown'}
+Age: ${pet.n_age} years
+Gender: ${pet.s_gender}
+Size: ${pet.s_size}
+Vaccinated: ${pet.b_vaccinated ? 'Yes' : 'No'}
+Sterilized: ${pet.b_sterilized ? 'Yes' : 'No'}
+History/Notes: ${pet.s_description || 'None'}
+`;
+          logger.info('Chat context added for pet', { petId, petName: pet.s_petname });
+        }
+      } catch (err) {
+        logger.error('Error fetching pet context', { error: err.message, petId });
+      }
     }
 
     // Get the last user message for logging
@@ -176,6 +213,7 @@ router.post('/', verifyToken, async (req, res) => {
     logger.info('Chat request received', {
       userId: req.user.id,
       messageCount: messages.length,
+      hasContext: !!context,
       lastMessagePreview: lastUserMessage?.content?.substring(0, 50)
     });
 
@@ -185,10 +223,10 @@ router.post('/', verifyToken, async (req, res) => {
     // Try Gemini first, then OpenAI, then fallback
     try {
       if (process.env.GEMINI_API_KEY) {
-        aiResponse = await callGeminiAPI(messages);
+        aiResponse = await callGeminiAPI(messages, context);
         provider = 'gemini';
       } else if (process.env.OPENAI_API_KEY) {
-        aiResponse = await callOpenAIAPI(messages);
+        aiResponse = await callOpenAIAPI(messages, context);
         provider = 'openai';
       } else {
         // No API configured - use fallback
@@ -201,10 +239,10 @@ router.post('/', verifyToken, async (req, res) => {
       // Try the other provider as backup
       try {
         if (provider === 'gemini' && process.env.OPENAI_API_KEY) {
-          aiResponse = await callOpenAIAPI(messages);
+          aiResponse = await callOpenAIAPI(messages, context);
           provider = 'openai-fallback';
         } else if (provider === 'openai' && process.env.GEMINI_API_KEY) {
-          aiResponse = await callGeminiAPI(messages);
+          aiResponse = await callGeminiAPI(messages, context);
           provider = 'gemini-fallback';
         } else {
           throw apiError;

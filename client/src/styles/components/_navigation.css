@@ -9,6 +9,7 @@
 /* Main Navbar */
 .navbar {
   position: sticky;
+  flex-wrap: nowrap !important;
   top: 0;
   background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
   box-shadow: var(--shadow-md);
@@ -24,8 +25,8 @@
   margin: 0 auto;
   padding: 0 var(--spacing-md);
   height: 64px;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   width: 100%;
   position: relative;
@@ -39,6 +40,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  flex: 1;
 }
 
 .hamburger-btn {
@@ -90,6 +92,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 /* Navbar Logo */
@@ -124,6 +129,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  flex: 1;
 }
 
 .navbar-profile {
@@ -167,13 +173,13 @@
 .sidebar-user-card {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
 }
 
 .sidebar-avatar img,
 .avatar-placeholder-large {
-  width: 56px;
-  height: 56px;
+  width: 40px;
+  height: 40px;
   border-radius: var(--border-radius-full);
   object-fit: cover;
 }
@@ -185,6 +191,7 @@
   background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
   color: var(--color-text-light);
   font-weight: var(--font-weight-semibold);
+  font-size: 1.25rem;
 }
 
 .sidebar-user-details {
@@ -296,9 +303,6 @@
    Avatar Menu Components
    ========================================================================== */
 
-.profile-avatar-menu {
-  position: relative;
-}
 
 .profile-avatar-image {
   width: 40px;
@@ -545,9 +549,6 @@
    Avatar Menu (Custom Dropdown)
    ========================================================================== */
 
-.profile-avatar-menu {
-  position: relative;
-}
 
 .profile-avatar-image {
   width: 40px;
