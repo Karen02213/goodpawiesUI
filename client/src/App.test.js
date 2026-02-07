@@ -1,8 +1,10 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('renders GoodPawies in document', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
+  // Check for the brand name in the navbar or somewhere on the landing page
+  // Being flexible with regex to match "GoodPawies"
+  const linkElement = screen.getAllByText(/GoodPawies/i)[0];
   expect(linkElement).toBeInTheDocument();
 });

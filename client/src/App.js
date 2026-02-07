@@ -10,6 +10,7 @@ import PasswordForm from './pages/register/PasswordForm';
 import ProfilePage from "./pages/profile/ProfilePage";
 import PetDetailPage from "./pages/profile/PetDetailPage";
 import PetQrPage from "./pages/profile/PetQrPage";
+import EditPetPage from "./pages/profile/EditPetPage";
 import PetProfilePage from "./pages/PetProfilePage";
 import DemoPage from "./pages/DemoPage";
 import ErrorPage from "./pages/ErrorPage";
@@ -34,7 +35,7 @@ function AppContent() {
         <Routes>
           {/* Public landing page */}
           <Route path="/" element={<LandingPage />} />
-          
+
           {/* Protected routes */}
           <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
           <Route path="/chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
@@ -42,17 +43,18 @@ function AppContent() {
           <Route path="/profile/:uid" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
           <Route path="/profile/:uid/qr" element={<ProtectedRoute><QrPage /></ProtectedRoute>} />
           <Route path="/profile/:uid/pet/:petid" element={<ProtectedRoute><PetDetailPage /></ProtectedRoute>} />
+          <Route path="/profile/:uid/pet/:petid/edit" element={<ProtectedRoute><EditPetPage /></ProtectedRoute>} />
           <Route path="/profile/:uid/pet/:petid/qr" element={<ProtectedRoute><PetQrPage /></ProtectedRoute>} />
-          <Route path="/agregar-mascota" element={<ProtectedRoute><RegisterPetForm /></ProtectedRoute>} />
+
           <Route path="/register/pet" element={<ProtectedRoute><RegisterPetForm /></ProtectedRoute>} />
-          
+
           {/* Public routes */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/registrarse" element={<RegisterForm registerDataRef={registerDataRef} />} />
           <Route path="/registrarse/password" element={<PasswordForm registerDataRef={registerDataRef} />} />
           <Route path="/pet/:petid" element={<PetProfilePage />} />
           <Route path="/demo" element={<DemoPage />} />
-          
+
           {/* Error routes */}
           <Route path="/error" element={<ErrorPage />} />
           <Route path="*" element={<ErrorPage />} />
@@ -60,7 +62,7 @@ function AppContent() {
       </main>
 
       <Footer />
-      
+
       {/* Modal Container for global modals */}
       <ModalContainer modals={modals} onHideModal={hideModal} />
     </div>

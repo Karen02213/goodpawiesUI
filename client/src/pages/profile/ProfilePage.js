@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../components/AuthProvider";
 import apiClient from "../../utils/api";
@@ -11,31 +11,47 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
+  const fetchUserPets = useCallback(async () => {
     if (!user?.id) return;
     
-    const fetchUserPets = wrapApiCall(async () => {
-      setLoading(true);
-      const response = await apiClient.getUserPets(user.id);
-      
-      console.log('API Response:', response); // Debug log
-      
-      if (response.success) {
-        setPets(response.data?.items || []);
-        setError(null);
-      } else {
-        setError("Error loading pets");
-      }
-      setLoading(false);
-    }, {
-      onError: (processedError) => {
-        setError(processedError.message);
+    setLoading(true);
+    try {
+        const response = await apiClient.getUserPets(user.id);
+        
+        console.log('API Response:', response); // Debug log
+        
+        if (response.success) {
+            // Handle various data structures
+            const petsData = response.data?.items || response.data?.pets || response.data || [];
+            if (Array.isArray(petsData)) {
+                setPets(petsData);
+            } else if (petsData.items && Array.isArray(petsData.items)) {
+                setPets(petsData.items);
+            } else {
+                setPets([]);
+            }
+            setError(null);
+        } else {
+            // Only set error if it's a real failure, not just empty
+            setError("Error loading pets");
+        }
+    } catch (err) {
+        console.error("Fetch pets error:", err);
+        setError("Failed to load pets");
+    } finally {
         setLoading(false);
-      }
-    });
-
-    fetchUserPets();
+    }
   }, [user, wrapApiCall]);
+
+  useEffect(() => {
+    if (user?.id) {
+        fetchUserPets();
+    } else {
+        // If we don't have a user ID yet, we might be loading auth
+        // But if user is null (not loading), we stop loading
+        if (user === null) setLoading(false);
+    }
+  }, [user, fetchUserPets]);
 
   return (
     <div className="profile-page-container">
@@ -43,16 +59,17 @@ export default function ProfilePage() {
         <div className="profile-user-card">
           <div className="profile-user-image">
             <img 
-              src={"/default-avatar.png"} 
+              src={user?.avatar || "/default-avatar.png"} 
               alt="Avatar" 
               className="profile-user-avatar" 
+              onError={(e) => { e.target.onerror = null; e.target.src = "/default-avatar.png"; }}
             />
           </div>
           
           <div className="profile-user-details">
-            <h2 className="profile-user-name">{user?.username}</h2>
+            <h2 className="profile-user-name">{user?.username || 'User'}</h2>
             <div className="profile-user-info">
-              <span className="label">Nombre:</span>
+              <span className="label">Name:</span>
               <span className="value">{user?.fullName} {user?.fullSurname}</span>
             </div>
             <div className="profile-user-info">
@@ -60,29 +77,42 @@ export default function ProfilePage() {
               <span className="value">{user?.email}</span>
             </div>
             <div className="profile-user-info">
-              <span className="label">Miembro desde:</span>
+              <span className="label">Member Since:</span>
               <span className="value">
-                {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Fecha no disponible'}
+                {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
               </span>
             </div>
           </div>
         </div>
       
       <div className="profile-pets-section">
-        <h3 className="profile-pets-title">🐾 Mis Mascotas</h3>
+        <h3 className="profile-pets-title">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5c.67 0 1.35.09 2 .26 1.78-2 5.03-2.84 6.42-2.26 1.4.58 1.57 3.8.74 5.21 1.05 1.77 1.35 4.3.49 6.22-1.35 2.5-5.55 4.88-9.65 4.54-5.3 0-8.91-4.04-8.91-4.04-.42-1.92.1-4.45 1.15-6.23-.84-1.4-.66-4.62.74-5.21 1.39-.58 4.64.26 6.42 2.26.65-.17 1.33-.26 2-.26z"></path><path d="M12 13h.01"></path><path d="M12 9h.01"></path></svg>
+            My Pets
+        </h3>
         
-        {loading && <p className="profile-loading">Loading pets...</p>}
+        {loading && (
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
+                <div className="loading-spinner" style={{ width: '30px', height: '30px', border: '3px solid #e2e8f0', borderTopColor: '#667eea', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
+                <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+            </div>
+        )}
         
-        {error && <p className="profile-error">{error}</p>}
+        {error && (
+            <div className="profile-error-container" style={{ textAlign: 'center', color: '#e53e3e', padding: '1rem' }}>
+                <p>{error}</p>
+                <button onClick={fetchUserPets} className="btn btn-sm btn-outline-primary" style={{ marginTop: '0.5rem', cursor: 'pointer' }}>Try Again</button>
+            </div>
+        )}
         
         {!loading && !error && pets.length === 0 && (
           <div className="profile-no-pets-container">
-            <p className="profile-no-pets-text">No tienes mascotas registradas.</p>
+            <p className="profile-no-pets-text">You haven't registered any pets yet.</p>
             <Link 
               to="/register/pet" 
               className="profile-first-pet-button"
             >
-              ¡Registra tu primera mascota! 🐾
+              Register your first pet! 🐾
             </Link>
           </div>
         )}
@@ -100,10 +130,11 @@ export default function ProfilePage() {
                     src={pet.image_url || "/default-avatar.png"} 
                     alt={pet.name}
                     className="profile-pet-image"
+                    onError={(e) => { e.target.onerror = null; e.target.src = "/default-avatar.png"; }}
                   />
                 </div>
-                <div className="profile-pet-name">{pet.name}</div>
-                <div className="profile-pet-type">{pet.type}</div>
+                <div className="profile-pet-name">{pet.name || pet.s_petname}</div>
+                <div className="profile-pet-type">{pet.type || pet.s_type}</div>
               </Link>
             ))}
             

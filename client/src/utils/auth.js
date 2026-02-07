@@ -1,14 +1,5 @@
-// client/src/utils/auth.js - Client-side Authentication Helper
-const normalizeApiBaseUrl = (url) => {
-  const fallback = 'http://localhost:5000/api';
-  if (!url || typeof url !== 'string') return fallback;
-
-  let normalized = url.trim().replace(/\/+$/, '');
-  if (!normalized.endsWith('/api')) {
-    normalized = `${normalized}/api`;
-  }
-  return normalized;
-};
+// client/src/utils/auth.js - Client-side Authentimport axios from 'axios';
+import { normalizeApiBaseUrl } from './config';
 
 class AuthService {
   constructor() {
@@ -41,7 +32,7 @@ class AuthService {
   isAuthenticated() {
     const token = this.getToken();
     if (!token) return false;
-    
+
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       return payload.exp * 1000 > Date.now();
@@ -206,7 +197,7 @@ class AuthService {
   // Generic API request with authentication
   async apiRequest(endpoint, options = {}) {
     const url = endpoint.startsWith('http') ? endpoint : `${this.baseURL}${endpoint}`;
-    
+
     const config = {
       headers: {
         'Content-Type': 'application/json',
@@ -223,7 +214,7 @@ class AuthService {
       // If token expired, try to refresh
       if (response.status === 401 && endpoint !== '/auth/refresh') {
         const refreshResult = await this.refreshToken();
-        
+
         if (refreshResult.success) {
           // Retry request with new token
           config.headers = {

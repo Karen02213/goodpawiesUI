@@ -139,7 +139,11 @@ export default function PetQrPage() {
   if (loading) {
     return (
       <div className="pet-qr-page">
-        <div className="loading">Loading pet QR code...</div>
+        <div className="container" style={{ display: 'flex', justifyContent: 'center', padding: '4rem', alignItems: 'center', flexDirection: 'column' }}>
+          <div className="loading-spinner" style={{ width: '40px', height: '40px', border: '3px solid #e2e8f0', borderTopColor: '#667eea', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+          <p style={{ marginTop: '1rem', color: '#718096' }}>Generating QR Code...</p>
+        </div>
       </div>
     );
   }
@@ -147,10 +151,9 @@ export default function PetQrPage() {
   if (error || !pet) {
     return (
       <div className="pet-qr-page">
-        <div className="error">
-          <h2>Error</h2>
-          <p>{error || "Pet not found"}</p>
-          <Link to={`/profile/${uid}/pet/${petid}`} className="btn btn-primary">
+        <div className="container" style={{ textAlign: 'center', padding: '4rem' }}>
+          <h2 style={{ color: '#e53e3e', marginBottom: '1rem' }}>{error || "Pet not found"}</h2>
+          <Link to={`/profile/${uid}/pet/${petid}`} className="btn btn-primary" style={{ padding: '0.5rem 1rem', background: '#667eea', color: 'white', borderRadius: '8px', textDecoration: 'none' }}>
             Back to Pet Details
           </Link>
         </div>
@@ -163,10 +166,11 @@ export default function PetQrPage() {
       <div className="container">
         <div className="qr-header">
           <Link to={`/profile/${uid}/pet/${petid}`} className="back-link">
-            ← Back to {pet.name}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            Back to {pet.name}
           </Link>
           <h1>QR Code for {pet.name}</h1>
-          <p>Share {pet.name}'s profile with a custom QR code</p>
+          <p>Scan this code to instantly view {pet.name}'s medical profile and emergency contact info.</p>
         </div>
 
         <div className="qr-content">
@@ -187,12 +191,12 @@ export default function PetQrPage() {
                   value={fileExt}
                   className="form-control"
                 >
-                  <option value="png">PNG</option>
-                  <option value="jpeg">JPEG</option>
-                  <option value="webp">WEBP</option>
-                  <option value="svg">SVG</option>
+                  <option value="png">Format: PNG</option>
+                  <option value="jpeg">Format: JPEG</option>
+                  <option value="webp">Format: WEBP</option>
+                  <option value="svg">Format: SVG</option>
                 </select>
-                <button onClick={onDownloadClick} className="btn btn-primary">
+                <button onClick={onDownloadClick} className="btn btn-primary" style={{ background: '#667eea', color: 'white', border: 'none', cursor: 'pointer' }}>
                   Download QR Code
                 </button>
               </div>
@@ -200,118 +204,104 @@ export default function PetQrPage() {
           </div>
 
           {/* Customization Panel - Only show for owners */}
-          {isOwner && (
-            <div className="customization-panel">
-              <h3>Customize QR Code</h3>
-              
-              {/* Dots Color */}
-              <div className="form-group">
-                <label htmlFor="dots-color">Dots Color:</label>
-                <input
-                  id="dots-color"
-                  type="color"
-                  value={qrOptions.dotsColor}
-                  onChange={(e) => handleOptionChange('dotsColor', e.target.value)}
-                  className="form-control color-input"
-                />
-              </div>
+          <div>
+            {isOwner ? (
+                <div className="customization-panel">
+                <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle', marginRight: '8px' }}><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg> Customize Appearance</h3>
+                
+                {/* Dots Color */}
+                <div className="form-group">
+                    <label htmlFor="dots-color">QR Color</label>
+                    <input
+                    id="dots-color"
+                    type="color"
+                    value={qrOptions.dotsColor}
+                    onChange={(e) => handleOptionChange('dotsColor', e.target.value)}
+                    className="form-control color-input"
+                    />
+                </div>
 
-              {/* Dots Style */}
-              <div className="form-group">
-                <label htmlFor="dots-type">Dots Style:</label>
-                <select
-                  id="dots-type"
-                  value={qrOptions.dotsType}
-                  onChange={(e) => handleOptionChange('dotsType', e.target.value)}
-                  className="form-control"
-                >
-                  <option value="square">Square</option>
-                  <option value="rounded">Rounded</option>
-                  <option value="dots">Dots</option>
-                  <option value="classy">Classy</option>
-                  <option value="classy-rounded">Classy Rounded</option>
-                  <option value="extra-rounded">Extra Rounded</option>
-                </select>
-              </div>
+                {/* Background Color */}
+                <div className="form-group">
+                    <label htmlFor="bg-color">Background Color</label>
+                    <input
+                    id="bg-color"
+                    type="color"
+                    value={qrOptions.backgroundColor}
+                    onChange={(e) => handleOptionChange('backgroundColor', e.target.value)}
+                    className="form-control color-input"
+                    />
+                </div>
 
-              {/* Background Color */}
-              <div className="form-group">
-                <label htmlFor="bg-color">Background Color:</label>
-                <input
-                  id="bg-color"
-                  type="color"
-                  value={qrOptions.backgroundColor}
-                  onChange={(e) => handleOptionChange('backgroundColor', e.target.value)}
-                  className="form-control color-input"
-                />
-              </div>
+                {/* Dots Style */}
+                <div className="form-group">
+                    <label htmlFor="dots-type">Pattern Style</label>
+                    <select
+                    id="dots-type"
+                    value={qrOptions.dotsType}
+                    onChange={(e) => handleOptionChange('dotsType', e.target.value)}
+                    className="form-control"
+                    >
+                    <option value="square">Square</option>
+                    <option value="rounded">Rounded</option>
+                    <option value="dots">Dots</option>
+                    <option value="classy">Classy</option>
+                    <option value="classy-rounded">Soft</option>
+                    <option value="extra-rounded">Extra Rounded</option>
+                    </select>
+                </div>
 
-              {/* Corners Square Style */}
-              <div className="form-group">
-                <label htmlFor="corners-square">Corner Squares:</label>
-                <select
-                  id="corners-square"
-                  value={qrOptions.cornersSquareType}
-                  onChange={(e) => handleOptionChange('cornersSquareType', e.target.value)}
-                  className="form-control"
-                >
-                  <option value="square">Square</option>
-                  <option value="dot">Dot</option>
-                  <option value="extra-rounded">Extra Rounded</option>
-                  <option value="rounded">Rounded</option>
-                  <option value="dots">Dots</option>
-                  <option value="classy">Classy</option>
-                  <option value="classy-rounded">Classy Rounded</option>
-                </select>
-              </div>
+                {/* Corner Styles */}
+                <div className="form-group">
+                    <label htmlFor="corners-square">Corner Style</label>
+                    <select
+                    id="corners-square"
+                    value={qrOptions.cornersSquareType}
+                    onChange={(e) => handleOptionChange('cornersSquareType', e.target.value)}
+                    className="form-control"
+                    >
+                    <option value="square">Square</option>
+                    <option value="dot">Dot</option>
+                    <option value="extra-rounded">Rounded</option>
+                    </select>
+                </div>
 
-              {/* Corner Dots Style */}
-              <div className="form-group">
-                <label htmlFor="corners-dot">Corner Dots:</label>
-                <select
-                  id="corners-dot"
-                  value={qrOptions.cornersDotType}
-                  onChange={(e) => handleOptionChange('cornersDotType', e.target.value)}
-                  className="form-control"
-                >
-                  <option value="dot">Dot</option>
-                  <option value="square">Square</option>
-                  <option value="rounded">Rounded</option>
-                  <option value="dots">Dots</option>
-                  <option value="classy">Classy</option>
-                  <option value="classy-rounded">Classy Rounded</option>
-                  <option value="extra-rounded">Extra Rounded</option>
-                </select>
-              </div>
-
-              {/* Image Margin */}
-              <div className="form-group">
-                <label htmlFor="image-margin">Pet Image Margin: {qrOptions.imageMargin}px</label>
-                <input
-                  id="image-margin"
-                  type="range"
-                  min="0"
-                  max="50"
-                  value={qrOptions.imageMargin}
-                  onChange={(e) => handleOptionChange('imageMargin', parseInt(e.target.value))}
-                  className="form-control range-input"
-                />
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="info-section">
-          <h3>How it works:</h3>
-          <ul>
-            <li>This QR code links directly to {pet.name}'s public profile</li>
-            <li>Anyone can scan it to see {pet.name}'s information</li>
-            <li>No login is required to view the pet's profile</li>
-            <li>Perfect for pet tags, collars, or sharing with friends</li>
-            {isOwner && (
-              <li>Only you can customize the QR code appearance</li>
+                {/* Image Margin */}
+                <div className="form-group">
+                    <label htmlFor="image-margin">Center Logo Size</label>
+                    <input
+                    id="image-margin"
+                    type="range"
+                    min="0"
+                    max="50"
+                    value={qrOptions.imageMargin}
+                    onChange={(e) => handleOptionChange('imageMargin', parseInt(e.target.value))}
+                    className="form-control range-input"
+                    />
+                </div>
+                </div>
+            ) : (
+                <div className="info-section">
+                    <h3>How it works:</h3>
+                    <ul>
+                        <li>This QR code links directly to {pet.name}'s public profile</li>
+                        <li>Anyone can scan it to see {pet.name}'s information</li>
+                        <li>No login is required to view the pet's profile</li>
+                    </ul>
+                </div>
             )}
-          </ul>
+            
+            {isOwner && (
+                 <div className="info-section" style={{ marginTop: '2rem' }}>
+                    <h3>Usage Tips:</h3>
+                    <ul>
+                        <li>Print this QR code for your pet's collar tag.</li>
+                        <li>Save it to your phone for quick sharing.</li>
+                        <li>The link works even if you update the pet's photo later.</li>
+                    </ul>
+                </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

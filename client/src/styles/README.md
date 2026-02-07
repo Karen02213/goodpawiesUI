@@ -25,17 +25,9 @@ src/styles/
 │   ├── _pet-profile.css    # Pet profile page styles
 │   ├── _pet-detail.css     # Pet detail page styles
 │   └── _qr-pages.css       # QR code pages styles
-├── utils/                   # Utility classes
-│   ├── _utilities.css      # General utility classes
-│   └── _responsive.css     # Responsive utilities
-└── legacy/                  # Backup of old CSS files
-    ├── App.css
-    ├── index.css
-    ├── FormStyles.css
-    ├── PetDetailPage.css
-    ├── PetProfilePage.css
-    ├── PetQrPage.css
-    └── QrPage.css
+└── utils/                   # Utility classes
+    ├── _utilities.css      # General utility classes
+    └── _responsive.css     # Responsive utilities
 ```
 
 ## CSS Import Order (ITCSS Methodology)
@@ -133,7 +125,7 @@ All styles are automatically imported through `index.css` → `main.css`. Indivi
 - Graceful degradation for older browsers
 
 ## Migration Notes
-- Old CSS files moved to `legacy/` folder
+- Component imports updated to use centralized styles
 - Component imports updated to use centralized styles
 - External CSS libraries (Bootstrap, Materialize, PureCSS) removed for better performance
 - All styles now use consistent design system

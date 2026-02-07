@@ -2,46 +2,58 @@
    QR Code Page Styles
    ========================================================================== */
 
-.qr-page {
-  padding: var(--spacing-lg);
-  max-width: var(--container-xl);
-  margin: 0 auto;
+.qr-page, .pet-qr-page {
+  min-height: calc(100vh - 64px);
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+  padding: 2rem 1rem;
 }
 
-.qr-page .container {
-  background: var(--color-bg-secondary);
-  border-radius: var(--border-radius-xl);
-  padding: var(--spacing-2xl);
-  box-shadow: var(--shadow-lg);
+.qr-page .container, .pet-qr-page .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  background: white;
+  border-radius: 20px;
+  padding: 3rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
 /* QR page header */
 .qr-header {
-  margin-bottom: var(--spacing-2xl);
+  margin-bottom: 2.5rem;
   text-align: center;
+  position: relative;
+}
+
+.qr-header .back-link {
+  position: absolute;
+  left: 0;
+  top: 0.5rem;
+  display: inline-flex;
 }
 
 .qr-header h1 {
-  margin: 0 0 var(--spacing-md) 0;
-  color: var(--color-text-primary);
+  margin: 0 0 1rem 0;
+  color: #2d3748;
   font-size: 2.2rem;
-  font-weight: var(--font-weight-bold);
-  font-family: var(--font-family-secondary);
+  font-weight: 700;
 }
 
 .qr-header p {
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-lg);
-  margin: 0;
-  line-height: 1.5;
+  color: #718096;
+  font-size: 1.1rem;
+  margin: 0 auto;
+  max-width: 600px;
+  line-height: 1.6;
 }
 
 /* QR content layout */
 .qr-content {
   display: grid;
-  grid-template-columns: 1fr auto;
-  gap: var(--spacing-3xl);
-  margin-bottom: var(--spacing-2xl);
+  grid-template-columns: 1fr 380px;
+  gap: 3rem;
+  margin-bottom: 3rem;
+  align-items: start;
 }
 
 /* QR display section */
@@ -49,47 +61,49 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: var(--color-bg-primary);
-  padding: var(--spacing-2xl);
-  border-radius: var(--border-radius-xl);
-  box-shadow: var(--shadow-md);
+  background: #f7fafc;
+  padding: 2.5rem;
+  border-radius: 20px;
+  border: 1px solid #edf2f7;
 }
 
 .qr-code-container {
-  margin-bottom: var(--spacing-lg);
-  border: 2px solid var(--color-border-light);
-  border-radius: var(--border-radius-xl);
-  padding: var(--spacing-lg);
-  background: var(--color-bg-primary);
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1px solid #e2e8f0;
 }
 
 /* QR info section */
 .qr-info {
   text-align: center;
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: 2rem;
   width: 100%;
 }
 
 .qr-info h3 {
-  color: var(--color-text-primary);
-  margin: 0 0 var(--spacing-md) 0;
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-semibold);
+  color: #2d3748;
+  margin: 0 0 0.8rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
 }
 
 .qr-url {
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-xs);
+  color: #718096;
+  font-size: 0.9rem;
   word-break: break-all;
-  background: var(--color-bg-secondary);
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--border-radius-md);
-  border: 1px solid var(--color-border-light);
+  background: white;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
   margin: 0;
-  font-family: var(--font-family-mono);
+  font-family: monospace;
+  display: inline-block;
 }
 
 /* Download section */
@@ -99,98 +113,127 @@
 
 .download-controls {
   display: flex;
-  gap: var(--spacing-md);
+  gap: 1rem;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
 }
 
+.download-controls select {
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #cbd5e0;
+  background: white;
+  min-width: 120px;
+}
+
+.download-controls .btn-primary {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+}
+
 /* Customization panel */
 .customization-panel {
-  background: var(--color-bg-primary);
-  padding: var(--spacing-2xl);
-  border-radius: var(--border-radius-xl);
-  box-shadow: var(--shadow-md);
-  width: 350px;
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid #edf2f7;
   height: fit-content;
 }
 
 .customization-panel h3 {
-  color: var(--color-text-primary);
-  margin: 0 0 var(--spacing-xl) 0;
-  border-bottom: 2px solid var(--color-accent);
-  padding-bottom: var(--spacing-md);
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-semibold);
+  color: #2d3748;
+  margin: 0 0 1.5rem 0;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e2e8f0;
+  font-size: 1.2rem;
+  font-weight: 700;
 }
 
-/* Info section */
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #4a5568;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.color-input {
+  height: 48px;
+  padding: 4px;
+}
+
+.range-input {
+  padding: 0;
+}
+
+/* Info section on how it works */
 .info-section {
-  background: var(--color-bg-primary);
-  padding: var(--spacing-xl);
-  border-radius: var(--border-radius-xl);
-  box-shadow: var(--shadow-md);
+  background: #ebf8ff;
+  padding: 2rem;
+  border-radius: 20px;
+  border: 1px solid #bee3f8;
 }
 
 .info-section h3 {
-  color: var(--color-text-primary);
-  margin-bottom: var(--spacing-lg);
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-semibold);
+  color: #2c5282;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  font-weight: 700;
 }
 
 .info-section ul {
-  color: var(--color-text-secondary);
-  line-height: 1.6;
-  list-style: disc;
-  padding-left: var(--spacing-lg);
+  color: #2a4365;
+  line-height: 1.7;
+  padding-left: 1.5rem;
+  margin: 0;
 }
 
 .info-section li {
-  margin-bottom: var(--spacing-sm);
-}
-
-/* Pet QR Page specific styles */
-.pet-qr-page {
-  padding: var(--spacing-lg);
-  max-width: var(--container-xl);
-  margin: 0 auto;
-}
-
-.pet-qr-page .container {
-  background: var(--color-bg-secondary);
-  border-radius: var(--border-radius-xl);
-  padding: var(--spacing-2xl);
-  box-shadow: var(--shadow-lg);
+  margin-bottom: 0.5rem;
 }
 
 /* Responsive design */
 @media (max-width: 968px) {
   .qr-content {
     grid-template-columns: 1fr;
-    gap: var(--spacing-lg);
+    gap: 2rem;
   }
   
   .customization-panel {
     width: 100%;
   }
+
+  .qr-header .back-link {
+    position: static;
+    margin-bottom: 1rem;
+  }
 }
 
-@media (max-width: 768px) {
-  .qr-page .container,
-  .pet-qr-page .container {
-    padding: var(--spacing-lg);
+@media (max-width: 600px) {
+  .qr-page, .pet-qr-page {
+    padding: 1rem;
   }
-  
-  .qr-display,
-  .customization-panel,
-  .info-section {
-    padding: var(--spacing-lg);
+
+  .qr-page .container, .pet-qr-page .container {
+    padding: 1.5rem;
   }
   
   .download-controls {
     flex-direction: column;
-    gap: var(--spacing-lg);
     width: 100%;
   }
   
@@ -200,14 +243,6 @@
   }
   
   .qr-header h1 {
-    font-size: var(--font-size-3xl);
-  }
-
-  .qr-header p {
-    font-size: var(--font-size-base);
-  }
-
-  .customization-panel h3 {
-    font-size: var(--font-size-lg);
+    font-size: 1.8rem;
   }
 }

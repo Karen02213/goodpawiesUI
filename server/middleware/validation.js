@@ -190,6 +190,69 @@ const validateEnhancedPetRegistration = [
   handleValidationErrors
 ];
 
+// Enhanced pet update validation (all fields optional)
+const validateEnhancedPetUpdate = [
+  body('s_petname')
+    .optional()
+    .isLength({ min: 1, max: 30 })
+    .withMessage('Pet name must be between 1 and 30 characters')
+    .matches(patterns.petName)
+    .withMessage('Pet name can only contain letters, spaces, hyphens, and apostrophes')
+    .trim(),
+  body('s_type')
+    .optional()
+    .isLength({ min: 1, max: 30 })
+    .withMessage('Pet type must be between 1 and 30 characters')
+    .matches(patterns.petType)
+    .withMessage('Pet type can only contain letters and spaces')
+    .trim(),
+  body('s_breed')
+    .optional()
+    .isLength({ min: 1, max: 30 })
+    .withMessage('Pet breed must be between 1 and 30 characters')
+    .matches(patterns.petBreed)
+    .withMessage('Pet breed can only contain letters, spaces, hyphens, and apostrophes')
+    .trim(),
+  body('s_gender')
+    .optional()
+    .isIn(['Macho', 'Hembra'])
+    .withMessage('Gender must be either Macho or Hembra'),
+  body('s_size')
+    .optional()
+    .isIn(['small', 'medium', 'large'])
+    .withMessage('Size must be small, medium, or large'),
+  body('s_color')
+    .optional()
+    .isLength({ min: 1, max: 50 })
+    .withMessage('Pet color must be between 1 and 50 characters')
+    .matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-']+$/)
+    .withMessage('Pet color can only contain letters, spaces, hyphens, and apostrophes')
+    .trim(),
+  body('n_age')
+    .optional()
+    .isInt({ min: 0, max: 30 })
+    .withMessage('Pet age must be between 0 and 30 years'),
+  body('s_description')
+    .optional()
+    .isLength({ max: 500 })
+    .withMessage('Pet description must be maximum 500 characters')
+    .trim(),
+  body('b_vaccinated')
+    .optional()
+    .isBoolean()
+    .withMessage('Vaccination status must be true or false'),
+  body('b_sterilized')
+    .optional()
+    .isBoolean()
+    .withMessage('Sterilization status must be true or false'),
+  body('image_data')
+    .optional()
+    .isString()
+    .isLength({ max: 2000000 })
+    .withMessage('Image data is too large'),
+  handleValidationErrors
+];
+
 // Parameter and query validation - simplified using common patterns
 const validateUserId = [param('userid').isInt({ min: 1 }).withMessage('User ID must be a positive integer'), handleValidationErrors];
 const validatePetId = [param('petid').isInt({ min: 1 }).withMessage('Pet ID must be a positive integer'), handleValidationErrors];
@@ -241,6 +304,7 @@ module.exports = {
   validatePasswordChange,
   validatePetRegistration,
   validateEnhancedPetRegistration,
+  validateEnhancedPetUpdate,
   validateUserId,
   validatePetId,
   validatePagination,

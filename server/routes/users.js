@@ -104,6 +104,7 @@ router.get('/:userid/pets',
       type: pet.s_type,
       breed: pet.s_breed,
       description: pet.s_description,
+      image_url: pet.image_url || null,
       imageCount: pet.image_count,
       createdAt: pet.dt_created_at
     }));

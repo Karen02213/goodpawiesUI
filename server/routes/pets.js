@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const { verifyToken, optionalAuth } = require('../middleware/auth');
-const { validateUserId, validatePetId, validatePetRegistration, validateEnhancedPetRegistration } = require('../middleware/validation');
+const { validateUserId, validatePetId, validatePetRegistration, validateEnhancedPetRegistration, validateEnhancedPetUpdate } = require('../middleware/validation');
 const { asyncHandler, auditAction, validateOwnership } = require('../utils/errors');
 const { success, errors, send } = require('../utils/response');
 const petQueries = require('../db/petQueries');
@@ -164,6 +164,7 @@ router.get('/:petid',
     }
     
     const images = await petQueries.getPetImages(petid);
+    const imageUrl = images?.[0]?.image_id || null;
     
     send(res, success({
       id: pet.id,
@@ -171,7 +172,14 @@ router.get('/:petid',
       type: pet.s_type,
       breed: pet.s_breed,
       description: pet.s_description,
+      color: pet.s_color,
+      age: pet.n_age,
+      gender: pet.s_gender,
+      size: pet.s_size,
+      vaccinated: pet.b_vaccinated,
+      sterilized: pet.b_sterilized,
       createdAt: pet.dt_created_at,
+      image_url: imageUrl,
       owner: {
         id: pet.userid,
         username: pet.s_username,
@@ -189,6 +197,7 @@ router.get('/:petid',
 router.put('/:petid',
   verifyToken,
   validatePetId,
+  validateEnhancedPetUpdate,
   validateOwnership(
     async (req) => {
       const ownership = await petQueries.getPetOwnership(req.params.petid);
@@ -199,9 +208,37 @@ router.put('/:petid',
   auditAction('PET_UPDATE'),
   asyncHandler(async (req, res) => {
     const { petid } = req.params;
-    const { petname, type, breed, description } = req.body;
+    const {
+      s_petname,
+      s_type,
+      s_breed,
+      s_description,
+      s_color,
+      n_age,
+      s_gender,
+      s_size,
+      b_vaccinated,
+      b_sterilized,
+      image_data
+    } = req.body;
     
-    await petQueries.updatePet(petid, { petname, type, breed, description });
+    await petQueries.updatePet(petid, {
+      s_petname,
+      s_type,
+      s_breed,
+      s_description,
+      s_color,
+      n_age,
+      s_gender,
+      s_size,
+      b_vaccinated,
+      b_sterilized
+    });
+
+    if (image_data) {
+      await petQueries.addPetImage(petid, image_data);
+    }
+
     send(res, success(null, 'Pet updated successfully'));
   })
 );

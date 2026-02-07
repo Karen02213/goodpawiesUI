@@ -95,6 +95,17 @@ async function updatePet(petid, petData) {
 }
 
 /**
+ * Add pet image
+ */
+async function addPetImage(petid, imageId) {
+  const query = 'INSERT INTO pets_images (petid, image_id, b_active) VALUES (?, ?, 1)';
+  return await db.executeTransaction([{
+    query,
+    params: [petid, imageId]
+  }]);
+}
+
+/**
  * Delete pet (soft delete, atomic)
  */
 async function deletePet(petid) {
@@ -196,6 +207,7 @@ module.exports = {
   createPet,
   updatePet,
   deletePet,
+  addPetImage,
   getPetOwnership,
   getAllBreeds,
   getBreedsByType,

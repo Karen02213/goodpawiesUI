@@ -1,17 +1,16 @@
 // client/src/utils/api.js - API Client for GoodPawies
 import { useState, useEffect } from 'react';
 import authService from './auth';
+import axios from 'axios';
+import { normalizeApiBaseUrl } from './config';
 
-const normalizeApiBaseUrl = (url) => {
-  const fallback = 'http://localhost:5000/api';
-  if (!url || typeof url !== 'string') return fallback;
-
-  let normalized = url.trim().replace(/\/+$/, '');
-  if (!normalized.endsWith('/api')) {
-    normalized = `${normalized}/api`;
+// Create axios instance with base URL
+const api = axios.create({
+  baseURL: normalizeApiBaseUrl(process.env.REACT_APP_API_URL),
+  headers: {
+    'Content-Type': 'application/json'
   }
-  return normalized;
-};
+});
 
 class ApiClient {
   constructor() {
@@ -162,15 +161,15 @@ export const useApi = () => {
   const execute = async (apiCall) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const result = await apiCall();
-      
+
       if (!result.success) {
         setError(result.error || 'API_ERROR');
         return result;
       }
-      
+
       return result;
     } catch (err) {
       setError('NETWORK_ERROR');
@@ -196,7 +195,7 @@ export const usePetDropdowns = () => {
     const fetchDropdownData = async () => {
       setLoading(true);
       setError(null);
-      
+
       try {
         // Fetch all dropdown data in parallel
         const [breedsData, typesData, gendersData, sizesData] = await Promise.all([
@@ -205,12 +204,12 @@ export const usePetDropdowns = () => {
           apiClient.getPetGenders(),
           apiClient.getPetSizes()
         ]);
-        
+
         setBreeds(breedsData.breeds || []);
         setPetTypes(typesData.types || []);
         setGenders(gendersData.genders || []);
         setSizes(sizesData.sizes || []);
-        
+
       } catch (err) {
         console.error('Error fetching dropdown data:', err);
         setError('Failed to load dropdown data');
@@ -222,7 +221,7 @@ export const usePetDropdowns = () => {
         setLoading(false);
       }
     };
-    
+
     fetchDropdownData();
   }, []);
 
@@ -237,15 +236,15 @@ export const usePetRegistration = () => {
   const createPet = async (petData) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const result = await apiClient.createPetEnhanced(petData);
-      
+
       if (!result.success) {
         setError(result.message || 'Error al registrar la mascota');
         return result;
       }
-      
+
       return result;
     } catch (err) {
       console.error('Error creating pet:', err);

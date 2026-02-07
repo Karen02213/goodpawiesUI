@@ -42,11 +42,23 @@ async function getUserProfile(userid, isOwner = false) {
 async function getUserPets(userid, limit = 20, offset = 0) {
   const query = `
     SELECT p.id, p.s_petname, p.s_type, p.s_breed, p.s_description, p.dt_created_at,
-           COUNT(pi.id) as image_count
+           COUNT(pi.id) as image_count,
+           latest.image_id as image_url
     FROM pets p
     LEFT JOIN pets_images pi ON p.id = pi.petid AND pi.b_active = 1
+    LEFT JOIN (
+      SELECT pi1.petid, pi1.image_id
+      FROM pets_images pi1
+      INNER JOIN (
+        SELECT petid, MAX(dt_created_at) as max_created
+        FROM pets_images
+        WHERE b_active = 1
+        GROUP BY petid
+      ) pi2 ON pi1.petid = pi2.petid AND pi1.dt_created_at = pi2.max_created
+      WHERE pi1.b_active = 1
+    ) latest ON latest.petid = p.id
     WHERE p.userid = ? AND p.b_active = 1
-    GROUP BY p.id
+    GROUP BY p.id, latest.image_id
     ORDER BY p.dt_created_at DESC
     LIMIT ? OFFSET ?
   `;

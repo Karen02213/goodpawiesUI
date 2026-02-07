@@ -12,7 +12,6 @@ export default function PetDetailPage() {
   const { 
     modals, 
     hideModal, 
-    showNotImplemented, 
     showDeleteConfirm,
     showError,
     wrapApiCall
@@ -73,7 +72,7 @@ export default function PetDetailPage() {
   };
 
   const handleEditPet = () => {
-    showNotImplemented('Pet editing');
+    navigate(`/profile/${uid}/pet/${petid}/edit`);
   };
 
   if (loading) {
@@ -101,11 +100,11 @@ export default function PetDetailPage() {
   if (!pet) {
     return (
       <div className="pet-detail-page">
-        <div className="error">
-          <h2>Pet not found</h2>
-          <Link to="/perfil" className="btn btn-primary">
-            Back to Profile
-          </Link>
+        <div className="container" style={{ textAlign: 'center', padding: '4rem' }}>
+            <h2>Pet not found</h2>
+            <Link to="/perfil" className="btn btn-primary" style={{ marginTop: '1rem' }}>
+              Back to Profile
+            </Link>
         </div>
       </div>
     );
@@ -116,7 +115,8 @@ export default function PetDetailPage() {
       <div className="container">
         <div className="pet-header">
           <Link to="/perfil" className="back-link">
-            ← Back to Profile
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '6px'}}><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            Back to Profile
           </Link>
           <h1>{pet.name}</h1>
         </div>
@@ -125,9 +125,10 @@ export default function PetDetailPage() {
           <div className="pet-info-card">
             <div className="pet-image">
               <img 
-                src="/default-avatar.png" 
+                src={pet.image_url || "/default-avatar.png"} 
                 alt={pet.name}
                 className="pet-avatar"
+                onError={(e) => { e.target.onerror = null; e.target.src = "/default-avatar.png"; }}
               />
             </div>
             
@@ -135,28 +136,30 @@ export default function PetDetailPage() {
               <h2>{pet.name}</h2>
               <div className="detail-item">
                 <span className="label">Type:</span>
-                <span className="value">{pet.type}</span>
+                <span className="value" style={{ textTransform: 'capitalize' }}>{pet.type || 'Unknown'}</span>
               </div>
               <div className="detail-item">
                 <span className="label">Breed:</span>
-                <span className="value">{pet.breed}</span>
+                <span className="value">{pet.breed || 'Unknown'}</span>
+              </div>
+              <div className="detail-item">
+                <span className="label">Gender:</span>
+                <span className="value" style={{ textTransform: 'capitalize' }}>{pet.gender || 'Unknown'}</span>
+              </div>
+              <div className="detail-item">
+                <span className="label">Age:</span>
+                <span className="value">{pet.age ? `${pet.age} years` : 'Unknown'}</span>
               </div>
               {pet.description && (
-                <div className="detail-item">
-                  <span className="label">Description:</span>
+                <div className="detail-item" style={{ alignItems: 'flex-start' }}>
+                  <span className="label" style={{ marginTop: '4px' }}>About:</span>
                   <span className="value">{pet.description}</span>
                 </div>
               )}
               <div className="detail-item">
                 <span className="label">Owner:</span>
                 <span className="value">
-                  {pet.owner.fullName} {pet.owner.fullSurname}
-                </span>
-              </div>
-              <div className="detail-item">
-                <span className="label">Created:</span>
-                <span className="value">
-                  {new Date(pet.createdAt).toLocaleDateString()}
+                  {pet.owner?.fullName ? `${pet.owner.fullName} ${pet.owner.fullSurname || ''}` : (user?.fullName || 'You')}
                 </span>
               </div>
             </div>
@@ -164,37 +167,46 @@ export default function PetDetailPage() {
 
           <div className="action-cards">
             <div className="action-card qr-card">
-              <h3>🔗 QR Code</h3>
-              <p>Generate and customize a QR code for {pet.name}</p>
+              <h3>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                QR Code
+              </h3>
+              <p>Generate and customize a unique digital ID card for {pet.name}. Scannable by anyone to view this profile.</p>
               <Link 
                 to={`/profile/${uid}/pet/${petid}/qr`} 
-                className="btn btn-primary"
+                className="btn"
               >
-                {isOwner ? "Edit QR Code" : "View QR Code"}
+                {isOwner ? "Manage QR Code" : "View QR Code"}
               </Link>
             </div>
 
             {isOwner && (
               <>
                 <div className="action-card edit-card">
-                  <h3>✏️ Edit Pet</h3>
-                  <p>Update {pet.name}'s information</p>
+                  <h3>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    Edit Pet
+                  </h3>
+                  <p>Update {pet.name}'s medical details, photo, or general information to keep their profile current.</p>
                   <button 
-                    className="btn btn-secondary"
+                    className="btn"
                     onClick={handleEditPet}
                   >
-                    Edit Pet
+                    Edit Profile
                   </button>
                 </div>
 
                 <div className="action-card delete-card">
-                  <h3>🗑️ Delete Pet</h3>
-                  <p>Permanently remove {pet.name} from your profile</p>
+                  <h3>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                    Delete Pet
+                  </h3>
+                  <p>Permanently remove {pet.name} from your account. This action cannot be undone.</p>
                   <button 
-                    className="btn btn-danger"
+                    className="btn"
                     onClick={handleDeletePet}
                   >
-                    Delete Pet
+                    Delete Profile
                   </button>
                 </div>
               </>
