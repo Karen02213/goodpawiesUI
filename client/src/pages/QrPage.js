@@ -112,8 +112,8 @@ function QrPage() {
       <div className="qr-page-container">
         {/* Header */}
         <header className="qr-header">
-          <h1>👤 User QR Code</h1>
-          <p>Share your profile with others via this QR code</p>
+          <h1>👤 Código QR del usuario</h1>
+          <p>Comparte tu perfil con otros a través de este código QR</p>
         </header>
 
         {/* Main Content */}
@@ -134,13 +134,13 @@ function QrPage() {
                 <option value="svg">SVG</option>
               </select>
               <button onClick={onDownloadClick} className="btn-download">
-                ⬇ Download
+                ⬇ Descargar
               </button>
             </div>
 
             {/* URL Input */}
             <div className="qr-url-input">
-              <label>Profile URL</label>
+              <label>URL del perfil</label>
               <input
                 type="url"
                 value={qrUrl}
@@ -155,17 +155,17 @@ function QrPage() {
             className="btn-customize-toggle"
             onClick={() => setShowCustomization(!showCustomization)}
           >
-            {showCustomization ? '✕ Hide Options' : '⚙ Customize'}
+            {showCustomization ? '✕ Ocultar opciones' : '⚙ Personalizar'}
           </button>
 
           {/* Customization Panel */}
           {showCustomization && (
             <div className="qr-card qr-customize-card">
-              <h3>Customize Style</h3>
+              <h3>Personalizar estilo</h3>
 
               <div className="qr-options-grid">
                 <div className="qr-option">
-                  <label>Dots Color</label>
+                  <label>Color de los puntos</label>
                   <input
                     type="color"
                     value={qrOptions.dotsColor}
@@ -174,7 +174,7 @@ function QrPage() {
                 </div>
 
                 <div className="qr-option">
-                  <label>Background</label>
+                  <label>Color de fondo</label>
                   <input
                     type="color"
                     value={qrOptions.backgroundColor}
@@ -183,35 +183,35 @@ function QrPage() {
                 </div>
 
                 <div className="qr-option">
-                  <label>Dots Style</label>
+                  <label>Estilo de puntos</label>
                   <select
                     value={qrOptions.dotsType}
                     onChange={(e) => handleOptionChange('dotsType', e.target.value)}
                     className="form-select"
                   >
-                    <option value="rounded">Rounded</option>
-                    <option value="dots">Dots</option>
-                    <option value="square">Square</option>
-                    <option value="classy">Classy</option>
+                    <option value="rounded">Redondeado</option>
+                    <option value="dots">Puntos</option>
+                    <option value="square">Cuadrado</option>
+                    <option value="classy">Clasico</option>
                   </select>
                 </div>
 
                 <div className="qr-option">
-                  <label>Corners</label>
+                  <label>Esquinas</label>
                   <select
                     value={qrOptions.cornersSquareType}
                     onChange={(e) => handleOptionChange('cornersSquareType', e.target.value)}
                     className="form-select"
                   >
-                    <option value="extra-rounded">Extra Rounded</option>
-                    <option value="rounded">Rounded</option>
-                    <option value="square">Square</option>
-                    <option value="dot">Dot</option>
+                    <option value="extra-rounded">Extra Redondeado</option>
+                    <option value="rounded">Redondeado</option>
+                    <option value="square">Cuadrado</option>
+                    <option value="dot">Punto</option>
                   </select>
                 </div>
 
                 <div className="qr-option qr-option-full">
-                  <label>Image Margin: {qrOptions.imageMargin}px</label>
+                  <label>Margen de imagen: {qrOptions.imageMargin}px</label>
                   <input
                     type="range"
                     min="0"
@@ -227,7 +227,7 @@ function QrPage() {
 
         {/* Tips */}
         <footer className="qr-tips">
-          <span>💡 Print on pet tags, collars, or ID cards for quick scanning</span>
+          <span>💡 Imprime etiquetas, collares o tarjetas de identificación para un escaneo rápido</span>
         </footer>
       </div>
     </div>

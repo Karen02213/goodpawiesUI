@@ -21,12 +21,12 @@ export default function PetProfilePage() {
         setPet(response.data);
         setError(null);
       } else {
-        setError("Pet not found");
+        setError("Mascota no encontrada");
         navigate('/error', {
           state: {
             error: {
               status: 404,
-              message: "The pet profile you're looking for doesn't exist."
+              message: "La mascota que estás buscando no existe o no está disponible."
             }
           }
         });
@@ -47,7 +47,7 @@ export default function PetProfilePage() {
       <div className="pet-profile-page">
         <div className="pet-profile-loading">
           <div className="loading-spinner"></div>
-          <p>Loading pet profile...</p>
+          <p>Cargando perfil de la mascota...</p>
         </div>
       </div>
     );
@@ -58,8 +58,8 @@ export default function PetProfilePage() {
       <div className="pet-profile-page">
         <div className="pet-profile-error">
           <span className="error-icon">😿</span>
-          <h2>Pet not found</h2>
-          <p>The pet you're looking for doesn't exist or isn't available.</p>
+          <h2>Mascota no encontrada</h2>
+          <p>La mascota que estás buscando no existe o no está disponible.</p>
         </div>
       </div>
     );
@@ -104,14 +104,14 @@ export default function PetProfilePage() {
             <div className="detail-row">
               <span className="detail-icon">🎂</span>
               <div className="detail-content">
-                <span className="detail-label">Age</span>
-                <span className="detail-value">{pet.age ? `${pet.age} years` : 'Unknown'}</span>
+                <span className="detail-label">Edad</span>
+                <span className="detail-value">{pet.age ? `${pet.age} años` : 'Unknown'}</span>
               </div>
             </div>
             <div className="detail-row">
               <span className="detail-icon">⚧</span>
               <div className="detail-content">
-                <span className="detail-label">Gender</span>
+                <span className="detail-label">Género</span>
                 <span className="detail-value">{pet.gender || 'Unknown'}</span>
               </div>
             </div>
@@ -125,7 +125,7 @@ export default function PetProfilePage() {
             <div className="detail-row">
               <span className="detail-icon">📏</span>
               <div className="detail-content">
-                <span className="detail-label">Size</span>
+                <span className="detail-label">Tamaño</span>
                 <span className="detail-value">{pet.size || 'Unknown'}</span>
               </div>
             </div>
@@ -134,10 +134,10 @@ export default function PetProfilePage() {
           {/* Health Logic Check */}
           {(pet.vaccinated || pet.sterilized) && (
             <section className="pet-info-card health-card">
-              <h2>Health Status</h2>
+              <h2>Estado de salud</h2>
               <div className="health-badges">
-                {pet.vaccinated && <span className="badge badge-status badge-success">💉 Vaccinated</span>}
-                {pet.sterilized && <span className="badge badge-status badge-success">⚕️ Sterilized</span>}
+                {pet.vaccinated && <span className="badge badge-status badge-success">💉 Vacunado</span>}
+                {pet.sterilized && <span className="badge badge-status badge-success">⚕️ Esterilizado</span>}
               </div>
             </section>
           )}
@@ -153,7 +153,7 @@ export default function PetProfilePage() {
                 />
               </div>
               <div className="owner-text-centered">
-                <span className="owner-label">Owned by</span>
+                <span className="owner-label">Dueño</span>
                 <span className="owner-name-large">{pet.owner.fullName} {pet.owner.fullSurname}</span>
                 {pet.owner.city && <span className="owner-location">📍 {pet.owner.city}</span>}
               </div>
@@ -162,11 +162,11 @@ export default function PetProfilePage() {
             <div className="contact-actions">
               {whatsappLink ? (
                 <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="btn-whatsapp">
-                  <i className="fab fa-whatsapp"></i> Chat on WhatsApp
+                  <i className="fab fa-whatsapp"></i> Contactar por WhatsApp
                 </a>
               ) : (
                 <button disabled className="btn-whatsapp disabled">
-                  No Contact Info
+                  No hay información de contacto
                 </button>
               )}
             </div>
@@ -174,7 +174,7 @@ export default function PetProfilePage() {
         </main>
 
         <footer className="pet-profile-footer">
-          <p>💝 Created with GoodPawies - where every pet matters ✨</p>
+          <p>💝 Creado con GoodPawies - donde cada mascota importa ✨</p>
         </footer>
       </div>
     </div>

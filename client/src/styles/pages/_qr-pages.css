@@ -75,13 +75,21 @@
 }
 
 .qr-url-display {
+  display: block;
   word-break: break-all;
   font-size: var(--font-size-base);
-  color: var(--color-text-secondary);
+  color: var(--color-secondary);
   background: var(--color-bg-secondary);
   padding: var(--spacing-sm);
   border-radius: var(--border-radius-lg);
   margin: 0;
+  text-decoration: none;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.qr-url-display:hover {
+  background: var(--color-secondary);
+  color: white;
 }
 
 .qr-page {

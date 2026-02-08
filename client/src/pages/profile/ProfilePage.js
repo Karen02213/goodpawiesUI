@@ -77,7 +77,7 @@ export default function ProfilePage() {
           <div className="profile-user-details">
             <h2 className="profile-user-name">{user?.username || 'User'}</h2>
             <div className="profile-user-info">
-              <span className="label">Name:</span>
+              <span className="label">Nombre:</span>
               <span className="value">{user?.fullName} {user?.fullSurname}</span>
             </div>
             <div className="profile-user-info">
@@ -85,7 +85,7 @@ export default function ProfilePage() {
               <span className="value">{user?.email}</span>
             </div>
             <div className="profile-user-info">
-              <span className="label">Member Since:</span>
+              <span className="label">Miembro desde:</span>
               <span className="value">
                 {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
               </span>
@@ -115,12 +115,12 @@ export default function ProfilePage() {
 
           {!loading && !error && pets.length === 0 && (
             <div className="profile-no-pets-container">
-              <p className="profile-no-pets-text">You haven't registered any pets yet.</p>
+              <p className="profile-no-pets-text">Aún no has registrado ninguna mascota.</p>
               <Link
                 to="/register/pet"
                 className="profile-first-pet-button"
               >
-                Register your first pet! 🐾
+                ¡Registra tu primera mascota! 🐾
               </Link>
             </div>
           )}
@@ -158,7 +158,7 @@ export default function ProfilePage() {
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                   </svg>
                 </div>
-                <div className="profile-add-pet-text">Add Pet</div>
+                <div className="profile-add-pet-text">Añadir Mascota</div>
               </Link>
             </div>
           )}

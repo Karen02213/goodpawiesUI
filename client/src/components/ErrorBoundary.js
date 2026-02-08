@@ -16,19 +16,19 @@ class ErrorBoundary extends React.Component {
       error: error,
       errorInfo: errorInfo
     });
-    
+
     // Log error to console in development
     if (process.env.NODE_ENV === 'development') {
       console.error('Error Boundary caught an error:', error, errorInfo);
     }
-    
+
     // Here you could also log the error to an error reporting service
   }
 
   render() {
     if (this.state.hasError) {
       return (
-        <ErrorFallback 
+        <ErrorFallback
           error={this.state.error}
           errorInfo={this.state.errorInfo}
           resetError={() => this.setState({ hasError: false, error: null, errorInfo: null })}
@@ -57,18 +57,18 @@ const ErrorFallback = ({ error, errorInfo, resetError }) => {
       <div className="error-container">
         <div className="error-content">
           <div className="error-icon">🚨</div>
-          
-          <h1 className="error-title">Oops! Something went wrong</h1>
-          
+
+          <h1 className="error-title">¡Ups! Algo salió mal</h1>
+
           <p className="error-message">
-            We're sorry, but something unexpected happened. This error has been logged 
-            and we're working to fix it.
+            Lo sentimos, pero algo inesperado sucedió. Este error ha sido registrado
+            y estamos trabajando para solucionarlo.
           </p>
-          
+
           <div className="error-code">
             {error?.message || 'Unknown error occurred'}
           </div>
-          
+
           <div className="error-actions">
             <button className="btn btn-primary" onClick={handleReload}>
               🔄 Reload Page
@@ -77,10 +77,10 @@ const ErrorFallback = ({ error, errorInfo, resetError }) => {
               🏠 Go Home
             </button>
           </div>
-          
+
           {process.env.NODE_ENV === 'development' && (
             <details className="error-details">
-              <summary>Error Details (Development Mode)</summary>
+              <summary>Detalles del error (Modo de desarrollo)</summary>
               <pre className="error-stack">
                 {error && error.stack}
                 {errorInfo.componentStack}
@@ -88,9 +88,9 @@ const ErrorFallback = ({ error, errorInfo, resetError }) => {
             </details>
           )}
         </div>
-        
+
         <div className="error-footer">
-          <p>If this problem persists, please contact our support team.</p>
+          <p>Si este problema persiste, por favor contacta a nuestro equipo de soporte.</p>
         </div>
       </div>
     </div>

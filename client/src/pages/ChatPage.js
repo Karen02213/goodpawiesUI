@@ -9,7 +9,7 @@ function ChatPage() {
     {
       id: 1,
       role: 'assistant',
-      content: "Hello! I'm your AI Veterinary Assistant. I can help answer medical questions about your dogs and cats. How can I help you today?",
+      content: "¡Hola! Soy tu Asistente Veterinario con IA. Puedo ayudarte a responder preguntas médicas sobre tus perros y gatos. ¿Cómo puedo ayudarte hoy?",
       timestamp: new Date()
     }
   ]);
@@ -25,10 +25,10 @@ function ChatPage() {
   const inputRef = useRef(null);
 
   const suggestions = [
-    "My dog ate chocolate, what do I do?",
-    "How can I tell if my cat is sick?",
-    "Why is my dog scratching so much?",
-    "Vaccination schedule for puppies"
+    "Mi perro comió chocolate, ¿qué hago?",
+    "¿Cómo sé si mi gato está enfermo?",
+    "¿Por qué mi perro se rasca tanto?",
+    "Calendario de vacunación para cachorros"
   ];
 
   // Fetch user pets for context selector
@@ -201,14 +201,14 @@ function ChatPage() {
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <line x1="5" y1="12" x2="19" y2="12" />
               </svg>
-              New Chat
+              Nuevo Chat
             </button>
 
             {/* User Info */}
             <div className="sidebar-section">
               <div className="d-flex justify-content-between align-items-center mb-2">
-                <h4 className="sidebar-section-title m-0">Context</h4>
-                <p className="text-muted text-xs m-0">Select a pet to discuss</p>
+                <h4 className="sidebar-section-title m-0">Contexto</h4>
+                <p className="text-muted text-xs m-0">Selecciona una mascota para discutir</p>
               </div>
               <div className="pet-selector">
                 <select
@@ -218,7 +218,7 @@ function ChatPage() {
                   onChange={(e) => setSelectedPetId(e.target.value)}
                   aria-label="Select Pet Context"
                 >
-                  <option value="">General (No specific pet)</option>
+                  <option value="">General (Sin mascota específica)</option>
                   {userPets.map(pet => (
                     <option key={pet.id} value={pet.id}>
                       {pet.name || pet.s_petname} ({pet.type || pet.s_type})
@@ -226,8 +226,8 @@ function ChatPage() {
                   ))}
                 </select>
                 {selectedPetId && (
-                  <small className="text-muted" style={{ display: 'block', marginTop: '5px', fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>
-                    Discussing: {(() => {
+                  <small className="pet-context-label">
+                    Discutiendo: {(() => {
                       const pet = userPets.find(p => String(p.id) === selectedPetId);
                       return pet ? (pet.name || pet.s_petname) : '';
                     })()}
@@ -280,10 +280,10 @@ function ChatPage() {
               </svg>
             </div>
             <div>
-              <h2 className="chat-title">GoodPawies AI Assistant</h2>
+              <h2 className="chat-title">Asistente IA GoodPawies</h2>
               <span className="chat-status">
                 <span className={`status-dot ${isLoading ? 'typing' : ''}`}></span>
-                {isLoading ? 'Typing...' : 'Online - Ready to help'}
+                {isLoading ? 'Escribiendo...' : 'En línea - Listo para ayudar'}
               </span>
             </div>
           </div>
@@ -404,7 +404,7 @@ function ChatPage() {
               ref={inputRef}
               type="text"
               className="chat-input"
-              placeholder="Describe your pet's symptoms or ask a question..."
+              placeholder="Describe los síntomas de tu mascota o haz una pregunta..."
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               disabled={isLoading}
@@ -432,7 +432,7 @@ function ChatPage() {
               <line x1="12" y1="16" x2="12" y2="12" />
               <line x1="12" y1="8" x2="12.01" y2="8" />
             </svg>
-            AI advice is for informational purposes only and does not replace a real veterinarian.
+            El consejo de la IA es solo informativo y no reemplaza a un veterinario real.
           </p>
         </form>
       </main>

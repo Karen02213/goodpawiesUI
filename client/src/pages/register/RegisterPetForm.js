@@ -3,23 +3,22 @@ import { Link } from "react-router-dom";
 import { usePetDropdowns, usePetRegistration } from "../../utils/api";
 
 const AGE_RANGES = [
-  "Menos de 1 año",
-  "1 año",
-  "2 años",
-  "3 años",
-  "4 años",
-  "5 años",
-  "6 años",
-  "7 años",
-  "8 años",
-  "9 años",
-  "10 años",
-  "11 años",
-  "12 años",
-  "13 años",
-  "14 años",
-  "15 años",
-  "Más de 15 años"
+  "Menos de 1",
+  "1-2",
+  "2-3",
+  "3-4",
+  "4-5",
+  "5-6",
+  "6-7",
+  "7-8",
+  "8-9",
+  "9-10",
+  "10-11",
+  "11-12",
+  "12-13",
+  "13-14",
+  "14-15",
+  "Más de 15"
 ];
 
 function RegisterPage() {
@@ -277,7 +276,7 @@ function RegisterPage() {
                       <option value="">Selecciona la edad</option>
                       {AGE_RANGES.map((age) => (
                         <option key={age} value={age}>
-                          {age}
+                          {age} años
                         </option>
                       ))}
                     </select>

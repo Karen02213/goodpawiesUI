@@ -61,7 +61,7 @@ export default function PasswordForm({ registerDataRef }) {
             setError('Error de conexión. Por favor, intenta de nuevo.');
             break;
           case 'REGISTRATION_FAILED':
-            setError('Registration failed due to invalid data');
+            setError('Registro fallido debido a datos inválidos');
             break;
           default:
             setError(result.message || 'Error al registrar usuario');

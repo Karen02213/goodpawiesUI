@@ -148,7 +148,7 @@ export default function PetQrPage() {
     return (
       <div className="qr-loading-container">
         <div className="qr-loading-spinner"></div>
-        <p className="qr-loading-text">Generating QR Code...</p>
+        <p className="qr-loading-text">Generando código QR...</p>
       </div>
     );
   }
@@ -156,9 +156,9 @@ export default function PetQrPage() {
   if (error || !pet) {
     return (
       <div className="qr-error-container">
-        <h2 className="qr-error-title">{error || "Pet not found"}</h2>
+        <h2 className="qr-error-title">{error || "Mascota no encontrada"}</h2>
         <Link to={`/profile/${uid}/pet/${petid}`} className="btn">
-          Back to Pet Details
+          Volver a los detalles de la mascota
         </Link>
       </div>
     );
@@ -171,10 +171,10 @@ export default function PetQrPage() {
         <div className="qr-header">
           <Link to={`/profile/${uid}/pet/${petid}`} className="qr-back-link">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-            Back to {pet.name}
+            Volver a {pet.name}
           </Link>
-          <h1>QR Code for {pet.name}</h1>
-          <p>Scan this code to instantly view {pet.name}'s medical profile and emergency contact info.</p>
+          <h1>Código QR para {pet.name}</h1>
+          <p>Escanea este código para ver instantáneamente el perfil médico y la información de contacto de emergencia de {pet.name}.</p>
         </div>
 
         <div className="qr-main-content">
@@ -183,7 +183,9 @@ export default function PetQrPage() {
             <div ref={ref} className="qr-code-wrapper" />
 
             <div className="qr-info">
-              <p className="qr-url-display">{qrUrl}</p>
+              <a href={qrUrl} target="_blank" rel="noopener noreferrer" className="qr-url-display">
+                {qrUrl}
+              </a>
             </div>
 
             {/* Download Controls */}
@@ -193,13 +195,13 @@ export default function PetQrPage() {
                 value={fileExt}
                 className="qr-select form-select"
               >
-                <option value="png">Format: PNG</option>
-                <option value="jpeg">Format: JPEG</option>
-                <option value="webp">Format: WEBP</option>
-                <option value="svg">Format: SVG</option>
+                <option value="png">Formato: PNG</option>
+                <option value="jpeg">Formato: JPEG</option>
+                <option value="webp">Formato: WEBP</option>
+                <option value="svg">Formato: SVG</option>
               </select>
               <button onClick={onDownloadClick} className="btn-download">
-                Download QR Code
+                Descargar QR Code
               </button>
             </div>
           </div>
@@ -207,11 +209,11 @@ export default function PetQrPage() {
           {/* Customization Panel - Only show for owners */}
           {isOwner ? (
             <div className="qr-card qr-customize-card">
-              <h3>Customize Appearance</h3>
+              <h3>Personaliza la apariencia</h3>
               <div className="qr-options-grid">
                 {/* Dots Color */}
                 <div className="qr-option">
-                  <label htmlFor="dots-color">QR Color</label>
+                  <label htmlFor="dots-color">Color del QR</label>
                   <input
                     id="dots-color"
                     type="color"
@@ -222,7 +224,7 @@ export default function PetQrPage() {
 
                 {/* Background Color */}
                 <div className="qr-option">
-                  <label htmlFor="bg-color">Background Color</label>
+                  <label htmlFor="bg-color">Color de fondo</label>
                   <input
                     id="bg-color"
                     type="color"
@@ -233,25 +235,25 @@ export default function PetQrPage() {
 
                 {/* Dots Style */}
                 <div className="qr-option">
-                  <label htmlFor="dots-type">Pattern Style</label>
+                  <label htmlFor="dots-type">Estilo de patrón</label>
                   <select
                     id="dots-type"
                     value={qrOptions.dotsType}
                     onChange={(e) => handleOptionChange('dotsType', e.target.value)}
                     className="form-select"
                   >
-                    <option value="square">Square</option>
-                    <option value="rounded">Rounded</option>
-                    <option value="dots">Dots</option>
-                    <option value="classy">Classy</option>
-                    <option value="classy-rounded">Soft</option>
-                    <option value="extra-rounded">Extra Rounded</option>
+                    <option value="square">Cuadrado</option>
+                    <option value="rounded">Redondeado</option>
+                    <option value="dots">Puntos</option>
+                    <option value="classy">Clasico</option>
+                    <option value="classy-rounded">Suave</option>
+                    <option value="extra-rounded">Extra Redondeado</option>
                   </select>
                 </div>
 
                 {/* Corner Styles */}
                 <div className="qr-option">
-                  <label htmlFor="corners-square">Corner Style</label>
+                  <label htmlFor="corners-square">Estilo de esquina</label>
                   <select
                     id="corners-square"
                     value={qrOptions.cornersSquareType}
@@ -266,7 +268,7 @@ export default function PetQrPage() {
 
                 {/* Image Size */}
                 <div className="qr-option qr-option-full">
-                  <label htmlFor="image-size">Center Logo Size</label>
+                  <label htmlFor="image-size">Tamaño del logo central</label>
                   <input
                     id="image-size"
                     type="range"
@@ -282,11 +284,11 @@ export default function PetQrPage() {
           ) : (
             <div className="qr-card">
               <div className="info-section">
-                <h3>How it works:</h3>
+                <h3>¿Cómo funciona?:</h3>
                 <ul>
-                  <li>This QR code links directly to {pet.name}'s public profile</li>
-                  <li>Anyone can scan it to see {pet.name}'s information</li>
-                  <li>No login is required to view the pet's profile</li>
+                  <li>Este código QR enlaza directamente al perfil público de {pet.name}</li>
+                  <li>Cualquier persona puede escanearlo para ver la información de {pet.name}</li>
+                  <li>No se requiere iniciar sesión para ver el perfil de la mascota</li>
                 </ul>
               </div>
             </div>
@@ -294,7 +296,7 @@ export default function PetQrPage() {
 
           {isOwner && (
             <footer className="qr-tips">
-              <span>💡 Print on pet tags, collars, or ID cards for quick scanning</span>
+              <span>💡 Imprímelo en etiquetas, collares o tarjetas de identificación para un escaneo rápido</span>
             </footer>
           )}
         </div>

@@ -9,6 +9,7 @@ const SidebarNav = ({ activeSection, setActiveSection, isCollapsed, toggleSideba
     { id: 'buttons', icon: 'smart_button', label: 'Buttons' },
     { id: 'forms', icon: 'feed', label: 'Forms' },
     { id: 'cards', icon: 'style', label: 'Cards' },
+    { id: 'navigation', icon: 'menu', label: 'Navigation' },
     { id: 'avatars', icon: 'account_circle', label: 'Avatars' },
     { id: 'badges', icon: 'verified', label: 'Badges' },
     { id: 'loaders', icon: 'hourglass_empty', label: 'Loaders' },
@@ -51,7 +52,7 @@ const SidebarNav = ({ activeSection, setActiveSection, isCollapsed, toggleSideba
                 className={`sidebar-item ${activeSection === section.id ? 'active' : ''}`}
                 onClick={() => {
                   setActiveSection(section.id);
-                  if (isMobile) toggleSidebar(); // Close on click for mobile
+                  if (isMobile) toggleSidebar();
                 }}
                 title={isCollapsed ? section.label : ''}
               >
@@ -92,6 +93,91 @@ const SidebarNav = ({ activeSection, setActiveSection, isCollapsed, toggleSideba
 };
 
 // --- Main Content Container ---
+// --- Navigation Section ---
+const NavigationSection = () => (
+  <div className="animate-fade-in">
+    <h2 className="section-title">🧭 Navigation & Sidebar</h2>
+    <p className="section-desc">standard sidebar navigation component.</p>
+
+    <div className="card mb-5">
+      <div className="card-header bg-white"><h3 className="text-lg font-bold m-0">Sidebar Component</h3></div>
+      <div className="card-body bg-light p-0" style={{ height: '600px', position: 'relative', overflow: 'hidden' }}>
+
+        {/* Sidebar Demo Container - Overriding fixed position for demo */}
+        <div className="navbar-sidebar open" style={{ position: 'absolute', height: '100%', boxShadow: 'none', borderRight: '1px solid #e1e4e8' }}>
+          <div className="sidebar-header-section">
+            <div className="sidebar-user-card">
+              <div className="avatar avatar-md avatar-bordered">
+                <img src="/default-avatar.png" alt="User" />
+              </div>
+              <div className="sidebar-user-details">
+                <span className="sidebar-username">UserName</span>
+                <span className="sidebar-email text-xs text-muted">UserEmail@mail.com</span>
+              </div>
+            </div>
+          </div>
+
+          <ul className="navbar-menu">
+            <li className="menu-section-title">Main Menu</li>
+            <li>
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+              <a className="active" href="#demo" onClick={(e) => e.preventDefault()}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                Home
+              </a>
+            </li>
+            <li>
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+              <a href="#demo" onClick={(e) => e.preventDefault()}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                AI Chat
+              </a>
+            </li>
+
+            <li className="menu-section-title">Pet Management</li>
+            <li>
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+              <a href="#demo" onClick={(e) => e.preventDefault()}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                Add New Pet
+              </a>
+            </li>
+            <li>
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+              <a href="#demo" onClick={(e) => e.preventDefault()}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                My Profile & Pets
+              </a>
+            </li>
+
+            <li className="menu-section-title">More</li>
+            <li>
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+              <a href="#demo" onClick={(e) => e.preventDefault()}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                Demo
+              </a>
+            </li>
+          </ul>
+
+          <div className="sidebar-footer-section">
+            <button className="sidebar-logout-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+              Log Out
+            </button>
+          </div>
+        </div>
+
+        {/* Mock Content Background */}
+        <div style={{ marginLeft: '280px', padding: '2rem' }}>
+          <h2 className="text-2xl font-bold text-gray-800">Page Content Area</h2>
+          <p className="text-gray-500 mt-2">The sidebar pushes content or overlays it depending on the viewport.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
 const DemoPage = () => {
   const [activeSection, setActiveSection] = useState('dashboard');
   const [toast, setToast] = useState(null);
@@ -137,6 +223,7 @@ const DemoPage = () => {
       case 'layout': return <LayoutSection />;
       case 'utilities': return <UtilitiesSection />;
       case 'animations': return <AnimationsSection />;
+      case 'navigation': return <NavigationSection />;
       default: return <DashboardSection />;
     }
   };
@@ -1198,7 +1285,7 @@ const ModalsSection = ({ showToast }) => {
             <div className="modal-footer">
               <button className="btn btn-outline-secondary" onClick={closeModal}>Cancel</button>
               <button
-                className={`btn ${activeModal === 'danger' ? 'btn-danger' : 'btn-primary'}`}
+                className={`btn ${activeModal === 'danger' ? 'btn-danger' : 'btn-primary'} `}
                 onClick={() => { closeModal(); showToast('Action confirmed!'); }}
               >
                 Confirm

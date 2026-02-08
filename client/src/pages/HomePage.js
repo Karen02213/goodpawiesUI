@@ -12,10 +12,10 @@ function HomePage() {
         <div className="container">
           <div className="hero-content mx-auto">
             <h1 className="hero-title">
-              Welcome back, <span className="highlight">{user?.fullName || user?.username || 'Pet Parent'}</span>!
+              ¡Bienvenido de vuelta, <span className="highlight">{user?.fullName || user?.username || 'Amante de Mascotas'}</span>!
             </h1>
             <p className="hero-subtitle">
-              Your AI-powered veterinary assistant is ready to help with your dog or cat's health questions.
+              Tu asistente veterinario impulsado por IA está listo para ayudarte con las preguntas de salud de tu perro o gato.
             </p>
           </div>
         </div>
@@ -24,29 +24,29 @@ function HomePage() {
       {/* Quick Actions */}
       <section className="section section-bg-light">
         <div className="container">
-          <h2 className="section-title">Quick Actions</h2>
+          <h2 className="section-title">Acciones Rápidas</h2>
           <div className="grid-responsive">
-            <Link to="/chat" className="card-action">
+            <Link to="/chat" className="card-action" style={{ boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }}>
               <div className="card-icon">
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                 </svg>
               </div>
-              <h3>Start AI Chat</h3>
-              <p>Get instant veterinary guidance for your pets</p>
-              <span className="btn-text" style={{ fontWeight: 600, color: 'white' }}>Open Chat →</span>
+              <h3>Iniciar Chat IA</h3>
+              <p>Obtén orientación veterinaria instantánea para tus mascotas</p>
+              <span className="btn-text" style={{ fontWeight: 600, color: 'var(--color-primary-dark)' }}>Abrir Chat →</span>
             </Link>
 
-            <Link to="/profile" className="card-action">
+            <Link to="/profile" className="card-action" style={{ boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }}>
               <div className="card-icon">
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                   <circle cx="12" cy="7" r="4" />
                 </svg>
               </div>
-              <h3>My Profile</h3>
-              <p>View and manage your account</p>
-              <span className="btn-text" style={{ fontWeight: 600, color: 'var(--color-secondary)' }}>View Profile →</span>
+              <h3>Mi Perfil</h3>
+              <p>Ver y administrar tu cuenta</p>
+              <span className="btn-text" style={{ fontWeight: 600, color: 'var(--color-primary-dark)' }}>Ver Perfil →</span>
             </Link>
           </div>
         </div>
@@ -55,7 +55,7 @@ function HomePage() {
       {/* Features Section */}
       <section className="section">
         <div className="container">
-          <h2 className="section-title">How GoodPawies Helps You</h2>
+          <h2 className="section-title">Cómo te Ayuda GoodPawies</h2>
           <div className="grid-responsive">
             <div className="card-feature">
               <div className="feature-icon">
@@ -65,8 +65,8 @@ function HomePage() {
                   <line x1="12" y1="17" x2="12.01" y2="17" />
                 </svg>
               </div>
-              <h4>Symptom Analysis</h4>
-              <p>Describe symptoms and get AI-powered analysis with possible causes and recommended actions.</p>
+              <h4>Análisis de Síntomas</h4>
+              <p>Describe los síntomas y obtén un análisis impulsado por IA con posibles causas y acciones recomendadas.</p>
             </div>
 
             <div className="card-feature">
@@ -77,8 +77,8 @@ function HomePage() {
                   <path d="M2 12l10 5 10-5" />
                 </svg>
               </div>
-              <h4>Dogs & Cats Expert</h4>
-              <p>Specialized AI trained on veterinary knowledge specifically for dogs and cats.</p>
+              <h4>Experto en Perros y Gatos</h4>
+              <p>IA especializada entrenada en conocimiento veterinario específicamente para perros y gatos.</p>
             </div>
 
             <div className="card-feature">
@@ -88,8 +88,8 @@ function HomePage() {
                   <polyline points="12 6 12 12 16 14" />
                 </svg>
               </div>
-              <h4>24/7 Available</h4>
-              <p>Get immediate responses any time of day or night without waiting for appointments.</p>
+              <h4>Disponible 24/7</h4>
+              <p>Obtén respuestas inmediatas a cualquier hora del día o la noche sin esperar citas.</p>
             </div>
 
             <div className="card-feature">
@@ -99,8 +99,8 @@ function HomePage() {
                   <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                 </svg>
               </div>
-              <h4>Private & Secure</h4>
-              <p>Your conversations are private. We prioritize your data security.</p>
+              <h4>Privado y Seguro</h4>
+              <p>Tus conversaciones son privadas. Priorizamos la seguridad de tus datos.</p>
             </div>
           </div>
         </div>
@@ -118,11 +118,11 @@ function HomePage() {
               </svg>
             </div>
             <div className="tip-content">
-              <h3>Pro Tip</h3>
+              <h3>Consejo Profesional</h3>
               <p>
-                When describing your pet's symptoms, include details like: how long the symptoms have been present,
-                your pet's age and breed, any changes in behavior or appetite, and any recent environmental changes.
-                The more details you provide, the better guidance the AI can offer.
+                Al describir los síntomas de tu mascota, incluye detalles como: cuánto tiempo han estado presentes los síntomas,
+                la edad y raza de tu mascota, cualquier cambio en comportamiento o apetito, y cambios recientes en el ambiente.
+                Cuantos más detalles proporciones, mejor orientación podrá ofrecer la IA.
               </p>
             </div>
           </div>
@@ -139,8 +139,8 @@ function HomePage() {
               <line x1="12" y1="17" x2="12.01" y2="17" />
             </svg>
             <p>
-              <strong>Important:</strong> GoodPawies provides general guidance and is not a substitute for professional
-              veterinary care. Always consult a licensed veterinarian for medical emergencies or serious health concerns.
+              <strong>Importante:</strong> GoodPawies proporciona orientación general y no es un sustituto de la atención
+              veterinaria profesional. Siempre consulta a un veterinario licenciado para emergencias médicas o problemas de salud graves.
             </p>
           </div>
         </div>
@@ -150,4 +150,3 @@ function HomePage() {
 }
 
 export default HomePage;
-

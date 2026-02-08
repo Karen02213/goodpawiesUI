@@ -101,13 +101,13 @@ export default function SettingsPage() {
 
             if (result.success) {
                 await refreshUser();
-                setSuccess("Profile updated successfully!");
+                setSuccess("Perfil actualizado correctamente!");
                 setImageData("");
             } else {
-                setError(result.message || "Failed to update profile");
+                setError(result.message || "No se pudo actualizar el perfil");
             }
         } catch (err) {
-            setError("An error occurred while updating profile");
+            setError("Error al actualizar el perfil");
         } finally {
             setLoading(false);
         }
@@ -120,7 +120,7 @@ export default function SettingsPage() {
         setSuccess("");
 
         if (passwordData.newPassword !== passwordData.confirmPassword) {
-            setError("New passwords do not match");
+            setError("Las contraseñas no coinciden");
             setLoading(false);
             return;
         }
@@ -132,17 +132,17 @@ export default function SettingsPage() {
             );
 
             if (result.success) {
-                setSuccess("Password changed successfully!");
+                setSuccess("Contraseña cambiada correctamente!");
                 setPasswordData({
                     currentPassword: "",
                     newPassword: "",
                     confirmPassword: "",
                 });
             } else {
-                setError(result.message || "Failed to change password");
+                setError(result.message || "No se pudo cambiar la contraseña");
             }
         } catch (err) {
-            setError("An error occurred while changing password");
+            setError("Error al cambiar la contraseña");
         } finally {
             setLoading(false);
         }
@@ -156,7 +156,7 @@ export default function SettingsPage() {
                         <circle cx="12" cy="12" r="3" />
                         <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
                     </svg>
-                    Settings
+                    Configuración
                 </h1>
 
                 {success && <div className="alert alert-success">{success}</div>}
@@ -164,7 +164,7 @@ export default function SettingsPage() {
 
                 {/* Profile Section */}
                 <div className="settings-card">
-                    <h2 className="settings-section-title">Profile Information</h2>
+                    <h2 className="settings-section-title">Información del Perfil</h2>
 
                     <form onSubmit={handleProfileSubmit}>
                         {/* Avatar Upload */}
@@ -180,7 +180,7 @@ export default function SettingsPage() {
                             </div>
                             <div className="settings-avatar-actions">
                                 <label className="btn btn-outline-primary btn-sm">
-                                    Change Photo
+                                    Cambiar Foto
                                     <input
                                         type="file"
                                         accept="image/*"
@@ -194,7 +194,7 @@ export default function SettingsPage() {
 
                         <div className="settings-form-grid">
                             <div className="form-group">
-                                <label htmlFor="fullName">First Name</label>
+                                <label htmlFor="fullName">Nombre</label>
                                 <input
                                     type="text"
                                     id="fullName"
@@ -202,12 +202,12 @@ export default function SettingsPage() {
                                     value={profileData.fullName}
                                     onChange={handleProfileChange}
                                     className="form-control"
-                                    placeholder="Your first name"
+                                    placeholder="Tu nombre"
                                 />
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="fullSurname">Last Name</label>
+                                <label htmlFor="fullSurname">Apellido</label>
                                 <input
                                     type="text"
                                     id="fullSurname"
@@ -215,12 +215,12 @@ export default function SettingsPage() {
                                     value={profileData.fullSurname}
                                     onChange={handleProfileChange}
                                     className="form-control"
-                                    placeholder="Your last name"
+                                    placeholder="Tu apellido"
                                 />
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="phoneNumber">Phone Number</label>
+                                <label htmlFor="phoneNumber">Número de Teléfono</label>
                                 <div className="phone-input-group">
                                     <select
                                         name="phonePrefix"
@@ -240,13 +240,13 @@ export default function SettingsPage() {
                                         value={profileData.phoneNumber}
                                         onChange={handleProfileChange}
                                         className="form-control"
-                                        placeholder="Phone number"
+                                        placeholder="Número de teléfono"
                                     />
                                 </div>
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="city">City</label>
+                                <label htmlFor="city">Ciudad</label>
                                 <input
                                     type="text"
                                     id="city"
@@ -254,25 +254,25 @@ export default function SettingsPage() {
                                     value={profileData.city}
                                     onChange={handleProfileChange}
                                     className="form-control"
-                                    placeholder="Your city"
+                                    placeholder="Tu ciudad"
                                 />
                             </div>
                         </div>
 
                         <button type="submit" className="btn btn-primary" disabled={loading}>
-                            {loading ? "Saving..." : "Save Changes"}
+                            {loading ? "Guardando..." : "Guardar Cambios"}
                         </button>
                     </form>
                 </div>
 
                 {/* Password Section */}
                 <div className="settings-card">
-                    <h2 className="settings-section-title">Change Password</h2>
+                    <h2 className="settings-section-title">Cambiar Contraseña</h2>
 
                     <form onSubmit={handlePasswordSubmit}>
                         <div className="settings-form-grid single-column">
                             <div className="form-group">
-                                <label htmlFor="currentPassword">Current Password</label>
+                                <label htmlFor="currentPassword">Contraseña Actual</label>
                                 <input
                                     type="password"
                                     id="currentPassword"
@@ -285,7 +285,7 @@ export default function SettingsPage() {
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="newPassword">New Password</label>
+                                <label htmlFor="newPassword">Nueva Contraseña</label>
                                 <input
                                     type="password"
                                     id="newPassword"
@@ -299,7 +299,7 @@ export default function SettingsPage() {
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="confirmPassword">Confirm New Password</label>
+                                <label htmlFor="confirmPassword">Confirmar Nueva Contraseña</label>
                                 <input
                                     type="password"
                                     id="confirmPassword"
@@ -313,7 +313,7 @@ export default function SettingsPage() {
                         </div>
 
                         <button type="submit" className="btn btn-primary" disabled={loading}>
-                            {loading ? "Changing..." : "Change Password"}
+                            {loading ? "Cambiando..." : "Cambiar Contraseña"}
                         </button>
                     </form>
                 </div>

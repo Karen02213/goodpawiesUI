@@ -7,31 +7,41 @@ const logger = require('../utils/logger');
 const { getPetById } = require('../db/petQueries');
 
 // System prompt for the veterinary AI assistant
-const SYSTEM_PROMPT = `You are a veterinary AI assistant named GoodPawies. You ONLY answer medical questions regarding Dogs and Cats. 
+const SYSTEM_PROMPT = `You are a veterinary AI assistant named GoodPawies. You ONLY answer medical questions regarding Dogs and Cats.
 
-Important guidelines:
-1. If the user asks about other topics or other animals (birds, reptiles, horses, fish, etc.), politely decline and explain you only specialize in dogs and cats.
-2. Do NOT provide definitive diagnoses. Instead, offer general guidance and information.
-3. Always suggest visiting a veterinarian for serious symptoms, emergencies, or when in doubt.
-4. Be compassionate and understanding - pet owners are often worried about their furry friends.
-5. Ask clarifying questions when needed (age, breed, duration of symptoms, etc.).
-6. Provide practical first-aid advice when appropriate, but emphasize professional care.
-7. Never recommend specific prescription medications - only a vet can prescribe.
-8. If symptoms suggest an emergency (difficulty breathing, seizures, severe bleeding, toxin ingestion), urge immediate veterinary care.
-9. Asume the user is seeking advice for their pet's health and wellbeing.
-10. User can be anywhere in the world, so avoid location-specific advice.
-11. Use layman's terms - avoid medical jargon unless explained simply.
-12. Always remind users that your advice does not replace professional veterinary care. 
-13. Maintain a friendly and approachable tone throughout the conversation.
-Remember: You are a helpful guide, not a replacement for professional veterinary care.
-14. Your responses should be concise, informative, and empathetic.
-15. Responses should be in markdown format for better readability.
-16. Response must be short but informative`;
+## Core Behavior
+- ALWAYS respond in Spanish (Latin American Spanish), regardless of the language used in the question.
+- Be compassionate and understanding - pet owners are often worried about their furry friends.
+- Maintain a friendly and approachable tone throughout the conversation.
+- Use layman's terms - avoid medical jargon unless explained simply or asked for.
+
+## Scope & Boundaries
+- If the user asks about other topics or other animals (birds, reptiles, horses, fish, etc.), politely decline in Spanish and explain you only specialize in dogs and cats.
+- Assume the user is seeking advice for their pet's health and wellbeing.
+- User can be anywhere in the world, so avoid location-specific advice.
+
+## Medical Guidelines
+- Do NOT provide definitive diagnoses. Instead, offer general guidance and information.
+- Ask clarifying questions when needed (age, breed, duration of symptoms, etc.).
+- Provide practical first-aid advice when appropriate, but emphasize professional care.
+- Never recommend specific prescription medications - only a vet can prescribe.
+- Always remind users that your advice does not replace professional veterinary care.
+
+## Emergencies
+- If symptoms suggest an emergency (difficulty breathing, seizures, severe bleeding, toxin ingestion), urge immediate veterinary care in Spanish.
+- Always suggest visiting a veterinarian for serious symptoms, emergencies, or when in doubt.
+
+## Response Format
+- Responses should be in Spanish markdown format for better readability.
+- Response must be concise but informative.
+- Keep responses focused and helpful.
+
+Remember: You are a helpful guide, not a replacement for professional veterinary care.`;
 
 // Helper function to call Google Gemini API
 async function callGeminiAPI(messages, context = '') {
   const apiKey = process.env.GEMINI_API_KEY;
-  
+
   if (!apiKey) {
     throw new Error('GEMINI_API_KEY not configured');
   }
@@ -80,7 +90,7 @@ async function callGeminiAPI(messages, context = '') {
   }
 
   const data = await response.json();
-  
+
   if (!data.candidates || !data.candidates[0]?.content?.parts?.[0]?.text) {
     throw new Error('Invalid response from Gemini API');
   }
@@ -91,7 +101,7 @@ async function callGeminiAPI(messages, context = '') {
 // Helper function to call OpenAI API
 async function callOpenAIAPI(messages, context = '') {
   const apiKey = process.env.OPENAI_API_KEY;
-  
+
   if (!apiKey) {
     throw new Error('OPENAI_API_KEY not configured');
   }
@@ -128,7 +138,7 @@ async function callOpenAIAPI(messages, context = '') {
   }
 
   const data = await response.json();
-  
+
   if (!data.choices || !data.choices[0]?.message?.content) {
     throw new Error('Invalid response from OpenAI API');
   }
@@ -139,37 +149,38 @@ async function callOpenAIAPI(messages, context = '') {
 // Fallback response when no API is configured
 function getFallbackResponse(userMessage) {
   const lowerMessage = userMessage.toLowerCase();
-  
-  // Check for emergency keywords
-  const emergencyKeywords = ['bleeding', 'seizure', 'unconscious', 'not breathing', 'poison', 'toxic', 'hit by car', 'choking'];
+
+  // Check for emergency keywords (Spanish and English)
+  const emergencyKeywords = ['bleeding', 'seizure', 'unconscious', 'not breathing', 'poison', 'toxic', 'hit by car', 'choking', 'sangrando', 'convulsión', 'inconsciente', 'no respira', 'veneno', 'tóxico', 'atropellado', 'ahogándose'];
   if (emergencyKeywords.some(keyword => lowerMessage.includes(keyword))) {
-    return "⚠️ This sounds like it could be an emergency! Please contact your nearest emergency veterinary clinic immediately. Time is critical in these situations. Do not wait - seek professional help right away.";
+    return "⚠️ ¡Esto parece ser una emergencia! Por favor, contacta a tu clínica veterinaria de emergencia más cercana inmediatamente. El tiempo es crítico en estas situaciones. No esperes - busca ayuda profesional de inmediato.";
   }
-  
-  // Check for non-dog/cat animals
-  const otherAnimals = ['bird', 'fish', 'rabbit', 'hamster', 'snake', 'lizard', 'turtle', 'horse', 'cow', 'pig', 'chicken', 'parrot', 'guinea pig', 'ferret', 'rat', 'mouse'];
+
+  // Check for non-dog/cat animals (Spanish and English)
+  const otherAnimals = ['bird', 'fish', 'rabbit', 'hamster', 'snake', 'lizard', 'turtle', 'horse', 'cow', 'pig', 'chicken', 'parrot', 'guinea pig', 'ferret', 'rat', 'mouse', 'pájaro', 'pez', 'conejo', 'hámster', 'serpiente', 'lagarto', 'tortuga', 'caballo', 'vaca', 'cerdo', 'pollo', 'loro', 'cuy', 'hurón', 'rata', 'ratón'];
   if (otherAnimals.some(animal => lowerMessage.includes(animal))) {
-    return "I appreciate your question, but I specialize specifically in dogs and cats. For other animals, I'd recommend consulting with a veterinarian who specializes in exotic pets or the specific type of animal you're asking about. Is there anything I can help you with regarding a dog or cat?";
+    return "Aprecio tu pregunta, pero me especializo específicamente en perros y gatos. Para otros animales, te recomiendo consultar con un veterinario que se especialice en mascotas exóticas o el tipo específico de animal que mencionas. ¿Hay algo en lo que pueda ayudarte respecto a un perro o gato?";
   }
-  
-  // Check for off-topic questions
-  const offTopicKeywords = ['weather', 'recipe', 'news', 'politics', 'sports', 'movie', 'music', 'joke', 'story'];
+
+  // Check for off-topic questions (Spanish and English)
+  const offTopicKeywords = ['weather', 'recipe', 'news', 'politics', 'sports', 'movie', 'music', 'joke', 'story', 'clima', 'receta', 'noticias', 'política', 'deportes', 'película', 'música', 'chiste', 'historia'];
   if (offTopicKeywords.some(keyword => lowerMessage.includes(keyword))) {
-    return "I'm specifically designed to help with veterinary questions about dogs and cats. I can't help with that topic, but I'd be happy to answer any questions about your pet's health, behavior, nutrition, or care!";
+    return "Estoy diseñado específicamente para ayudar con preguntas veterinarias sobre perros y gatos. No puedo ayudarte con ese tema, ¡pero estaría encantado de responder cualquier pregunta sobre la salud, comportamiento, nutrición o cuidado de tu mascota!";
   }
-  
+
   // Default helpful response
-  return `Thank you for your question about your pet! While I'm currently in demo mode (no AI API configured), I want to help you as best as I can.
+  return `
+¡Gracias por tu pregunta sobre tu mascota! Aunque actualmente estoy en modo demo (sin API de IA configurada), quiero ayudarte lo mejor que pueda.
 
-For the best guidance, please include:
-• Your pet's species (dog or cat), age, and breed
-• How long the symptoms have been present
-• Any changes in eating, drinking, or behavior
-• Whether your pet is up to date on vaccinations
+**Para ofrecerte la mejor orientación, incluye:**
 
-**Important:** If your pet is showing severe symptoms like difficulty breathing, seizures, collapse, or severe pain, please contact your veterinarian or emergency animal hospital immediately.
+- La especie (perro o gato), la edad y la raza de tu mascota.
+- Cuánto tiempo lleva presentando los síntomas.
+- Cualquier cambio en su alimentación, bebida o comportamiento.
+- Si tu mascota está al día con las vacunas.
 
-To enable full AI responses, configure the GEMINI_API_KEY or OPENAI_API_KEY in the server environment.`;
+**Importante:** Si su mascota presenta síntomas graves como dificultad para respirar, convulsiones, colapso o dolor intenso, póngase en contacto con su veterinario o con un hospital veterinario de urgencias inmediatamente.
+Para habilitar las respuestas completas de IA, configure **GEMINI_API_KEY** u **OPENAI_API_KEY** en el entorno del servidor.`;
 }
 
 // POST /api/chat - Main chat endpoint
@@ -209,7 +220,7 @@ History/Notes: ${pet.s_description || 'None'}
 
     // Get the last user message for logging
     const lastUserMessage = messages.filter(m => m.role === 'user').pop();
-    
+
     logger.info('Chat request received', {
       userId: req.user.id,
       messageCount: messages.length,
@@ -235,7 +246,7 @@ History/Notes: ${pet.s_description || 'None'}
       }
     } catch (apiError) {
       logger.error('AI API call failed', { error: apiError.message, provider });
-      
+
       // Try the other provider as backup
       try {
         if (provider === 'gemini' && process.env.OPENAI_API_KEY) {
@@ -278,7 +289,7 @@ router.get('/status', verifyToken, (req, res) => {
     openai: !!process.env.OPENAI_API_KEY,
     available: !!(process.env.GEMINI_API_KEY || process.env.OPENAI_API_KEY)
   };
-  
+
   send(res, success(status));
 });
 

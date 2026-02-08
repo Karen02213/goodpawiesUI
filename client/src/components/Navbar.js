@@ -123,14 +123,14 @@ export default function Navbar() {
 
             {/* Navigation Links */}
             <ul className="navbar-menu">
-              <li className="menu-section-title">Main Menu</li>
+              <li className="menu-section-title">Menú Principal</li>
               <li>
                 <Link to="/home" className={isActive('/home') ? 'active' : ''} onClick={() => setMenuOpen(false)}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
                     <polyline points="9 22 9 12 15 12 15 22" />
                   </svg>
-                  Home
+                  Inicio
                 </Link>
               </li>
               <li>
@@ -138,11 +138,11 @@ export default function Navbar() {
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                   </svg>
-                  AI Chat
+                  Chat IA
                 </Link>
               </li>
 
-              <li className="menu-section-title">Pet Management</li>
+              <li className="menu-section-title">Gestión de Mascotas</li>
               <li>
                 <Link to="/register/pet" className={isActive('/register/pet') ? 'active' : ''} onClick={() => setMenuOpen(false)}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -150,7 +150,7 @@ export default function Navbar() {
                     <line x1="12" y1="8" x2="12" y2="16" />
                     <line x1="8" y1="12" x2="16" y2="12" />
                   </svg>
-                  Add New Pet
+                  Agregar Mascota
                 </Link>
               </li>
               <li>
@@ -159,11 +159,11 @@ export default function Navbar() {
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                     <circle cx="12" cy="7" r="4" />
                   </svg>
-                  My Profile & Pets
+                  Mi Perfil y Mascotas
                 </Link>
               </li>
 
-              <li className="menu-section-title">More</li>
+              <li className="menu-section-title">Más</li>
               <li>
                 <Link to="/demo" className={isActive('/demo') ? 'active' : ''} onClick={() => setMenuOpen(false)}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -184,7 +184,7 @@ export default function Navbar() {
                   <polyline points="16 17 21 12 16 7" />
                   <line x1="21" y1="12" x2="9" y2="12" />
                 </svg>
-                Log Out
+                Cerrar Sesión
               </button>
             </div>
           </div>

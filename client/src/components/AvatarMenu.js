@@ -37,7 +37,7 @@ export default function AvatarMenu({ imageUrl, username, onLogout }) {
         <div className="profile-dropdown-menu">
           {username && (
             <div className="profile-user-greeting">
-              Hello, {username}
+              Hola, {username}
             </div>
           )}
           <Link
@@ -45,20 +45,20 @@ export default function AvatarMenu({ imageUrl, username, onLogout }) {
             className="profile-dropdown-link"
             onClick={() => setOpen(false)}
           >
-            👤 View Profile
+            👤 Ver Perfil
           </Link>
           <Link
             to="/profile/settings"
             className="profile-dropdown-link"
             onClick={() => setOpen(false)}
           >
-            ⚙️ Settings
+            ⚙️ Configuración
           </Link>
           <button
             onClick={handleLogout}
             className="profile-logout-button"
           >
-            🚪 Log Out
+            ❌ Cerrar Sesión
           </button>
         </div>
       )}

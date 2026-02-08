@@ -8,7 +8,7 @@ const Footer = () => {
           <div className="footer-main">
             <div className="footer-branding">
               <span className="footer-brand">🐾 GoodPawies</span>
-              <p className="footer-tagline">AI veterinary guidance for your pets.</p>
+              <p className="footer-tagline">Guia veterinaria con IA para tus amigos peludos.</p>
             </div>
             <div className="footer-actions">
               <div className="social-links">

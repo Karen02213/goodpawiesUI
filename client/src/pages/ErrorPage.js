@@ -8,42 +8,42 @@ const ErrorPage = () => {
 
   const getErrorInfo = () => {
     const status = error.status || 404;
-    
+
     switch (status) {
       case 400:
         return {
           title: 'Bad Request',
-          message: 'The request could not be understood by the server.',
+          message: 'La solicitud no pudo ser entendida por el servidor.',
           emoji: '🚫'
         };
       case 401:
         return {
           title: 'Unauthorized',
-          message: 'You need to log in to access this page.',
+          message: 'No tienes permiso para acceder a esta página.',
           emoji: '🔐'
         };
       case 403:
         return {
           title: 'Forbidden',
-          message: 'You don\'t have permission to access this resource.',
+          message: 'No tienes permiso para acceder a este recurso.',
           emoji: '⛔'
         };
       case 404:
         return {
           title: 'Page Not Found',
-          message: 'The page you\'re looking for doesn\'t exist.',
+          message: 'La página que estás buscando no existe.',
           emoji: '🐕‍🦺'
         };
       case 500:
         return {
           title: 'Server Error',
-          message: 'Something went wrong on our end. We\'re working to fix it.',
+          message: 'Algo salió mal en nuestro servidor. Estamos trabajando para solucionarlo.',
           emoji: '🛠️'
         };
       default:
         return {
           title: 'Something Went Wrong',
-          message: 'An unexpected error occurred.',
+          message: 'Un error inesperado ocurrió.',
           emoji: '😿'
         };
     }
@@ -70,75 +70,75 @@ const ErrorPage = () => {
           <div className="error-icon">
             {errorInfo.emoji}
           </div>
-          
+
           <h1 className="error-title">
             {errorInfo.title}
           </h1>
-          
+
           <p className="error-message">
             {error.message || errorInfo.message}
           </p>
-          
+
           {error.status && (
             <div className="error-code">
-              Error Code: {error.status}
+              Código de error: {error.status}
             </div>
           )}
-          
+
           <div className="error-actions">
-            <button 
+            <button
               className="btn btn-primary"
               onClick={handleGoHome}
             >
-              🏠 Go Home
+              🏠 Ir al inicio
             </button>
-            
-            <button 
+
+            <button
               className="btn btn-secondary"
               onClick={handleGoBack}
             >
-              ← Go Back
+              ← Volver
             </button>
-            
+
             {(error.status >= 500 || !error.status) && (
-              <button 
+              <button
                 className="btn btn-outline"
                 onClick={handleRetry}
               >
-                🔄 Try Again
+                🔄 Intentar de nuevo
               </button>
             )}
           </div>
-          
+
           {error.status === 404 && (
             <div className="error-suggestions">
-              <h3>What can you do?</h3>
+              <h3>¿Qué puedes hacer?</h3>
               <ul>
-                <li>Check the URL for typos</li>
-                <li>Go back to the previous page</li>
-                <li>Visit our <button className="link-button" onClick={handleGoHome}>homepage</button></li>
-                <li>Search for what you're looking for</li>
+                <li>Revisa la URL en busca de errores</li>
+                <li>Regresa a la página anterior</li>
+                <li>Visita nuestra <button className="link-button" onClick={handleGoHome}>página de inicio</button></li>
+                <li>Busca lo que estás buscando</li>
               </ul>
             </div>
           )}
-          
+
           {error.status === 401 && (
             <div className="error-suggestions">
               <p>
-                <button 
-                  className="link-button" 
+                <button
+                  className="link-button"
                   onClick={() => navigate('/login')}
                 >
-                  Click here to log in
+                  Haz clic aquí para iniciar sesión
                 </button>
               </p>
             </div>
           )}
         </div>
-        
+
         <div className="error-footer">
           <p>
-            Need help? Contact our support team or check our FAQ section.
+            ¿Necesitas ayuda? Contacta a nuestro equipo de soporte o revisa nuestra sección de preguntas frecuentes.
           </p>
         </div>
       </div>

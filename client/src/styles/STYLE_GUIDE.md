@@ -231,6 +231,20 @@ styles/
 | Class | Description |
 |-------|-------------|
 | `.navbar` | Main navigation bar |
+| `.navbar-left` | Left side of navbar (hamburger) |
+| `.navbar-center` | Center of navbar (logo) |
+| `.navbar-right` | Right side of navbar (profile) |
+| `.navbar-sidebar` | Sidebar menu container |
+| `.navbar-sidebar.open` | Open state for sidebar |
+| `.sidebar-header-section` | Sidebar header with user info |
+| `.sidebar-user-card` | User card in sidebar header |
+| `.sidebar-user-details` | User name/email container |
+| `.sidebar-username` | Username text |
+| `.sidebar-email` | Email text |
+| `.navbar-menu` | Sidebar menu list |
+| `.menu-section-title` | Section title in menu |
+| `.sidebar-footer-section` | Sidebar footer |
+| `.sidebar-logout-btn` | Logout button |
 | `.nav-link` | Navigation links |
 | `.nav-menu` | Menu container |
 | `.sidebar-item` | Sidebar menu item |
