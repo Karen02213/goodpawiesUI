@@ -27,3 +27,8 @@ yarn-error.log*
 # logs
 ./server/logs/*.log*.*
 ./server/logs/
+
+# uploads
+./server/uploads/pets/*
+./server/uploads/users/*
+./server/uploads/qr/*

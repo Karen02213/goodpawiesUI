@@ -6,18 +6,18 @@ const helmet = require('helmet');
 const delay = require('../middleware/delay');
 // Import custom middleware and utilities
 const { verifyToken, verifyRefreshToken, optionalAuth } = require('../middleware/auth');
-const { 
-  validateUserRegistration, 
-  validateUserLogin, 
-  validatePasswordChange, 
+const {
+  validateUserRegistration,
+  validateUserLogin,
+  validatePasswordChange,
   validateRefreshToken
 } = require('../middleware/validation');
-const { 
-  authRateLimiter, 
-  registrationRateLimiter, 
+const {
+  authRateLimiter,
+  registrationRateLimiter,
   passwordResetRateLimiter,
   trackLoginAttempt,
-  setLoginSuccess 
+  setLoginSuccess
 } = require('../middleware/rateLimiting');
 const {
   hashPassword,
@@ -44,14 +44,14 @@ router.use(helmet());
  * POST /api/auth/register
  * Register a new user account
  */
-router.post('/register', 
+router.post('/register',
   registrationRateLimiter,
-  validateUserRegistration,delay,
+  validateUserRegistration, delay,
   async (req, res) => {
     const startTime = Date.now();
     try {
       const { username, email, phonePrefix, phoneNumber, password, fullName, fullSurname } = req.body;
-      
+
       logger.info('User registration attempt', {
         username,
         email,
@@ -62,7 +62,7 @@ router.post('/register',
 
       // Hash password
       const passwordHash = await hashPassword(password);
-      
+
       // Register user using modular query (atomic transaction)
       const result = await authQueries.registerUser({
         username,
@@ -145,7 +145,7 @@ router.post('/register',
  * POST /api/auth/login
  * Authenticate user and create session
  */
-router.post('/login',delay,
+router.post('/login', delay,
   authRateLimiter,
   validateUserLogin,
   trackLoginAttempt,
@@ -155,19 +155,19 @@ router.post('/login',delay,
       const { identifier, password } = req.body;
       const ipAddress = req.ip || req.connection.remoteAddress;
       const userAgent = req.get('User-Agent') || '';
-      
+
       logger.info('User login attempt', {
         identifier: identifier.substring(0, 3) + '***', // Partial identifier for privacy
         ip: ipAddress,
         userAgent: userAgent
       });
-      
+
       // Get user data using modular query with NOLOCK
       const user = await authQueries.getUserByIdentifier(identifier);
-      
+
       if (!user) {
         res.locals.loginSuccess = false;
-        
+
         logger.audit('LOGIN_FAILED', 'USER_NOT_FOUND', {
           identifier: identifier.substring(0, 3) + '***',
           ip: ipAddress,
@@ -181,11 +181,11 @@ router.post('/login',delay,
           message: 'Invalid username/email or password'
         });
       }
-      
+
       // Check if account is locked
       if (user.account_locked && (user.lock_until === null || new Date(user.lock_until) > new Date())) {
         res.locals.loginSuccess = false;
-        
+
         logger.audit('LOGIN_FAILED', 'ACCOUNT_LOCKED', {
           userId: user.userid,
           username: user.username,
@@ -200,16 +200,16 @@ router.post('/login',delay,
           message: 'Account is temporarily locked due to too many failed attempts'
         });
       }
-      
+
       // Verify password
       const passwordValid = await verifyPassword(user.password_hash, password);
-      
+
       if (!passwordValid) {
         res.locals.loginSuccess = false;
-        
+
         // Update login attempts using modular query (atomic)
         await authQueries.updateLoginAttempts(user.userid, false);
-        
+
         logger.audit('LOGIN_FAILED', 'INVALID_PASSWORD', {
           userId: user.userid,
           username: user.username,
@@ -217,17 +217,17 @@ router.post('/login',delay,
           userAgent: userAgent,
           responseTime: Date.now() - startTime
         });
-        
+
         return res.status(401).json({
           success: false,
           error: 'INVALID_CREDENTIALS',
           message: 'Invalid username/email or password'
         });
       }
-      
+
       // Password is valid - reset failed attempts and create session
       await authQueries.updateLoginAttempts(user.userid, true);
-      
+
       // Create user session
       const sessionData = await createSession(
         user.userid,
@@ -236,10 +236,10 @@ router.post('/login',delay,
         userAgent,
         user.permissions || []
       );
-      
+
       // Track successful login
       res.locals.loginSuccess = true;
-      
+
       logger.audit('LOGIN_SUCCESS', 'SESSION_CREATED', {
         userId: user.userid,
         username: user.username,
@@ -248,7 +248,10 @@ router.post('/login',delay,
         userAgent: userAgent,
         responseTime: Date.now() - startTime
       });
-      
+
+      // Fetch full user profile to return immediately
+      const userProfile = await authQueries.getUserProfileData(user.userid);
+
       res.json({
         success: true,
         message: 'Login successful',
@@ -256,12 +259,20 @@ router.post('/login',delay,
           userId: user.userid,
           username: user.username,
           email: user.email,
+          // Include full profile data
+          fullName: userProfile?.fullName,
+          fullSurname: userProfile?.fullSurname,
+          phone: userProfile?.phone,
+          city: userProfile?.city,
+          avatar: userProfile?.avatar || user.avatar, // Fallback to basic user data if profile fetch fails
+          createdAt: userProfile?.created_at,
+          // Token data
           accessToken: sessionData.accessToken,
           tokenType: sessionData.tokenType,
-          expiresIn: sessionData.expiresIn
+          expiresIn: sessionData.expiresIn,
         }
       });
-      
+
     } catch (error) {
       logger.error('Login endpoint error', {
         error: error.message,
@@ -285,7 +296,7 @@ router.post('/login',delay,
  * POST /api/auth/refresh
  * Refresh access token using refresh token
  */
-router.post('/refresh',delay,
+router.post('/refresh', delay,
   verifyRefreshToken,
   async (req, res) => {
     const startTime = Date.now();
@@ -293,26 +304,26 @@ router.post('/refresh',delay,
       const refreshToken = req.body.refreshToken || req.cookies.refreshToken;
       const ipAddress = req.ip || req.connection.remoteAddress;
       const userAgent = req.get('User-Agent') || '';
-      
+
       logger.info('Token refresh attempt', {
         ip: ipAddress,
         userAgent: userAgent
       });
-      
+
       const tokenData = await refreshAccessToken(refreshToken);
-      
+
       logger.audit('TOKEN_REFRESHED', 'SUCCESS', {
         ip: ipAddress,
         userAgent: userAgent,
         responseTime: Date.now() - startTime
       });
-      
+
       res.json({
         success: true,
         message: 'Token refreshed successfully',
         data: tokenData
       });
-      
+
     } catch (error) {
       logger.error('Token refresh error', {
         error: error.message,
@@ -334,13 +345,13 @@ router.post('/refresh',delay,
  * POST /api/auth/logout
  * Logout user and revoke session
  */
-router.post('/logout',delay,
+router.post('/logout', delay,
   verifyToken,
   async (req, res) => {
     const startTime = Date.now();
     try {
       await revokeSession(req.user.sessionId);
-      
+
       logger.audit('LOGOUT', 'SUCCESS', {
         userId: req.user.id,
         username: req.user.username,
@@ -349,15 +360,15 @@ router.post('/logout',delay,
         userAgent: req.get('User-Agent'),
         responseTime: Date.now() - startTime
       });
-      
+
       // Clear refresh token cookie
       res.clearCookie('refreshToken');
-      
+
       res.json({
         success: true,
         message: 'Logged out successfully'
       });
-      
+
     } catch (error) {
       logger.error('Logout error', {
         error: error.message,
@@ -380,13 +391,13 @@ router.post('/logout',delay,
  * POST /api/auth/logout-all
  * Logout from all devices
  */
-router.post('/logout-all',delay,
+router.post('/logout-all', delay,
   verifyToken,
   async (req, res) => {
     const startTime = Date.now();
     try {
       await revokeAllUserSessions(req.user.id);
-      
+
       logger.audit('LOGOUT_ALL', 'SUCCESS', {
         userId: req.user.id,
         username: req.user.username,
@@ -394,15 +405,15 @@ router.post('/logout-all',delay,
         userAgent: req.get('User-Agent'),
         responseTime: Date.now() - startTime
       });
-      
+
       // Clear refresh token cookie
       res.clearCookie('refreshToken');
-      
+
       res.json({
         success: true,
         message: 'Logged out from all devices successfully'
       });
-      
+
     } catch (error) {
       logger.error('Logout all error', {
         error: error.message,
@@ -432,16 +443,16 @@ router.post('/change-password',
     try {
       const { currentPassword, newPassword } = req.body;
       const userId = req.user.id;
-      
+
       logger.info('Password change attempt', {
         userId: userId,
         ip: req.ip,
         userAgent: req.get('User-Agent')
       });
-      
+
       // Get current password hash using modular query
       const passwordHash = await authQueries.getUserPasswordHash(userId);
-      
+
       if (!passwordHash) {
         logger.audit('PASSWORD_CHANGE_FAILED', 'USER_NOT_FOUND', {
           userId: userId,
@@ -455,10 +466,10 @@ router.post('/change-password',
           message: 'User not found'
         });
       }
-      
+
       // Verify current password
       const passwordValid = await verifyPassword(passwordHash, currentPassword);
-      
+
       if (!passwordValid) {
         logger.audit('PASSWORD_CHANGE_FAILED', 'INVALID_CURRENT_PASSWORD', {
           userId: userId,
@@ -473,21 +484,21 @@ router.post('/change-password',
           message: 'Current password is incorrect'
         });
       }
-      
+
       // Hash new password
       const newPasswordHash = await hashPassword(newPassword);
-      
+
       // Update password using modular query (atomic transaction)
-      await authQueries.updateUserPassword(userId, newPasswordHash);
-      
+      await authQueries.updateUserPassword(userId, newPasswordHash, req.user.sessionId);
+
       // Revoke all other sessions except current one using modular queries
       const userSessions = await authQueries.getUserSessions(userId);
       const otherSessions = userSessions.filter(session => session.session_id !== req.user.sessionId);
-      
+
       for (const session of otherSessions) {
         await authQueries.revokeSession(session.session_id);
       }
-      
+
       logger.audit('PASSWORD_CHANGED', 'SUCCESS', {
         userId: userId,
         username: req.user.username,
@@ -502,7 +513,7 @@ router.post('/change-password',
         success: true,
         message: 'Password changed successfully'
       });
-      
+
     } catch (error) {
       logger.error('Change password error', {
         error: error.message,
@@ -534,10 +545,10 @@ router.get('/me',
         ip: req.ip,
         userAgent: req.get('User-Agent')
       });
-      
+
       // Get user profile data using modular query with NOLOCK
       const userData = await authQueries.getUserProfileData(req.user.id);
-      
+
       if (!userData) {
         logger.audit('PROFILE_ACCESS_FAILED', 'USER_NOT_FOUND', {
           userId: req.user.id,
@@ -551,7 +562,7 @@ router.get('/me',
           message: 'User not found'
         });
       }
-      
+
       logger.audit('PROFILE_ACCESSED', 'SUCCESS', {
         userId: req.user.id,
         username: req.user.username,
@@ -559,7 +570,7 @@ router.get('/me',
         userAgent: req.get('User-Agent'),
         responseTime: Date.now() - startTime
       });
-      
+
       res.json({
         success: true,
         data: {
@@ -569,6 +580,8 @@ router.get('/me',
           fullName: userData.fullName,
           fullSurname: userData.fullSurname,
           phone: userData.phone,
+          city: userData.city,
+          avatar: userData.avatar,
           description: userData.description,
           emailVerified: userData.email_verified,
           phoneVerified: userData.phone_verified,
@@ -577,7 +590,7 @@ router.get('/me',
           lastLogin: userData.last_login
         }
       });
-      
+
     } catch (error) {
       logger.error('Profile access error', {
         error: error.message,
@@ -609,10 +622,10 @@ router.get('/sessions',
         ip: req.ip,
         userAgent: req.get('User-Agent')
       });
-      
+
       // Get user sessions using modular query with NOLOCK
       const sessions = await authQueries.getUserSessions(req.user.id);
-      
+
       logger.audit('SESSIONS_ACCESSED', 'SUCCESS', {
         userId: req.user.id,
         username: req.user.username,
@@ -621,7 +634,7 @@ router.get('/sessions',
         userAgent: req.get('User-Agent'),
         responseTime: Date.now() - startTime
       });
-      
+
       res.json({
         success: true,
         data: sessions.map(session => ({
@@ -633,7 +646,7 @@ router.get('/sessions',
           isCurrent: session.session_id === req.user.sessionId
         }))
       });
-      
+
     } catch (error) {
       logger.error('Sessions access error', {
         error: error.message,
@@ -661,17 +674,17 @@ router.delete('/sessions/:sessionId',
     const startTime = Date.now();
     try {
       const { sessionId } = req.params;
-      
+
       logger.info('Session deletion request', {
         userId: req.user.id,
         sessionId: sessionId,
         ip: req.ip,
         userAgent: req.get('User-Agent')
       });
-      
+
       // Verify session belongs to user using modular query
       const sessionOwnership = await authQueries.getSessionOwnership(sessionId);
-      
+
       if (!sessionOwnership || sessionOwnership.userid !== req.user.id) {
         logger.audit('SESSION_DELETE_FAILED', 'SESSION_NOT_FOUND_OR_UNAUTHORIZED', {
           userId: req.user.id,
@@ -686,9 +699,9 @@ router.delete('/sessions/:sessionId',
           message: 'Session not found'
         });
       }
-      
+
       await revokeSession(sessionId);
-      
+
       logger.audit('SESSION_DELETED', 'SUCCESS', {
         userId: req.user.id,
         username: req.user.username,
@@ -697,12 +710,12 @@ router.delete('/sessions/:sessionId',
         userAgent: req.get('User-Agent'),
         responseTime: Date.now() - startTime
       });
-      
+
       res.json({
         success: true,
         message: 'Session revoked successfully'
       });
-      
+
     } catch (error) {
       logger.error('Session deletion error', {
         error: error.message,

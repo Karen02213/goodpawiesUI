@@ -17,3 +17,13 @@ export const normalizeApiBaseUrl = (url) => {
 
     return normalized;
 };
+
+/**
+ * Gets the base URL for static assets (removes /api from the end if present)
+ * @param {string} url - The API URL
+ * @returns {string} The base URL for static assets
+ */
+export const getBaseUrl = (url) => {
+    const apiUrl = normalizeApiBaseUrl(url);
+    return apiUrl.replace(/\/api$/, '');
+};

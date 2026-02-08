@@ -7,16 +7,19 @@ const db = require('./index');
  */
 async function getUserProfile(userid, isOwner = false) {
   let query, params;
-  
+
   if (isOwner) {
     // Full profile for owner
     query = `
       SELECT u.id, u.s_username, u.s_email, u.s_full_name, u.s_full_surname,
+             u.s_phone_prefix, u.s_phone_number,
              CONCAT(u.s_phone_prefix, u.s_phone_number) as phone,
-             u.email_verified, u.phone_verified, u.dt_created_at,
-             ui.s_description, ui.dt_updated_at as description_updated
+             u.s_city, u.email_verified, u.phone_verified, u.dt_created_at,
+             ui.s_description, ui.dt_updated_at as description_updated,
+             uimg.image_id as avatar
       FROM users u
       LEFT JOIN user_info ui ON u.id = ui.userid AND ui.b_active = 1
+      LEFT JOIN user_images uimg ON u.id = uimg.userid AND uimg.b_active = 1
       WHERE u.id = ? AND u.b_active = 1
     `;
     params = [userid];
@@ -24,14 +27,16 @@ async function getUserProfile(userid, isOwner = false) {
     // Public profile only
     query = `
       SELECT u.id, u.s_username, u.s_full_name, u.s_full_surname,
-             u.dt_created_at, ui.s_description
+             u.s_city, u.dt_created_at, ui.s_description,
+             uimg.image_id as avatar
       FROM users u
       LEFT JOIN user_info ui ON u.id = ui.userid AND ui.b_active = 1
+      LEFT JOIN user_images uimg ON u.id = uimg.userid AND uimg.b_active = 1
       WHERE u.id = ? AND u.b_active = 1
     `;
     params = [userid];
   }
-  
+
   const results = await db.executeWithNoLock(query, params);
   return results[0] || null;
 }
@@ -62,7 +67,7 @@ async function getUserPets(userid, limit = 20, offset = 0) {
     ORDER BY p.dt_created_at DESC
     LIMIT ? OFFSET ?
   `;
-  
+
   return await db.executeWithNoLock(query, [userid, limit, offset]);
 }
 
@@ -87,17 +92,42 @@ async function userExists(userid) {
 /**
  * Update user profile (atomic transaction)
  */
-async function updateUserProfile(userid, { fullName, fullSurname, description }) {
+async function updateUserProfile(userid, { fullName, fullSurname, description, phonePrefix, phoneNumber, city }) {
   const operations = [];
-  
-  // Update basic user information if provided
-  if (fullName || fullSurname) {
+
+  // Build dynamic update for users table
+  const userUpdates = [];
+  const userParams = [];
+
+  if (fullName !== undefined) {
+    userUpdates.push('s_full_name = ?');
+    userParams.push(fullName);
+  }
+  if (fullSurname !== undefined) {
+    userUpdates.push('s_full_surname = ?');
+    userParams.push(fullSurname);
+  }
+  if (phonePrefix !== undefined) {
+    userUpdates.push('s_phone_prefix = ?');
+    userParams.push(phonePrefix);
+  }
+  if (phoneNumber !== undefined) {
+    userUpdates.push('s_phone_number = ?');
+    userParams.push(phoneNumber);
+  }
+  if (city !== undefined) {
+    userUpdates.push('s_city = ?');
+    userParams.push(city);
+  }
+
+  if (userUpdates.length > 0) {
+    userParams.push(userid);
     operations.push({
-      query: 'UPDATE users SET s_full_name = COALESCE(?, s_full_name), s_full_surname = COALESCE(?, s_full_surname) WHERE id = ?',
-      params: [fullName, fullSurname, userid]
+      query: `UPDATE users SET ${userUpdates.join(', ')}, dt_updated_at = NOW() WHERE id = ?`,
+      params: userParams
     });
   }
-  
+
   // Update description if provided
   if (description !== undefined) {
     // Check if user_info exists first
@@ -105,7 +135,7 @@ async function updateUserProfile(userid, { fullName, fullSurname, description })
       'SELECT id FROM user_info WHERE userid = ? AND b_active = 1',
       [userid]
     );
-    
+
     if (existingInfo.length > 0) {
       operations.push({
         query: 'UPDATE user_info SET s_description = ? WHERE userid = ? AND b_active = 1',
@@ -118,12 +148,27 @@ async function updateUserProfile(userid, { fullName, fullSurname, description })
       });
     }
   }
-  
+
   if (operations.length > 0) {
     return await db.executeTransaction(operations);
   }
-  
+
   return true;
+}
+
+/**
+ * Save user profile image
+ */
+async function saveUserImage(userid, filename) {
+  // Deactivate existing active images
+  await db.executeWithNoLock(
+    'UPDATE user_images SET b_active = 0 WHERE userid = ?',
+    [userid]
+  );
+
+  // Insert new image
+  const query = 'INSERT INTO user_images (userid, image_id, b_active) VALUES (?, ?, 1)';
+  return await db.executeWithNoLock(query, [userid, filename]);
 }
 
 module.exports = {
@@ -132,4 +177,5 @@ module.exports = {
   getUserPetsCount,
   userExists,
   updateUserProfile,
+  saveUserImage
 };

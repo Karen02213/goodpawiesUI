@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useAuth } from '../components/AuthProvider';
-import apiClient from '../utils/api';
+import apiClient, { UPLOADS_URL } from '../utils/api';
 
 function ChatPage() {
   const { user } = useAuth();
@@ -20,7 +20,7 @@ function ChatPage() {
   const [error, setError] = useState(null);
   const [userPets, setUserPets] = useState([]);
   const [selectedPetId, setSelectedPetId] = useState('');
-  
+
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -44,7 +44,7 @@ function ChatPage() {
             // 3. response.pets (legacy)
             // 4. response.data (direct array)
             let petsData = response.data?.pets || response.data?.items || response.pets || response.data || [];
-            
+
             // Double check if we got a pagination object wrapper that wasn't caught
             if (!Array.isArray(petsData) && petsData.items && Array.isArray(petsData.items)) {
               petsData = petsData.items;
@@ -116,7 +116,7 @@ function ChatPage() {
     try {
       // Prepare messages for API (only role and content)
       const apiMessages = updatedMessages.map(({ role, content }) => ({ role, content }));
-      
+
       // Call backend API with selected pet context
       const response = await apiClient.sendChatMessage(apiMessages, selectedPetId || null);
 
@@ -163,8 +163,8 @@ function ChatPage() {
   return (
     <div className="chat-interface">
       {/* Mobile Overlay Backdrop */}
-      <div 
-        className={`chat-overlay ${sidebarOpen ? 'visible' : ''}`} 
+      <div
+        className={`chat-overlay ${sidebarOpen ? 'visible' : ''}`}
         onClick={() => setSidebarOpen(false)}
         aria-hidden="true"
       />
@@ -174,20 +174,20 @@ function ChatPage() {
         <div className="sidebar-header">
           <h3 className="sidebar-title">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
             {sidebarOpen && <span>Chat</span>}
           </h3>
-          <button 
+          <button
             className="sidebar-toggle"
             onClick={() => setSidebarOpen(!sidebarOpen)}
             aria-label={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               {sidebarOpen ? (
-                <polyline points="11 17 6 12 11 7"/>
+                <polyline points="11 17 6 12 11 7" />
               ) : (
-                <polyline points="9 18 15 12 9 6"/>
+                <polyline points="9 18 15 12 9 6" />
               )}
             </svg>
           </button>
@@ -198,8 +198,8 @@ function ChatPage() {
             {/* New Chat Button */}
             <button className="btn btn-primary new-chat-btn" onClick={handleNewChat}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="12" y1="5" x2="12" y2="19"/>
-                <line x1="5" y1="12" x2="19" y2="12"/>
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
               </svg>
               New Chat
             </button>
@@ -207,11 +207,11 @@ function ChatPage() {
             {/* User Info */}
             <div className="sidebar-section">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                 <h4 className="sidebar-section-title" style={{ margin: 0 }}>Context</h4>
-                 <p className="text-muted" style={{ fontSize: '0.75rem', margin: 0 }}>Select a pet to discuss</p>
+                <h4 className="sidebar-section-title" style={{ margin: 0 }}>Context</h4>
+                <p className="text-muted" style={{ fontSize: '0.75rem', margin: 0 }}>Select a pet to discuss</p>
               </div>
               <div className="pet-selector">
-                <select 
+                <select
                   id="pet-select"
                   className="form-select pet-select"
                   value={selectedPetId}
@@ -226,12 +226,12 @@ function ChatPage() {
                   ))}
                 </select>
                 {selectedPetId && (
-                   <small className="text-muted" style={{ display: 'block', marginTop: '5px', fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>
-                     Discussing: {(() => {
-                        const pet = userPets.find(p => String(p.id) === selectedPetId);
-                        return pet ? (pet.name || pet.s_petname) : '';
-                     })()}
-                   </small>
+                  <small className="text-muted" style={{ display: 'block', marginTop: '5px', fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>
+                    Discussing: {(() => {
+                      const pet = userPets.find(p => String(p.id) === selectedPetId);
+                      return pet ? (pet.name || pet.s_petname) : '';
+                    })()}
+                  </small>
                 )}
               </div>
             </div>
@@ -239,7 +239,11 @@ function ChatPage() {
             <div className="sidebar-user-info">
               <div className="user-avatar-small">
                 {user?.avatar ? (
-                  <img src={user.avatar} alt={user.username} />
+                  <img
+                    src={user.avatar.startsWith('/') ? user.avatar : `${UPLOADS_URL}/uploads/users/${user.avatar}`}
+                    alt={user.username}
+                    onError={(e) => { e.target.onerror = null; e.target.src = "/default-avatar.png"; }}
+                  />
                 ) : (
                   <div className="avatar-placeholder">
                     {(user?.username || user?.fullName || 'U')[0].toUpperCase()}
@@ -269,10 +273,10 @@ function ChatPage() {
           <div className="chat-header-info">
             <div className="chat-avatar">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10"/>
-                <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
-                <line x1="9" y1="9" x2="9.01" y2="9"/>
-                <line x1="15" y1="9" x2="15.01" y2="9"/>
+                <circle cx="12" cy="12" r="10" />
+                <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+                <line x1="9" y1="9" x2="9.01" y2="9" />
+                <line x1="15" y1="9" x2="15.01" y2="9" />
               </svg>
             </div>
             <div>
@@ -283,14 +287,14 @@ function ChatPage() {
               </span>
             </div>
           </div>
-          <button 
+          <button
             className="mobile-sidebar-toggle"
             onClick={() => setSidebarOpen(!sidebarOpen)}
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="3" y1="12" x2="21" y2="12"/>
-              <line x1="3" y1="6" x2="21" y2="6"/>
-              <line x1="3" y1="18" x2="21" y2="18"/>
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="18" x2="21" y2="18" />
             </svg>
           </button>
         </div>
@@ -305,10 +309,10 @@ function ChatPage() {
               {message.role === 'assistant' && (
                 <div className="message-avatar">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="10"/>
-                    <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
-                    <line x1="9" y1="9" x2="9.01" y2="9"/>
-                    <line x1="15" y1="9" x2="15.01" y2="9"/>
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+                    <line x1="9" y1="9" x2="9.01" y2="9" />
+                    <line x1="15" y1="9" x2="15.01" y2="9" />
                   </svg>
                 </div>
               )}
@@ -323,7 +327,11 @@ function ChatPage() {
               {message.role === 'user' && (
                 <div className="message-avatar user-avatar">
                   {user?.avatar ? (
-                    <img src={user.avatar} alt="You" />
+                    <img
+                      src={user.avatar.startsWith('/') ? user.avatar : `${UPLOADS_URL}/uploads/users/${user.avatar}`}
+                      alt="You"
+                      onError={(e) => { e.target.onerror = null; e.target.src = "/default-avatar.png"; }}
+                    />
                   ) : (
                     <span>{(user?.username || 'U')[0].toUpperCase()}</span>
                   )}
@@ -337,8 +345,8 @@ function ChatPage() {
               <p className="suggestions-label">Suggested questions:</p>
               <div className="suggestions-grid">
                 {suggestions.map((suggestion, index) => (
-                  <button 
-                    key={index} 
+                  <button
+                    key={index}
                     className="suggestion-chip"
                     onClick={() => {
                       setInputValue(suggestion);
@@ -353,16 +361,16 @@ function ChatPage() {
               </div>
             </div>
           )}
-          
+
           {/* Typing Indicator */}
           {isLoading && (
             <div className="message message-assistant">
               <div className="message-avatar">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="10"/>
-                  <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
-                  <line x1="9" y1="9" x2="9.01" y2="9"/>
-                  <line x1="15" y1="9" x2="15.01" y2="9"/>
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+                  <line x1="9" y1="9" x2="9.01" y2="9" />
+                  <line x1="15" y1="9" x2="15.01" y2="9" />
                 </svg>
               </div>
               <div className="message-content typing-indicator">
@@ -372,7 +380,7 @@ function ChatPage() {
               </div>
             </div>
           )}
-          
+
           <div ref={messagesEndRef} />
         </div>
 
@@ -380,9 +388,9 @@ function ChatPage() {
         {error && (
           <div className="chat-error-banner">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="12" cy="12" r="10"/>
-              <line x1="12" y1="8" x2="12" y2="12"/>
-              <line x1="12" y1="16" x2="12.01" y2="16"/>
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
             </svg>
             <span>{error}</span>
             <button onClick={() => setError(null)} className="error-dismiss">×</button>
@@ -412,17 +420,17 @@ function ChatPage() {
                 <div className="send-loading"></div>
               ) : (
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                  <line x1="22" y1="2" x2="11" y2="13"/>
-                  <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                  <line x1="22" y1="2" x2="11" y2="13" />
+                  <polygon points="22 2 15 22 11 13 2 9 22 2" />
                 </svg>
               )}
             </button>
           </div>
           <p className="chat-disclaimer">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="12" cy="12" r="10"/>
-              <line x1="12" y1="16" x2="12" y2="12"/>
-              <line x1="12" y1="8" x2="12.01" y2="8"/>
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="16" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12.01" y2="8" />
             </svg>
             AI advice is for informational purposes only and does not replace a real veterinarian.
           </p>

@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 
 // Import utilities and middleware
 const { pool } = require('./db/index');
@@ -49,9 +50,11 @@ app.use(helmet({
       defaultSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'"],
       scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https:"],
+      imgSrc: ["'self'", "data:", "https:", "blob:"],
+      connectSrc: ["'self'", "http://localhost:3000", "http://192.168.1.73:3000", process.env.CLIENT_URL || "http://localhost:3000"],
     },
   },
+  crossOriginResourcePolicy: { policy: "cross-origin" },
   hsts: { maxAge: 31536000, includeSubDomains: true, preload: true }
 }));
 
@@ -110,22 +113,25 @@ app.use('/api/pets', petRoutes);
 app.use('/api/qr', qrRoutes);
 app.use('/api/chat', chatRoutes);
 
+// Serve uploaded images statically
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Health check and legacy endpoints
 app.get('/api/health', async (req, res) => {
   try {
     const db = require('./db');
     await db.executeWithNoLock('SELECT 1 as health');
-    send(res, success({ 
-      status: 'healthy', 
+    send(res, success({
+      status: 'healthy',
       timestamp: new Date().toISOString(),
       database: 'connected'
     }));
   } catch (error) {
-    send(res, { 
-      ...errors.INTERNAL_ERROR(), 
+    send(res, {
+      ...errors.INTERNAL_ERROR(),
       statusCode: 503,
-      data: { 
-        status: 'unhealthy', 
+      data: {
+        status: 'unhealthy',
         timestamp: new Date().toISOString(),
         database: 'disconnected'
       }
@@ -134,7 +140,7 @@ app.get('/api/health', async (req, res) => {
 });
 
 app.get('/api/hello', (req, res) => {
-  send(res, success({ 
+  send(res, success({
     message: 'Hello from GoodPawies API!',
     version: '2.0.0'
   }));

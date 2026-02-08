@@ -1,6 +1,6 @@
 # GoodPawies Client - Source of Truth
 
-> **Last Updated:** February 7, 2026  
+> **Last Updated:** February 7, 2026 (Backend Refactor & Settings Page)
 > **React Version:** 19.1.1  
 > **Build Tool:** Create React App 5.0.1
 
@@ -47,7 +47,7 @@ client/
 ### CSS Architecture (ITCSS Methodology)
 Import order in `main.css`:
 1. **Variables** → `base/_variables.css`
-2. **Framework** → `base/_framework-integration.css` *(to be removed)*
+2. **Framework** → `base/_framework-integration.css` *(REMOVED)*
 3. **Reset** → `base/_reset.css`
 4. **Typography** → `base/_typography.css`
 5. **Layout** → `base/_layout.css`, `base/_animations.css`
@@ -87,13 +87,13 @@ Import order in `main.css`:
 |------|-----------|-------|
 | `/home` | HomePage | Main dashboard |
 | `/chat` | ChatPage | AI chat feature |
-| `/perfil` | ProfilePage | User profile |
+| `/profile` | ProfilePage | User profile |
+| `/profile/settings` | SettingsPage | User settings (NEW) |
 | `/profile/:uid` | ProfilePage | Profile by user ID |
 | `/profile/:uid/qr` | QrPage | User QR code |
 | `/profile/:uid/pet/:petid` | PetDetailPage | Pet details |
 | `/profile/:uid/pet/:petid/edit` | EditPetPage | Pet editing |
 | `/profile/:uid/pet/:petid/qr` | PetQrPage | Pet QR code |
-| `/agregar-mascota` | RegisterPetForm | Legacy route |
 | `/register/pet` | RegisterPetForm | Add pet form |
 
 ---
@@ -133,7 +133,6 @@ const normalizeApiBaseUrl = (url) => {
 ```
 
 ---
-
 ## 🗑️ Unused Code/Files
 
 ### Unused Page Component
@@ -179,23 +178,89 @@ test('renders learn react link', () => {
 ## ✅ TODO
 
 ### High Priority
-- [x] **Remove unused dependencies:** `npm uninstall bootstrap materialize-css purecss`
-- [x] **Extract duplicate code:** Create shared `src/utils/config.js` with `normalizeApiBaseUrl`
-- [x] **Fix test file:** Update `App.test.js` with valid tests
+- [x] QrPage & PetProfilePage UI/UX redesign (completed Feb 7, 2026)
 
 ### Medium Priority  
-- [x] Remove or route `ErrorHandlingExample.js` page
-- [x] Consolidate duplicate routes (`/agregar-mascota` → `/register/pet`)
-- [x] Update `src/styles/README.md` to remove legacy folder references
+- [ ] Fix test environment dependency issue (`react-router-dom` not found in jest)
 
 ### Low Priority
-- [ ] Configure build optimization (see `PACKAGE_OPTIMIZATION.md`)
-- [ ] Remove `_framework-integration.css` after full migration
-- [ ] Remove `*.md` files after full migration except `SOURCE_OF_TRUTH.md`
-- [ ] Verify all other tasks are completed
-- [ ] **Data Fetching:** Implement `getPetById` in `src/pages/QrPage.js` (line 33, 108)
-- [ ] Update TODO list and `SOURCE_OF_TRUTH.md` after all other tasks are completed
+- [x] Update SOURCE_OF_TRUTH.md after UI/UX tasks
 ---
+
+## 📱 Recent Changes (Feb 7, 2026)
+
+### Settings Page & Auth Fixes
+- **NEW** `SettingsPage.js` - User profile editing, password change, avatar upload
+- **Route rename** `/perfil` → `/profile` across 7 files
+- **Auth fixes** - Token refresh, change-password session handling
+- **CSS** - Added `_profile.css` settings styles
+
+### Database Consolidation
+- **Merged** 5 SQL files → single `database/setup.sql`
+- **Removed** social media tables (posts, comments, likes)
+
+### Image Storage Refactor (Feb 7, 2026)
+- **File-based storage** implemented for user avatars and pet images
+- **Routes updated**:
+  - `PUT /users/profile` handles `image_data` (base64) → saves to `server/uploads/users/`
+  - `PUT /pets/:petid` handles `image_data` (base64) → saves to `server/uploads/pets/`
+  - `GET` routes return filenames; frontend prepends `/uploads/users/` or `/uploads/pets/`
+- **Database** `image_id` column changed to `VARCHAR(255)` to store filenames
+
+### Profile & Pet Page Fixes (Feb 7, 2026)
+- **ProfilePage**: Fixed loading race condition, added "Register your first pet" banner logic
+- **PetProfilePage**: Fixed duplicate contact buttons, added owner avatar/details
+- **HomePage**: Replaced "Add Pet" quick action with "My Pets"
+- **SettingsPage**: Fixed city field population and added live user profile refresh on update
+- **Added** 12 Mexican users, 20 diverse pets sample data
+- **Fixed** `image_id` → VARCHAR for filename storage (not base64)
+- **Fixed** `utils/auth.js` normalized user object in login/register responses to ensure `id` property exists (mapped from `userId`).
+
+### Pet Form Refactor (Feb 7, 2026)
+- **Database**:
+    - Added `pets_color` table for standard color options.
+    - Changed `pets.n_age` (int) to `pets.s_age` (varchar) to support strings like "<1 año".
+- **Backend**:
+    - Added `GET /api/pets/colors` endpoint.
+    - Updated `POST /api/pets` and `PUT /api/pets/:id` to handle `s_age` and `s_color`.
+- **Frontend**:
+    - **RegisterPetForm & EditPetPage**:
+        - Replaced Text Inputs for `Color` and `Age` with **Dropdowns**.
+        - Implemented **Toggle Cards** for "Vaccinated" and "Sterilized" checkboxes.
+        - Improved `Description` textarea styling.
+
+### Image Storage Refactor (Feb 7, 2026)
+- **UPLOADS_URL**: Implemented constant in `client/src/utils/api.js` to handle full URL construction (base URL without `/api`).
+- **User Avatars**: Stored in `server/uploads/users/`.
+  - API `GET /users/:userid` returns `avatar` filename.
+  - Frontend uses `${UPLOADS_URL}/uploads/users/` to display.
+  - `SettingsPage.js` handles upload via `PUT /users/profile`.
+  - **Note**: No resizing or compression is applied to uploaded images. `body-parser` limit set to 10MB.
+- **Pet Images**: Stored in `server/uploads/pets/`.
+  - API `GET /pets/:petid` returns `image_url` filename and `images` array.
+  - Frontend uses `${UPLOADS_URL}/uploads/pets/` to display.
+  - `EditPetPage.js` handles upload via `PUT /pets/:petid`.
+- **Profile & Pages Fixes**:
+  - **Global Fix**: **Updated ALL pages** to use `UPLOADS_URL` to prevent proxy/404 issues with static assets.
+  - `ChatPage.js`: Fixed user avatar paths.
+  - `PetQrPage.js`: Fixed pet image logic for QR code.
+  - `QrPage.js`: Implemented User QR code with avatar.
+  - `PetDetailPage.js`, `EditPetPage.js`, `ProfilePage.js`, `PetProfilePage.js`: Fixed image path logic.
+  - `SettingsPage.js`: Verified image preview and upload logic.
+- **User Profile Fix (Feb 7, 2026)**:
+  - **Backend Fix**: Updated `GET /api/auth/me` and `authQueries.getUserProfileData` to include `city` and `avatar`.
+  - **Issue Resolved**: User profile picture and city field were not persisting on reload because the refresh endpoint was missing these fields in the response.
+
+### Image Storage Refactor
+- **File-based** - Images saved to `server/uploads/pets/`
+- **Filename stored** in DB, served via `/uploads/pets/filename.jpg`
+- **Added** `uuid` dependency for unique filenames
+
+### UI/UX Updates
+- `QrPage.js`: Compact viewport-fit layout, glassmorphism styling
+- `PetProfilePage.js`: Enhanced owner section with phone/city
+- `_qr-pages.css`, `_pet-profile.css`: Responsive design
+
 
 ## 🔧 FIX
 

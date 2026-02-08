@@ -1,7 +1,27 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../components/AuthProvider";
-import apiClient, { usePetDropdowns } from "../../utils/api";
+import apiClient, { usePetDropdowns, UPLOADS_URL } from "../../utils/api";
+
+const AGE_RANGES = [
+  "Menos de 1 año",
+  "1 año",
+  "2 años",
+  "3 años",
+  "4 años",
+  "5 años",
+  "6 años",
+  "7 años",
+  "8 años",
+  "9 años",
+  "10 años",
+  "11 años",
+  "12 años",
+  "13 años",
+  "14 años",
+  "15 años",
+  "Más de 15 años"
+];
 
 export default function EditPetPage() {
   const { uid, petid } = useParams();
@@ -9,14 +29,14 @@ export default function EditPetPage() {
   const { user } = useAuth();
   const isOwner = user && user.id === parseInt(uid, 10);
 
-  const { breeds, petTypes, genders, sizes, loading: dropdownLoading, error: dropdownError } = usePetDropdowns();
+  const { breeds, petTypes, genders, sizes, colors, loading: dropdownLoading, error: dropdownError } = usePetDropdowns();
   const [petData, setPetData] = useState({
     s_petname: "",
     s_type: "",
     s_breed: "",
     s_description: "",
     s_color: "",
-    n_age: "",
+    s_age: "",
     s_gender: "",
     s_size: "",
     b_vaccinated: false,
@@ -34,7 +54,7 @@ export default function EditPetPage() {
 
   useEffect(() => {
     if (!isOwner && user) {
-      navigate("/perfil", { replace: true });
+      navigate("/profile", { replace: true });
     }
   }, [isOwner, user, navigate]);
 
@@ -55,13 +75,16 @@ export default function EditPetPage() {
           s_breed: pet.breed || "",
           s_description: pet.description || "",
           s_color: pet.color || "",
-          n_age: pet.age ?? "",
+          s_age: pet.age || "",
           s_gender: pet.gender || "",
           s_size: pet.size || "",
           b_vaccinated: Boolean(pet.vaccinated),
           b_sterilized: Boolean(pet.sterilized)
         });
-        setImagePreview(pet.image_url || "");
+        const validImageUrl = pet.image_url
+          ? (pet.image_url.startsWith('/') ? pet.image_url : `${UPLOADS_URL}/uploads/pets/${pet.image_url}`)
+          : "";
+        setImagePreview(validImageUrl);
       } catch (err) {
         setError("Error al cargar la mascota");
       } finally {
@@ -120,7 +143,7 @@ export default function EditPetPage() {
         s_size: petData.s_size,
         ...(petData.s_description && { s_description: petData.s_description }),
         ...(petData.s_color && { s_color: petData.s_color }),
-        ...(petData.n_age !== "" && { n_age: parseInt(petData.n_age, 10) }),
+        ...(petData.s_age && { s_age: petData.s_age }),
         b_vaccinated: petData.b_vaccinated,
         b_sterilized: petData.b_sterilized,
         ...(imageData && { image_data: imageData })
@@ -199,12 +222,12 @@ export default function EditPetPage() {
                   {petTypes.map((type) => (
                     <option key={type.id} value={type.s_type}>
                       {type.s_type === "Dog" ? "🐶 Perro" :
-                      type.s_type === "Cat" ? "🐱 Gato" :
-                      type.s_type === "Bird" ? "🐦 Ave" :
-                      type.s_type === "Rabbit" ? "🐰 Conejo" :
-                      type.s_type === "Fish" ? "🐟 Pez" :
-                      type.s_type === "Hamster" ? "🐹 Hámster" :
-                      type.s_type}
+                        type.s_type === "Cat" ? "🐱 Gato" :
+                          type.s_type === "Bird" ? "🐦 Ave" :
+                            type.s_type === "Rabbit" ? "🐰 Conejo" :
+                              type.s_type === "Fish" ? "🐟 Pez" :
+                                type.s_type === "Hamster" ? "🐹 Hámster" :
+                                  type.s_type}
                     </option>
                   ))}
                 </select>
@@ -304,21 +327,24 @@ export default function EditPetPage() {
           <div className="col-md-6">
             <div className="form-group">
               <div className="form-floating">
-                <input
-                  type="number"
-                  name="n_age"
-                  placeholder="Edad"
-                  min="0"
-                  max="30"
-                  value={petData.n_age}
+                <select
+                  name="s_age"
+                  value={petData.s_age}
                   onChange={handleChange}
                   disabled={saving}
                   className="form-control"
-                  id="n_age"
-                />
-                <label htmlFor="n_age">
+                  id="s_age"
+                >
+                  <option value="">Selecciona la edad</option>
+                  {AGE_RANGES.map((age) => (
+                    <option key={age} value={age}>
+                      {age}
+                    </option>
+                  ))}
+                </select>
+                <label htmlFor="s_age">
                   <i className="material-icons">cake</i>
-                  Edad (años)
+                  Edad
                 </label>
               </div>
             </div>
@@ -327,17 +353,21 @@ export default function EditPetPage() {
           <div className="col-md-6">
             <div className="form-group">
               <div className="form-floating">
-                <input
-                  type="text"
+                <select
                   name="s_color"
-                  placeholder="Color"
-                  maxLength={50}
                   value={petData.s_color}
                   onChange={handleChange}
                   disabled={saving}
                   className="form-control"
                   id="s_color"
-                />
+                >
+                  <option value="">Selecciona el color</option>
+                  {colors.map((color) => (
+                    <option key={color.id} value={color.s_color}>
+                      {color.s_color}
+                    </option>
+                  ))}
+                </select>
                 <label htmlFor="s_color">
                   <i className="material-icons">palette</i>
                   Color
@@ -355,10 +385,10 @@ export default function EditPetPage() {
               value={petData.s_description}
               onChange={handleChange}
               disabled={saving}
-              className="form-control"
+              className="form-control textarea"
               id="s_description"
               rows={4}
-              style={{ height: "auto" }}
+              style={{ height: "120px" }}
             />
             <label htmlFor="s_description">
               <i className="material-icons">description</i>
@@ -367,35 +397,36 @@ export default function EditPetPage() {
           </div>
         </div>
 
-        <div className="row">
-          <div className="col-md-6">
-            <div className="form-group">
-              <label>
-                <input
-                  type="checkbox"
-                  name="b_vaccinated"
-                  checked={petData.b_vaccinated}
-                  onChange={handleChange}
-                  disabled={saving}
-                />{" "}
-                Vacunado
-              </label>
+        <div className="toggle-grid">
+          <label className="toggle-card">
+            <input
+              type="checkbox"
+              name="b_vaccinated"
+              className="toggle-card-input"
+              checked={petData.b_vaccinated}
+              onChange={handleChange}
+              disabled={saving}
+            />
+            <div className="toggle-card-content">
+              <i className="material-icons toggle-card-icon">health_and_safety</i>
+              <span className="toggle-card-label">Vacunado</span>
             </div>
-          </div>
-          <div className="col-md-6">
-            <div className="form-group">
-              <label>
-                <input
-                  type="checkbox"
-                  name="b_sterilized"
-                  checked={petData.b_sterilized}
-                  onChange={handleChange}
-                  disabled={saving}
-                />{" "}
-                Esterilizado
-              </label>
+          </label>
+
+          <label className="toggle-card">
+            <input
+              type="checkbox"
+              name="b_sterilized"
+              className="toggle-card-input"
+              checked={petData.b_sterilized}
+              onChange={handleChange}
+              disabled={saving}
+            />
+            <div className="toggle-card-content">
+              <i className="material-icons toggle-card-icon">medical_services</i>
+              <span className="toggle-card-label">Esterilizado</span>
             </div>
-          </div>
+          </label>
         </div>
 
         <div className="form-group">

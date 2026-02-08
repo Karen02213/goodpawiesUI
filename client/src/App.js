@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import HomePage from './pages/HomePage';
 import ChatPage from './pages/ChatPage';
@@ -11,6 +11,7 @@ import ProfilePage from "./pages/profile/ProfilePage";
 import PetDetailPage from "./pages/profile/PetDetailPage";
 import PetQrPage from "./pages/profile/PetQrPage";
 import EditPetPage from "./pages/profile/EditPetPage";
+import SettingsPage from "./pages/profile/SettingsPage";
 import PetProfilePage from "./pages/PetProfilePage";
 import DemoPage from "./pages/DemoPage";
 import ErrorPage from "./pages/ErrorPage";
@@ -26,6 +27,7 @@ import { AuthProvider } from './components/AuthProvider';
 function AppContent() {
   const registerDataRef = useRef({});
   const { modals, hideModal } = useError();
+  const location = useLocation();
 
   return (
     <div className="app-container">
@@ -39,7 +41,8 @@ function AppContent() {
           {/* Protected routes */}
           <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
           <Route path="/chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
-          <Route path="/perfil" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+          <Route path="/profile/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
           <Route path="/profile/:uid" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
           <Route path="/profile/:uid/qr" element={<ProtectedRoute><QrPage /></ProtectedRoute>} />
           <Route path="/profile/:uid/pet/:petid" element={<ProtectedRoute><PetDetailPage /></ProtectedRoute>} />
@@ -61,7 +64,7 @@ function AppContent() {
         </Routes>
       </main>
 
-      <Footer />
+      {!location.pathname.startsWith('/chat') && <Footer />}
 
       {/* Modal Container for global modals */}
       <ModalContainer modals={modals} onHideModal={hideModal} />

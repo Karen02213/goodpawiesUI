@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../components/AuthProvider";
-import apiClient from "../../utils/api";
+import apiClient, { UPLOADS_URL } from "../../utils/api";
 import { useError } from "../../contexts/ErrorContext";
 import ModalContainer from "../../components/ModalContainer";
 
@@ -9,14 +9,14 @@ export default function PetDetailPage() {
   const { uid, petid } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { 
-    modals, 
-    hideModal, 
+  const {
+    modals,
+    hideModal,
     showDeleteConfirm,
     showError,
     wrapApiCall
   } = useError();
-  
+
   const [pet, setPet] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,19 +26,36 @@ export default function PetDetailPage() {
 
   useEffect(() => {
     const fetchPetDetails = wrapApiCall(async () => {
+      if (!petid) return;
+
       setLoading(true);
-      const response = await apiClient.getPet(petid);
-      
-      if (response.success) {
-        setPet(response.data);
-        setError(null);
-      } else {
-        setError("Pet not found");
+      try {
+        const response = await apiClient.getPet(petid);
+
+        if (response.success) {
+          setPet(response.data);
+          setError(null);
+        } else {
+          // If the API returns success: false, handle it as an error
+          setError(response.message || "Pet not found");
+        }
+      } catch (err) {
+        // This catch block might be redundant if wrapApiCall handles it, 
+        // but it gives us a chance to set local error state if needed before rethrowing
+        console.error("Error fetching pet:", err);
+        setError("Failed to load pet details");
+        throw err; // Re-throw to let wrapApiCall handle it if configured
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }, {
       onError: (processedError) => {
-        setError(processedError.message);
+        // specific handling for 404 from the error context processor
+        if (processedError.status === 404) {
+          setError("Pet not found");
+        } else {
+          setError(processedError.message || "An error occurred while loading pet details");
+        }
         setLoading(false);
       }
     });
@@ -53,10 +70,10 @@ export default function PetDetailPage() {
       async () => {
         const deleteApiCall = wrapApiCall(async () => {
           const response = await apiClient.deletePet(petid);
-          
+
           if (response.success) {
             // Navigate immediately after successful deletion
-            navigate('/perfil', { replace: true });
+            navigate('/profile', { replace: true });
           } else {
             showError('Delete Failed', 'Unable to delete pet. Please try again.');
           }
@@ -65,7 +82,7 @@ export default function PetDetailPage() {
             showError('Delete Failed', 'An error occurred while deleting the pet.');
           }
         });
-        
+
         deleteApiCall();
       }
     );
@@ -89,7 +106,7 @@ export default function PetDetailPage() {
         <div className="error">
           <h2>Error</h2>
           <p>{error}</p>
-          <Link to="/perfil" className="btn btn-primary">
+          <Link to="/profile" className="btn btn-primary">
             Back to Profile
           </Link>
         </div>
@@ -101,10 +118,10 @@ export default function PetDetailPage() {
     return (
       <div className="pet-detail-page">
         <div className="container" style={{ textAlign: 'center', padding: '4rem' }}>
-            <h2>Pet not found</h2>
-            <Link to="/perfil" className="btn btn-primary" style={{ marginTop: '1rem' }}>
-              Back to Profile
-            </Link>
+          <h2>Pet not found</h2>
+          <Link to="/profile" className="btn btn-primary" style={{ marginTop: '1rem' }}>
+            Back to Profile
+          </Link>
         </div>
       </div>
     );
@@ -114,8 +131,8 @@ export default function PetDetailPage() {
     <div className="pet-detail-page">
       <div className="container">
         <div className="pet-header">
-          <Link to="/perfil" className="back-link">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '6px'}}><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          <Link to="/profile" className="back-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
             Back to Profile
           </Link>
           <h1>{pet.name}</h1>
@@ -124,14 +141,14 @@ export default function PetDetailPage() {
         <div className="pet-content">
           <div className="pet-info-card">
             <div className="pet-image">
-              <img 
-                src={pet.image_url || "/default-avatar.png"} 
+              <img
+                src={pet.image_url ? (pet.image_url.startsWith('/') ? pet.image_url : `${UPLOADS_URL}/uploads/pets/${pet.image_url}`) : "/default-avatar.png"}
                 alt={pet.name}
                 className="pet-avatar"
                 onError={(e) => { e.target.onerror = null; e.target.src = "/default-avatar.png"; }}
               />
             </div>
-            
+
             <div className="pet-details">
               <h2>{pet.name}</h2>
               <div className="detail-item">
@@ -172,8 +189,8 @@ export default function PetDetailPage() {
                 QR Code
               </h3>
               <p>Generate and customize a unique digital ID card for {pet.name}. Scannable by anyone to view this profile.</p>
-              <Link 
-                to={`/profile/${uid}/pet/${petid}/qr`} 
+              <Link
+                to={`/profile/${uid}/pet/${petid}/qr`}
                 className="btn"
               >
                 {isOwner ? "Manage QR Code" : "View QR Code"}
@@ -188,7 +205,7 @@ export default function PetDetailPage() {
                     Edit Pet
                   </h3>
                   <p>Update {pet.name}'s medical details, photo, or general information to keep their profile current.</p>
-                  <button 
+                  <button
                     className="btn"
                     onClick={handleEditPet}
                   >
@@ -202,7 +219,7 @@ export default function PetDetailPage() {
                     Delete Pet
                   </h3>
                   <p>Permanently remove {pet.name} from your account. This action cannot be undone.</p>
-                  <button 
+                  <button
                     className="btn"
                     onClick={handleDeletePet}
                   >

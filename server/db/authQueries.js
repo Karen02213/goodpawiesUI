@@ -14,20 +14,20 @@ async function registerUser({ username, email, phonePrefix, phoneNumber, passwor
       params: [username, email, phonePrefix, phoneNumber, passwordHash, fullName, fullSurname]
     }
   ];
-  
+
   const connection = await db.getConnection();
   try {
     await connection.beginTransaction();
-    
+
     // Execute stored procedure
     await connection.execute(operations[0].query, operations[0].params);
-    
+
     // Get output parameters
     const [output] = await connection.execute('SELECT @user_id as user_id, @result as result');
     const { user_id, result } = output[0];
-    
+
     await connection.commit();
-    
+
     return { userId: user_id, result };
   } catch (error) {
     await connection.rollback();
@@ -42,11 +42,12 @@ async function registerUser({ username, email, phonePrefix, phoneNumber, passwor
  */
 async function getUserByIdentifier(identifier) {
   const query = `
-    SELECT id as userid, s_username, s_password_hash, s_email, account_locked, lock_until, failed_login_attempts
-    FROM users 
-    WHERE (s_username = ? OR s_email = ? OR CONCAT(s_phone_prefix, s_phone_number) = ?) AND b_active = 1
+    SELECT u.id as userid, u.s_username, u.s_password_hash, u.s_email, u.account_locked, u.lock_until, u.failed_login_attempts, uimg.image_id as avatar
+    FROM users u
+    LEFT JOIN user_images uimg ON u.id = uimg.userid AND uimg.b_active = 1
+    WHERE (u.s_username = ? OR u.s_email = ? OR CONCAT(u.s_phone_prefix, u.s_phone_number) = ?) AND u.b_active = 1
   `;
-  
+
   const results = await db.executeWithNoLock(query, [identifier, identifier, identifier]);
   if (results[0]) {
     return {
@@ -56,7 +57,8 @@ async function getUserByIdentifier(identifier) {
       email: results[0].s_email,
       account_locked: results[0].account_locked,
       lock_until: results[0].lock_until,
-      failed_login_attempts: results[0].failed_login_attempts
+      failed_login_attempts: results[0].failed_login_attempts,
+      avatar: results[0].avatar
     };
   }
   return null;
@@ -78,7 +80,7 @@ async function updateLoginAttempts(userId, success = false) {
         params: [userId]
       }
     ];
-    
+
     // Check if we need to lock the account (after 5 failed attempts)
     const lockQuery = `
       UPDATE users 
@@ -86,7 +88,7 @@ async function updateLoginAttempts(userId, success = false) {
       WHERE id = ? AND failed_login_attempts >= 5
     `;
     operations.push({ query: lockQuery, params: [userId] });
-    
+
     return await db.executeTransaction(operations);
   }
 }
@@ -99,7 +101,7 @@ async function createUserSession(userId, sessionId, expiresAt, ipAddress, userAg
     INSERT INTO user_sessions (userid, session_id, expires_at, ip_address, user_agent) 
     VALUES (?, ?, ?, ?, ?)
   `;
-  
+
   return await db.executeTransaction([{
     query,
     params: [userId, sessionId, expiresAt, ipAddress, userAgent]
@@ -114,7 +116,7 @@ async function storeRefreshToken(userId, tokenHash, expiresAt, userAgent, ipAddr
     INSERT INTO refresh_tokens (userid, token_hash, expires_at, user_agent, ip_address) 
     VALUES (?, ?, ?, ?, ?)
   `;
-  
+
   return await db.executeTransaction([{
     query,
     params: [userId, tokenHash, expiresAt, userAgent, ipAddress]
@@ -132,7 +134,7 @@ async function getRefreshTokenData(refreshTokenHash, sessionId) {
     JOIN user_sessions us ON rt.userid = us.userid AND us.session_id = ?
     WHERE rt.token_hash = ? AND rt.revoked = FALSE AND rt.expires_at > NOW() AND us.is_active = TRUE
   `;
-  
+
   const results = await db.executeWithNoLock(query, [sessionId, refreshTokenHash]);
   return results[0] || null;
 }
@@ -142,7 +144,7 @@ async function getRefreshTokenData(refreshTokenHash, sessionId) {
  */
 async function updateRefreshTokenUsage(tokenHash) {
   const query = `UPDATE refresh_tokens SET last_used = NOW() WHERE token_hash = ?`;
-  
+
   return await db.executeTransaction([{
     query,
     params: [tokenHash]
@@ -157,7 +159,7 @@ async function isSessionValid(sessionId) {
     SELECT userid, is_active FROM user_sessions 
     WHERE session_id = ? AND expires_at > NOW() AND is_active = TRUE
   `;
-  
+
   const results = await db.executeWithNoLock(query, [sessionId]);
   return results[0] || null;
 }
@@ -179,7 +181,7 @@ async function revokeSession(sessionId) {
       params: [sessionId]
     }
   ];
-  
+
   return await db.executeTransaction(operations);
 }
 
@@ -197,7 +199,7 @@ async function revokeAllUserSessions(userId) {
       params: [userId]
     }
   ];
-  
+
   return await db.executeTransaction(operations);
 }
 
@@ -207,15 +209,17 @@ async function revokeAllUserSessions(userId) {
 async function getUserProfileData(userId) {
   const query = `
     SELECT u.id as userid, u.s_username as username, u.s_email as email, u.s_full_name as fullName, u.s_full_surname as fullSurname,
-           CONCAT(u.s_phone_prefix, u.s_phone_number) as phone,
+           CONCAT(u.s_phone_prefix, u.s_phone_number) as phone, u.s_city as city,
            u.email_verified, u.phone_verified, u.two_factor_enabled,
            u.dt_created_at as created_at, u.last_login,
-           ui.s_description as description
+           ui.s_description as description,
+           uimg.image_id as avatar
     FROM users u
     LEFT JOIN user_info ui ON u.id = ui.userid AND ui.b_active = 1
+    LEFT JOIN user_images uimg ON u.id = uimg.userid AND uimg.b_active = 1
     WHERE u.id = ? AND u.b_active = 1
   `;
-  
+
   const results = await db.executeWithNoLock(query, [userId]);
   return results[0] || null;
 }
@@ -231,7 +235,7 @@ async function getUserSessions(userId, currentSessionId = null) {
     WHERE userid = ? AND is_active = TRUE AND expires_at > NOW()
     ORDER BY last_activity DESC
   `;
-  
+
   return await db.executeWithNoLock(query, [currentSessionId, userId]);
 }
 
@@ -240,7 +244,7 @@ async function getUserSessions(userId, currentSessionId = null) {
  */
 async function getSessionOwnership(sessionId) {
   const query = `SELECT userid FROM user_sessions WHERE session_id = ? AND is_active = TRUE`;
-  
+
   const results = await db.executeWithNoLock(query, [sessionId]);
   return results[0] || null;
 }
@@ -267,7 +271,7 @@ async function updateUserPassword(userId, newPasswordHash, currentSessionId) {
       params: [userId, currentSessionId]
     }
   ];
-  
+
   return await db.executeTransaction(operations);
 }
 
@@ -276,7 +280,7 @@ async function updateUserPassword(userId, newPasswordHash, currentSessionId) {
  */
 async function getUserPasswordHash(userId) {
   const query = `SELECT s_password_hash FROM users WHERE id = ?`;
-  
+
   const results = await db.executeWithNoLock(query, [userId]);
   return results[0]?.s_password_hash || null;
 }
@@ -295,7 +299,7 @@ async function createPasswordResetToken(userId, tokenHash, expiresAt) {
       params: [userId, tokenHash, expiresAt]
     }
   ];
-  
+
   return await db.executeTransaction(operations);
 }
 
@@ -306,25 +310,25 @@ async function verifyPasswordResetToken(tokenHash) {
   const connection = await db.getConnection();
   try {
     await connection.beginTransaction();
-    
+
     // Check token validity
     const [tokens] = await connection.execute(
       `SELECT userid FROM password_reset_tokens 
        WHERE token_hash = ? AND used = FALSE AND expires_at > NOW()`,
       [tokenHash]
     );
-    
+
     if (tokens.length === 0) {
       await connection.rollback();
       return null;
     }
-    
+
     // Mark token as used
     await connection.execute(
       `UPDATE password_reset_tokens SET used = TRUE WHERE token_hash = ?`,
       [tokenHash]
     );
-    
+
     await connection.commit();
     return tokens[0].userid;
   } catch (error) {
@@ -357,7 +361,7 @@ async function cleanupExpiredData() {
       params: []
     }
   ];
-  
+
   return await db.executeTransaction(operations);
 }
 
@@ -370,7 +374,7 @@ async function getUserById(userId) {
     FROM users
     WHERE id = ?
   `;
-  
+
   const results = await db.executeWithNoLock(query, [userId]);
   return results[0] || null;
 }
@@ -384,7 +388,7 @@ async function getRefreshToken(tokenHash) {
     FROM refresh_tokens
     WHERE token_hash = ? AND revoked = FALSE AND expires_at > NOW()
   `;
-  
+
   const results = await db.executeWithNoLock(query, [tokenHash]);
   return results[0] || null;
 }

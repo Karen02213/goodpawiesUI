@@ -32,12 +32,12 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       const result = await authService.login(identifier, password);
-      
+
       if (result.success) {
         setUser(result.user);
         setIsAuthenticated(true);
       }
-      
+
       setLoading(false);
       return result;
     } catch (error) {
@@ -49,14 +49,25 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     setLoading(true);
     const result = await authService.register(userData);
-    
+
     if (result.success) {
       setUser(result.user);
       setIsAuthenticated(true);
     }
-    
+
     setLoading(false);
     return result;
+  };
+
+  const refreshUser = async () => {
+    if (authService.isAuthenticated()) {
+      const result = await authService.getCurrentUser();
+      if (result.success) {
+        setUser(result.user);
+        return true;
+      }
+    }
+    return false;
   };
 
   const logout = async () => {
@@ -78,6 +89,7 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
+    refreshUser,
     authService,
   };
 

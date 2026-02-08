@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import AvatarMenu from './AvatarMenu';
 import { useAuth } from './AuthProvider';
 import { useState, useEffect, useRef } from 'react';
+import { UPLOADS_URL } from '../utils/api';
 
 export default function Navbar() {
   const { user, isAuthenticated, loading, logout } = useAuth();
@@ -19,11 +20,11 @@ export default function Navbar() {
   // Close sidebar when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (menuOpen && 
-          sidebarRef.current && 
-          hamburgerRef.current &&
-          !sidebarRef.current.contains(event.target) &&
-          !hamburgerRef.current.contains(event.target)) {
+      if (menuOpen &&
+        sidebarRef.current &&
+        hamburgerRef.current &&
+        !sidebarRef.current.contains(event.target) &&
+        !hamburgerRef.current.contains(event.target)) {
         setMenuOpen(false);
       }
     };
@@ -81,7 +82,7 @@ export default function Navbar() {
           {!loading && isAuthenticated && user && (
             <div className="navbar-profile">
               <AvatarMenu
-                imageUrl={user?.avatar}
+                imageUrl={user?.avatar ? `${UPLOADS_URL}/uploads/users/${user.avatar}` : null}
                 username={user?.username || user?.fullName}
                 onLogout={handleLogout}
               />
@@ -93,7 +94,7 @@ export default function Navbar() {
       {/* Side Menu */}
       {isAuthenticated && (
         <>
-          <div 
+          <div
             ref={sidebarRef}
             className={`navbar-sidebar ${menuOpen ? 'open' : ''}`}
           >
@@ -102,7 +103,11 @@ export default function Navbar() {
               <div className="sidebar-user-card">
                 <div className="sidebar-avatar">
                   {user?.avatar ? (
-                    <img src={user.avatar} alt={user.username} />
+                    <img
+                      src={`${UPLOADS_URL}/uploads/users/${user.avatar}`}
+                      alt={user.username}
+                      onError={(e) => { e.target.onerror = null; e.target.src = '/default-avatar.png'; }}
+                    />
                   ) : (
                     <div className="avatar-placeholder-large">
                       {(user?.username || user?.fullName || 'U')[0].toUpperCase()}
@@ -122,8 +127,8 @@ export default function Navbar() {
               <li>
                 <Link to="/home" className={isActive('/home') ? 'active' : ''} onClick={() => setMenuOpen(false)}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                    <polyline points="9 22 9 12 15 12 15 22"/>
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                    <polyline points="9 22 9 12 15 12 15 22" />
                   </svg>
                   Home
                 </Link>
@@ -131,28 +136,28 @@ export default function Navbar() {
               <li>
                 <Link to="/chat" className={isActive('/chat') ? 'active' : ''} onClick={() => setMenuOpen(false)}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                   </svg>
                   AI Chat
                 </Link>
               </li>
-              
+
               <li className="menu-section-title">Pet Management</li>
               <li>
                 <Link to="/register/pet" className={isActive('/register/pet') ? 'active' : ''} onClick={() => setMenuOpen(false)}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="10"/>
-                    <line x1="12" y1="8" x2="12" y2="16"/>
-                    <line x1="8" y1="12" x2="16" y2="12"/>
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="16" />
+                    <line x1="8" y1="12" x2="16" y2="12" />
                   </svg>
                   Add New Pet
                 </Link>
               </li>
               <li>
-                <Link to="/perfil" className={isActive('/perfil') ? 'active' : ''} onClick={() => setMenuOpen(false)}>
+                <Link to="/profile" className={isActive('/profile') ? 'active' : ''} onClick={() => setMenuOpen(false)}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                    <circle cx="12" cy="7" r="4"/>
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
                   </svg>
                   My Profile & Pets
                 </Link>
@@ -162,9 +167,9 @@ export default function Navbar() {
               <li>
                 <Link to="/demo" className={isActive('/demo') ? 'active' : ''} onClick={() => setMenuOpen(false)}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <polygon points="12 2 2 7 12 12 22 7 12 2"/>
-                    <polyline points="2 17 12 22 22 17"/>
-                    <polyline points="2 12 12 17 22 12"/>
+                    <polygon points="12 2 2 7 12 12 22 7 12 2" />
+                    <polyline points="2 17 12 22 22 17" />
+                    <polyline points="2 12 12 17 22 12" />
                   </svg>
                   Demo
                 </Link>
@@ -175,9 +180,9 @@ export default function Navbar() {
             <div className="sidebar-footer-section">
               <button className="sidebar-logout-btn" onClick={handleLogout}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                  <polyline points="16 17 21 12 16 7"/>
-                  <line x1="21" y1="12" x2="9" y2="12"/>
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                  <polyline points="16 17 21 12 16 7" />
+                  <line x1="21" y1="12" x2="9" y2="12" />
                 </svg>
                 Log Out
               </button>

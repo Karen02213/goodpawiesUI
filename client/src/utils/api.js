@@ -1,16 +1,10 @@
 // client/src/utils/api.js - API Client for GoodPawies
 import { useState, useEffect } from 'react';
 import authService from './auth';
-import axios from 'axios';
-import { normalizeApiBaseUrl } from './config';
 
-// Create axios instance with base URL
-const api = axios.create({
-  baseURL: normalizeApiBaseUrl(process.env.REACT_APP_API_URL),
-  headers: {
-    'Content-Type': 'application/json'
-  }
-});
+import { normalizeApiBaseUrl, getBaseUrl } from './config';
+
+
 
 class ApiClient {
   constructor() {
@@ -20,6 +14,10 @@ class ApiClient {
   // User API methods
   async getUser(userId) {
     return await authService.apiRequest(`/users/${userId}`);
+  }
+
+  async getUserProfile(userId) {
+    return this.getUser(userId);
   }
 
   async updateUserProfile(userId, profileData) {
@@ -102,6 +100,15 @@ class ApiClient {
     }
   }
 
+  async getPetColors() {
+    try {
+      const response = await fetch(`${this.baseURL}/pets/colors`);
+      return await response.json();
+    } catch (error) {
+      return { success: false, error: 'NETWORK_ERROR' };
+    }
+  }
+
   // QR Code API methods
   async generateQRCode(qrData) {
     return await authService.apiRequest('/qr/generate', {
@@ -146,12 +153,18 @@ class ApiClient {
   async getChatStatus() {
     return await authService.apiRequest('/chat/status');
   }
+
+  getUploadsBaseUrl() {
+    return getBaseUrl(process.env.REACT_APP_API_URL);
+  }
 }
 
 // Create singleton instance
 const apiClient = new ApiClient();
 
 export default apiClient;
+
+export const UPLOADS_URL = getBaseUrl(process.env.REACT_APP_API_URL);
 
 // React Hooks for API operations
 export const useApi = () => {
@@ -188,6 +201,7 @@ export const usePetDropdowns = () => {
   const [petTypes, setPetTypes] = useState([]);
   const [genders, setGenders] = useState([]);
   const [sizes, setSizes] = useState([]);
+  const [colors, setColors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -198,17 +212,19 @@ export const usePetDropdowns = () => {
 
       try {
         // Fetch all dropdown data in parallel
-        const [breedsData, typesData, gendersData, sizesData] = await Promise.all([
+        const [breedsData, typesData, gendersData, sizesData, colorsData] = await Promise.all([
           apiClient.getPetBreeds(),
           apiClient.getPetTypes(),
           apiClient.getPetGenders(),
-          apiClient.getPetSizes()
+          apiClient.getPetSizes(),
+          apiClient.getPetColors()
         ]);
 
         setBreeds(breedsData.breeds || []);
         setPetTypes(typesData.types || []);
         setGenders(gendersData.genders || []);
         setSizes(sizesData.sizes || []);
+        setColors(colorsData.colors || []);
 
       } catch (err) {
         console.error('Error fetching dropdown data:', err);
@@ -217,6 +233,7 @@ export const usePetDropdowns = () => {
         setPetTypes([]);
         setGenders([]);
         setSizes([]);
+        setColors([]);
       } finally {
         setLoading(false);
       }
@@ -225,7 +242,7 @@ export const usePetDropdowns = () => {
     fetchDropdownData();
   }, []);
 
-  return { breeds, petTypes, genders, sizes, loading, error };
+  return { breeds, petTypes, genders, sizes, colors, loading, error };
 };
 
 // Custom hook for pet registration

@@ -57,7 +57,12 @@ class AuthService {
 
       if (data.success) {
         this.setToken(data.data.accessToken);
-        return { success: true, user: data.data };
+        // Normalize user object to have 'id' property
+        const user = { ...data.data };
+        if (user.userId && !user.id) {
+          user.id = user.userId;
+        }
+        return { success: true, user };
       } else {
         return { success: false, error: data.error, message: data.message };
       }
@@ -82,7 +87,12 @@ class AuthService {
 
       if (data.success) {
         this.setToken(data.data.accessToken);
-        return { success: true, user: data.data };
+        // Normalize user object to have 'id' property
+        const user = { ...data.data };
+        if (user.userId && !user.id) {
+          user.id = user.userId;
+        }
+        return { success: true, user };
       } else {
         return { success: false, error: data.error, message: data.message };
       }

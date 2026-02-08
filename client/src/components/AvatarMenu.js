@@ -27,7 +27,7 @@ export default function AvatarMenu({ imageUrl, username, onLogout }) {
       {/* Profile Photo */}
       <img
         src={imageUrl || "/default-avatar.png"}
-        alt="Perfil"
+        alt="Profile"
         onClick={() => setOpen(!open)}
         className="profile-avatar-image"
       />
@@ -37,28 +37,28 @@ export default function AvatarMenu({ imageUrl, username, onLogout }) {
         <div className="profile-dropdown-menu">
           {username && (
             <div className="profile-user-greeting">
-              Hola, {username}
+              Hello, {username}
             </div>
           )}
-          <Link 
-            to="/perfil" 
-            className="profile-dropdown-link" 
-            onClick={() => setOpen(false)}
-          >
-            👤 Ver Perfil
-          </Link>
-          <Link 
-            to="/configuracion" 
+          <Link
+            to="/profile"
             className="profile-dropdown-link"
             onClick={() => setOpen(false)}
           >
-            ⚙️ Configuración
+            👤 View Profile
           </Link>
-          <button 
-            onClick={handleLogout} 
+          <Link
+            to="/profile/settings"
+            className="profile-dropdown-link"
+            onClick={() => setOpen(false)}
+          >
+            ⚙️ Settings
+          </Link>
+          <button
+            onClick={handleLogout}
             className="profile-logout-button"
           >
-            🚪 Cerrar sesión
+            🚪 Log Out
           </button>
         </div>
       )}
