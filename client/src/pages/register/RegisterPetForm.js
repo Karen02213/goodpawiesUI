@@ -162,7 +162,7 @@ function RegisterPage() {
                 <input
                   type="text"
                   name="s_petname"
-                  placeholder="Nombre de la mascota"
+                  placeholder=""
                   maxLength={30}
                   value={petData.s_petname}
                   onChange={handleChange}
@@ -352,7 +352,7 @@ function RegisterPage() {
                   onChange={handleChange}
                   className="form-control textarea"
                   rows="4"
-                  placeholder="Describe a tu mascota (opcional)"
+                  placeholder=""
                   id="s_description"
                   style={{ height: '120px' }}
                 />
@@ -397,7 +397,7 @@ function RegisterPage() {
 
 
 
-            <div className="text-center">
+            <div className="text-center mt-4">
               <button type="submit" disabled={registrationLoading} className="btn btn-primary btn-lg">
                 <i className="material-icons">pets</i>
                 {registrationLoading ? 'Registrando...' : 'Registrar Mascota'}

@@ -9,10 +9,16 @@ const SidebarNav = ({ activeSection, setActiveSection, isCollapsed, toggleSideba
     { id: 'buttons', icon: 'smart_button', label: 'Buttons' },
     { id: 'forms', icon: 'feed', label: 'Forms' },
     { id: 'cards', icon: 'style', label: 'Cards' },
+    { id: 'avatars', icon: 'account_circle', label: 'Avatars' },
+    { id: 'badges', icon: 'verified', label: 'Badges' },
+    { id: 'loaders', icon: 'hourglass_empty', label: 'Loaders' },
+    { id: 'alerts', icon: 'notifications', label: 'Alerts' },
+    { id: 'states', icon: 'feedback', label: 'States' },
     { id: 'home', icon: 'home', label: 'Home Components' },
     { id: 'pet-profile', icon: 'pets', label: 'Pet Profile' },
     { id: 'chat', icon: 'chat', label: 'Chat Interface' },
     { id: 'modals', icon: 'window', label: 'Modals' },
+    { id: 'layout', icon: 'grid_view', label: 'Layout & Grid' },
     { id: 'utilities', icon: 'build', label: 'Utilities' },
     { id: 'animations', icon: 'animation', label: 'Animations' },
   ];
@@ -119,10 +125,16 @@ const DemoPage = () => {
       case 'buttons': return <ButtonsSection showToast={showToast} />;
       case 'forms': return <FormsSection showToast={showToast} />;
       case 'cards': return <CardsSection />;
+      case 'avatars': return <AvatarsSection />;
+      case 'badges': return <BadgesSection />;
+      case 'loaders': return <LoadersSection />;
+      case 'alerts': return <AlertsSection />;
+      case 'states': return <StatesSection />;
       case 'home': return <HomeComponentsSection />;
       case 'pet-profile': return <PetProfileComponentsSection />;
       case 'chat': return <ChatComponentsSection />;
       case 'modals': return <ModalsSection showToast={showToast} />;
+      case 'layout': return <LayoutSection />;
       case 'utilities': return <UtilitiesSection />;
       case 'animations': return <AnimationsSection />;
       default: return <DashboardSection />;
@@ -454,6 +466,13 @@ const FormsSection = ({ showToast }) => {
                 <input type="password" className="form-control" id="float2" placeholder="Password" />
                 <label htmlFor="float2">Password</label>
               </div>
+              <div className="form-floating mb-3">
+                <input type="password" className="form-control" id="float4" placeholder="Password with Toggle" defaultValue="secret123" />
+                <label htmlFor="float4">Password with Toggle</label>
+                <button type="button" className="btn btn-link password-toggle" aria-label="Show password">
+                  <i className="material-icons">visibility</i>
+                </button>
+              </div>
               <div className="form-floating">
                 <select className="form-select" id="float3">
                   <option value="1">Option One</option>
@@ -532,32 +551,42 @@ const CardsSection = () => (
     <h2 className="section-title">🎴 Cards</h2>
     <p className="section-desc">Flexible containers for grouping related content.</p>
 
-    <div className="row">
-      <div className="col-md-4 mb-4">
-        <div className="card h-100">
-          <div className="card-header">Header</div>
-          <div className="card-body">
-            <h5 className="card-title">Basic Card</h5>
-            <p className="card-text">Standard card with header, body content, and footer.</p>
+    <div className="card mb-5">
+      <div className="card-header bg-white"><h3 className="text-lg font-bold m-0">Card Variants</h3></div>
+      <div className="card-body bg-light">
+        <h4 className="text-sm font-semibold mb-3">Action Cards</h4>
+        <div className="row g-4 mb-4">
+          <div className="col-md-4">
+            <div className="card-action">
+              <div className="card-icon">🚀</div>
+              <h3 className="card-title text-lg">Launch</h3>
+              <p className="card-text">Start a new project</p>
+            </div>
           </div>
-          <div className="card-footer text-muted">Footer info</div>
-        </div>
-      </div>
-
-      <div className="col-md-4 mb-4">
-        <div className="card card-interactive h-100">
-          <div className="card-body">
-            <h5 className="card-title text-primary">Interactive Card</h5>
-            <p className="card-text">Hover over me to see the lift effect. Clickable card pattern.</p>
-            <button className="btn btn-outline-primary btn-sm mt-2">Action</button>
+          <div className="col-md-4">
+            <div className="card-action card-primary">
+              <div className="card-icon">⭐</div>
+              <h3 className="card-title text-lg text-white">Upgrade</h3>
+              <p className="card-text text-white opacity-90">Get more features</p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="col-md-4 mb-4">
-        <div className="stats-card card h-100 d-flex flex-column justify-content-center">
-          <p className="stats-number">85%</p>
-          <p className="stats-label">Growth</p>
+        <h4 className="text-sm font-semibold mb-3">Feature Cards</h4>
+        <div className="row g-4">
+          <div className="col-md-4">
+            <div className="card-feature">
+              <div className="feature-icon">🛡️</div>
+              <h3 className="card-title text-lg">Secure</h3>
+              <p className="card-text">Enterprise grade security</p>
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div className="stats-card card h-100 p-4 d-flex flex-column justify-content-center text-center">
+              <p className="stats-number">85%</p>
+              <p className="stats-label">Growth</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -580,6 +609,315 @@ const CardsSection = () => (
           <div>
             <h5 className="font-bold text-xl mb-1">Flex Row Layout</h5>
             <p className="text-secondary m-0">Easy to create horizontal card layouts using flex utilities.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+
+// --- Avatars Section ---
+const AvatarsSection = () => (
+  <div className="animate-fade-in">
+    <h2 className="section-title">👤 Avatars</h2>
+    <p className="section-desc">Avatar components for user and pet profile images with multiple sizes and styles.</p>
+
+    <div className="card mb-5">
+      <div className="card-header bg-white"><h3 className="text-lg font-bold m-0">Sizes</h3></div>
+      <div className="card-body d-flex flex-wrap gap-4 align-items-end">
+        <div className="text-center">
+          <div className="avatar avatar-xs avatar-initials">XS</div>
+          <code className="d-block mt-2 text-xs">24px</code>
+        </div>
+        <div className="text-center">
+          <div className="avatar avatar-sm avatar-initials">SM</div>
+          <code className="d-block mt-2 text-xs">32px</code>
+        </div>
+        <div className="text-center">
+          <div className="avatar avatar-md avatar-initials">MD</div>
+          <code className="d-block mt-2 text-xs">40px</code>
+        </div>
+        <div className="text-center">
+          <div className="avatar avatar-lg avatar-initials">LG</div>
+          <code className="d-block mt-2 text-xs">64px</code>
+        </div>
+        <div className="text-center">
+          <div className="avatar avatar-xl avatar-initials">XL</div>
+          <code className="d-block mt-2 text-xs">120px</code>
+        </div>
+        <div className="text-center">
+          <div className="avatar avatar-2xl avatar-initials">2XL</div>
+          <code className="d-block mt-2 text-xs">150px</code>
+        </div>
+      </div>
+    </div>
+
+    <div className="row">
+      <div className="col-md-6 mb-4">
+        <div className="card h-100">
+          <div className="card-header bg-white"><h3 className="text-lg font-bold m-0">Bordered Variants</h3></div>
+          <div className="card-body d-flex gap-4 align-items-center">
+            <div className="text-center">
+              <div className="avatar avatar-lg avatar-initials avatar-bordered">A</div>
+              <p className="text-xs mt-2 mb-0">.avatar-bordered</p>
+            </div>
+            <div className="text-center">
+              <div className="avatar avatar-lg avatar-initials avatar-bordered-thick">B</div>
+              <p className="text-xs mt-2 mb-0">.avatar-bordered-thick</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="col-md-6 mb-4">
+        <div className="card h-100">
+          <div className="card-header bg-white"><h3 className="text-lg font-bold m-0">Avatar Group</h3></div>
+          <div className="card-body">
+            <div className="avatar-group">
+              <div className="avatar avatar-md avatar-initials">A</div>
+              <div className="avatar avatar-md avatar-initials" style={{ background: 'var(--color-primary)' }}>B</div>
+              <div className="avatar avatar-md avatar-initials" style={{ background: 'var(--color-secondary)' }}>C</div>
+              <div className="avatar avatar-md avatar-initials" style={{ background: 'var(--color-success)' }}>D</div>
+            </div>
+            <code className="d-block mt-3">.avatar-group</code>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+// --- Badges Section ---
+const BadgesSection = () => (
+  <div className="animate-fade-in">
+    <h2 className="section-title">🏷️ Badges</h2>
+    <p className="section-desc">Inline status indicators, tags, and labels.</p>
+
+    <div className="card mb-5">
+      <div className="card-header bg-white"><h3 className="text-lg font-bold m-0">Status Badges</h3></div>
+      <div className="card-body d-flex flex-wrap gap-3">
+        <span className="badge badge-status badge-success">Success</span>
+        <span className="badge badge-status badge-warning">Warning</span>
+        <span className="badge badge-status badge-danger">Danger</span>
+        <span className="badge badge-status badge-info">Info</span>
+      </div>
+    </div>
+
+    <div className="card mb-5">
+      <div className="card-header bg-white"><h3 className="text-lg font-bold m-0">Pill & Base Badges</h3></div>
+      <div className="card-body d-flex flex-wrap gap-3 align-items-center">
+        <span className="badge">Default</span>
+        <span className="badge badge-pill">Pill Badge</span>
+        <span className="badge badge-pill">
+          <i className="material-icons" style={{ fontSize: '14px', marginRight: '4px' }}>pets</i>
+          With Icon
+        </span>
+      </div>
+    </div>
+  </div>
+);
+
+// --- Loaders Section ---
+const LoadersSection = () => (
+  <div className="animate-fade-in">
+    <h2 className="section-title">⏳ Loaders</h2>
+    <p className="section-desc">Loading indicators for async operations and page loads.</p>
+
+    <div className="row">
+      <div className="col-md-4 mb-4">
+        <div className="card h-100">
+          <div className="card-header bg-white"><h3 className="text-lg font-bold m-0">Spinner Custom</h3></div>
+          <div className="card-body d-flex justify-content-center align-items-center" style={{ minHeight: '120px' }}>
+            <div className="spinner-custom">
+              <div></div><div></div><div></div><div></div>
+            </div>
+          </div>
+          <div className="card-footer text-center">
+            <code>.spinner-custom</code>
+          </div>
+        </div>
+      </div>
+      <div className="col-md-4 mb-4">
+        <div className="card h-100">
+          <div className="card-header bg-white"><h3 className="text-lg font-bold m-0">Pulse Loader</h3></div>
+          <div className="card-body d-flex justify-content-center align-items-center" style={{ minHeight: '120px' }}>
+            <div className="pulse-loader">
+              <span className="pulse-dot"></span>
+              <span className="pulse-dot"></span>
+              <span className="pulse-dot"></span>
+            </div>
+          </div>
+          <div className="card-footer text-center">
+            <code>.pulse-loader</code>
+          </div>
+        </div>
+      </div>
+      <div className="col-md-4 mb-4">
+        <div className="card h-100">
+          <div className="card-header bg-white"><h3 className="text-lg font-bold m-0">Loading Spinner</h3></div>
+          <div className="card-body d-flex justify-content-center align-items-center" style={{ minHeight: '120px' }}>
+            <div className="loading-spinner"></div>
+          </div>
+          <div className="card-footer text-center">
+            <code>.loading-spinner</code>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+// --- Alerts Section ---
+const AlertsSection = () => (
+  <div className="animate-fade-in">
+    <h2 className="section-title">🔔 Alerts</h2>
+    <p className="section-desc">Notification and feedback components for user communication.</p>
+
+    <div className="card mb-5">
+      <div className="card-header bg-white"><h3 className="text-lg font-bold m-0">Alert Variants</h3></div>
+      <div className="card-body">
+        <div className="alert alert-success">
+          <i className="material-icons">check_circle</i>
+          <span>Success! Your changes have been saved.</span>
+        </div>
+        <div className="alert alert-warning">
+          <i className="material-icons">warning</i>
+          <span>Warning: Please review before continuing.</span>
+        </div>
+        <div className="alert alert-danger">
+          <i className="material-icons">error</i>
+          <span>Error: Something went wrong. Please try again.</span>
+        </div>
+        <div className="alert alert-info">
+          <i className="material-icons">info</i>
+          <span>Info: This is an informational message.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+// --- States Section ---
+const StatesSection = () => (
+  <div className="animate-fade-in">
+    <h2 className="section-title">📊 States</h2>
+    <p className="section-desc">Content states for loading, error, empty, and success scenarios.</p>
+
+    <div className="row">
+      <div className="col-md-6 mb-4">
+        <div className="card h-100">
+          <div className="card-header bg-white"><h3 className="text-lg font-bold m-0">Empty State</h3></div>
+          <div className="card-body">
+            <div className="empty-state">
+              <i className="material-icons text-4xl text-muted mb-3">inbox</i>
+              <h3>No items found</h3>
+              <p>There's nothing here yet. Add your first item to get started.</p>
+              <button className="btn btn-primary btn-sm">Add Item</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="col-md-6 mb-4">
+        <div className="card h-100">
+          <div className="card-header bg-white"><h3 className="text-lg font-bold m-0">Status Boxes</h3></div>
+          <div className="card-body">
+            <div className="success-state mb-3">
+              <i className="material-icons" style={{ verticalAlign: 'middle', marginRight: '8px' }}>check_circle</i>
+              Operation completed successfully!
+            </div>
+            <div className="warning-state mb-3">
+              <i className="material-icons" style={{ verticalAlign: 'middle', marginRight: '8px' }}>warning</i>
+              Proceed with caution.
+            </div>
+            <div className="info-state">
+              <i className="material-icons" style={{ verticalAlign: 'middle', marginRight: '8px' }}>info</i>
+              Here's some helpful info.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div className="card mb-5">
+      <div className="card-header bg-white"><h3 className="text-lg font-bold m-0">Form Feedback</h3></div>
+      <div className="card-body">
+        <div className="valid-feedback show mb-3">This field is valid!</div>
+        <div className="invalid-feedback show">Please enter a valid value.</div>
+      </div>
+    </div>
+  </div>
+);
+
+// --- Layout Section ---
+const LayoutSection = () => (
+  <div className="animate-fade-in">
+    <h2 className="section-title">📐 Layout & Grid</h2>
+    <p className="section-desc">Grid system, flexbox utilities, and spacing helpers.</p>
+
+    <div className="card mb-5">
+      <div className="card-header bg-white"><h3 className="text-lg font-bold m-0">Grid System</h3></div>
+      <div className="card-body">
+        <div className="row mb-3">
+          <div className="col-6"><div className="p-3 bg-primary text-white rounded text-center">col-6</div></div>
+          <div className="col-6"><div className="p-3 bg-secondary text-white rounded text-center">col-6</div></div>
+        </div>
+        <div className="row mb-3">
+          <div className="col-md-4"><div className="p-3 bg-primary text-white rounded text-center">col-md-4</div></div>
+          <div className="col-md-4"><div className="p-3 bg-secondary text-white rounded text-center">col-md-4</div></div>
+          <div className="col-md-4"><div className="p-3 bg-primary text-white rounded text-center">col-md-4</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div className="card mb-5">
+      <div className="card-header bg-white"><h3 className="text-lg font-bold m-0">Flexbox Utilities</h3></div>
+      <div className="card-body">
+        <div className="d-flex justify-content-between p-3 bg-light rounded mb-3">
+          <span className="badge badge-pill">Start</span>
+          <span className="badge badge-pill">Between</span>
+          <span className="badge badge-pill">End</span>
+        </div>
+        <code>.d-flex .justify-content-between</code>
+
+        <div className="d-flex flex-column gap-2 p-3 bg-light rounded mt-4">
+          <span className="badge badge-pill">Item 1</span>
+          <span className="badge badge-pill">Item 2</span>
+          <span className="badge badge-pill">Item 3</span>
+        </div>
+        <code>.d-flex .flex-column .gap-2</code>
+      </div>
+    </div>
+
+    <div className="card mb-5">
+      <div className="card-header bg-white"><h3 className="text-lg font-bold m-0">Spacing Utilities</h3></div>
+      <div className="card-body bg-light">
+        <div className="row">
+          <div className="col-4">
+            <h4 className="text-sm font-semibold mb-2">Margin (m-*)</h4>
+            <div className="bg-white p-2 mb-1"><code>.m-0</code></div>
+            <div className="bg-white p-2 mb-1"><code>.m-1</code> (4px)</div>
+            <div className="bg-white p-2 mb-1"><code>.m-2</code> (8px)</div>
+            <div className="bg-white p-2 mb-1"><code>.m-3</code> (16px)</div>
+            <div className="bg-white p-2 mb-1"><code>.m-4</code> (24px)</div>
+            <div className="bg-white p-2"><code>.m-5</code> (32px)</div>
+          </div>
+          <div className="col-4">
+            <h4 className="text-sm font-semibold mb-2">Gap (gap-*)</h4>
+            <div className="bg-white p-2 mb-1"><code>.gap-1</code> (4px)</div>
+            <div className="bg-white p-2 mb-1"><code>.gap-2</code> (8px)</div>
+            <div className="bg-white p-2 mb-1"><code>.gap-3</code> (16px)</div>
+            <div className="bg-white p-2 mb-1"><code>.gap-4</code> (24px)</div>
+            <div className="bg-white p-2 mb-1"><code>.gap-5</code> (32px)</div>
+            <div className="bg-white p-2"><code>.gap-6</code> (48px)</div>
+          </div>
+          <div className="col-4">
+            <h4 className="text-sm font-semibold mb-2">Grid Gutters (g-*)</h4>
+            <div className="bg-white p-2 mb-1"><code>.g-0</code> (0px)</div>
+            <div className="bg-white p-2 mb-1"><code>.g-1</code> (4px)</div>
+            <div className="bg-white p-2 mb-1"><code>.g-2</code> (8px)</div>
+            <div className="bg-white p-2 mb-1"><code>.g-3</code> (16px)</div>
+            <div className="bg-white p-2 mb-1"><code>.g-4</code> (24px)</div>
+            <div className="bg-white p-2"><code>.g-5</code> (48px)</div>
           </div>
         </div>
       </div>

@@ -42,7 +42,7 @@ export default function RegisterForm({ registerDataRef }) {
     try {
       // eslint-disable-next-line no-undef
       validationEnabled = process.env.REACT_APP_VALIDATION_ENABLED !== 'false';
-    } catch {}
+    } catch { }
 
     if (validationEnabled) {
       const validationErrors = [
@@ -68,18 +68,17 @@ export default function RegisterForm({ registerDataRef }) {
       <h2>Registro de Usuario</h2>
 
       {errors.length > 0 && (
-        <div className="invalid-feedback show">
+        <div className="invalid-feedback show mb-3">
           {errors.map((err, idx) => <div key={idx}>{err}</div>)}
         </div>
       )}
-
 
       <div className="form-group">
         <div className="form-floating">
           <input
             type="text"
             name="s_username"
-            placeholder="Usuario"
+            placeholder=" "
             required
             maxLength={30}
             value={formData.s_username}
@@ -94,54 +93,59 @@ export default function RegisterForm({ registerDataRef }) {
         </div>
       </div>
 
-      <div className="form-group">
-        <div className="form-floating">
-          <input
-            type="text"
-            name="s_full_name"
-            placeholder="Nombre(s)"
-            required
-            maxLength={30}
-            value={formData.s_full_name}
-            onChange={handleChange}
-            className="form-control"
-            id="s_full_name"
-          />
-          <label htmlFor="s_full_name">
-            <i className="material-icons">badge</i>
-            Nombre(s)
-          </label>
+      <div className="row g-2">
+        <div className="col-md-6">
+          <div className="form-group">
+            <div className="form-floating">
+              <input
+                type="text"
+                name="s_full_name"
+                placeholder=" "
+                required
+                maxLength={30}
+                value={formData.s_full_name}
+                onChange={handleChange}
+                className="form-control"
+                id="s_full_name"
+              />
+              <label htmlFor="s_full_name">
+                <i className="material-icons">badge</i>
+                Nombre(s)
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-md-6">
+          <div className="form-group">
+            <div className="form-floating">
+              <input
+                type="text"
+                name="s_full_surname"
+                placeholder=" "
+                required
+                maxLength={30}
+                value={formData.s_full_surname}
+                onChange={handleChange}
+                className="form-control"
+                id="s_full_surname"
+              />
+              <label htmlFor="s_full_surname">
+                <i className="material-icons">family_restroom</i>
+                Apellidos
+              </label>
+            </div>
+          </div>
         </div>
       </div>
 
       <div className="form-group">
-        <div className="form-floating">
-          <input
-            type="text"
-            name="s_full_surname"
-            placeholder="Apellidos"
-            required
-            maxLength={30}
-            value={formData.s_full_surname}
-            onChange={handleChange}
-            className="form-control"
-            id="s_full_surname"
-          />
-          <label htmlFor="s_full_surname">
-            <i className="material-icons">family_restroom</i>
-            Apellidos
-          </label>
-        </div>
-      </div>
-
-      <div className="form-group">
-        <label htmlFor="s_phone_number" className="form-label">Teléfono:</label>
-        <div className="row">
+        <div className="row g-2">
           <div className="col-4">
             <div className="form-floating">
               <select
-                className="form-control"
-                id="s_phone_prefix_bootstrap"
+                className="form-select"
+                id="s_phone_prefix"
                 name="s_phone_prefix"
                 value={formData.s_phone_prefix}
                 onChange={handleChange}
@@ -158,7 +162,7 @@ export default function RegisterForm({ registerDataRef }) {
                 <option value="+49">🇩🇪 +49</option>
                 <option value="+33">🇫🇷 +33</option>
               </select>
-              <label htmlFor="s_phone_prefix_bootstrap">
+              <label htmlFor="s_phone_prefix">
                 <i className="material-icons">flag</i>
                 País
               </label>
@@ -170,7 +174,7 @@ export default function RegisterForm({ registerDataRef }) {
                 type="tel"
                 id="s_phone_number"
                 name="s_phone_number"
-                placeholder="Teléfono"
+                placeholder=" "
                 required
                 minLength={10}
                 maxLength={10}
@@ -188,6 +192,7 @@ export default function RegisterForm({ registerDataRef }) {
             </div>
           </div>
         </div>
+        <small className="form-text text-muted ps-2">Ingresa tu número a 10 dígitos sin espacios.</small>
       </div>
 
       <div className="form-group">
@@ -195,7 +200,7 @@ export default function RegisterForm({ registerDataRef }) {
           <input
             type="email"
             name="s_email"
-            placeholder="Email"
+            placeholder=" "
             maxLength={50}
             value={formData.s_email}
             onChange={handleChange}
@@ -209,9 +214,8 @@ export default function RegisterForm({ registerDataRef }) {
         </div>
       </div>
 
-  {/* ...existing code... */}
-      <div className="text-center">
-        <button type="submit" className="btn btn-primary btn-lg">
+      <div className="text-center mt-4">
+        <button type="submit" className="btn btn-primary btn-lg w-100">
           <i className="material-icons">arrow_forward</i>
           Siguiente
         </button>

@@ -35,6 +35,7 @@
    4. COMPONENTS
    ========================================================================== */
 @import './components/_buttons.css';
+@import './components/_modal.css';
 @import './components/_forms.css';
 @import './components/_navigation.css';
 @import './components/_badges.css';
@@ -43,7 +44,6 @@
 @import './components/_avatars.css';
 @import './components/_cards.css';
 @import './components/_hero.css';
-@import './components/_modals.css';
 @import './components/_footer.css';
 @import './components/_states.css';
 @import './components/_error-modal.css';

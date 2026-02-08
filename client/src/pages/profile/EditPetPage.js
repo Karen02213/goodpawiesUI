@@ -189,7 +189,7 @@ export default function EditPetPage() {
             <input
               type="text"
               name="s_petname"
-              placeholder="Nombre de la mascota"
+              placeholder=""
               maxLength={30}
               value={petData.s_petname}
               onChange={handleChange}

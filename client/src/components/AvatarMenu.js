@@ -23,7 +23,7 @@ export default function AvatarMenu({ imageUrl, username, onLogout }) {
   };
 
   return (
-    <div ref={menuRef} className="profile-avatar-menu">
+    <div ref={menuRef} className="position-relative">
       {/* Profile Photo */}
       <div className="avatar avatar-md avatar-bordered avatar-hover-zoom" onClick={() => setOpen(!open)} style={{ cursor: 'pointer', marginLeft: '14px' }}>
         <img

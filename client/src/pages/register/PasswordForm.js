@@ -77,88 +77,68 @@ export default function PasswordForm({ registerDataRef }) {
   return (
     <form onSubmit={handleSubmit} className="form-container">
       <h2>Establecer Contraseña</h2>
-      
+
       {error && (
         <div className="invalid-feedback show">
           {error}
         </div>
       )}
-      
 
-        <div className="form-group">
-          <div className="form-floating">
-            <input
-              type={showPassword ? 'text' : 'password'}
-              placeholder="Contraseña (mínimo 8 caracteres)"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={loading}
-              required
-              className="form-control"
-              id="password"
-            />
-            <label htmlFor="password">
-              <i className="material-icons">lock</i>
-              Contraseña (mínimo 8 caracteres)
-            </label>
-            <button
-              type="button"
-              tabIndex={-1}
-              onClick={() => setShowPassword((v) => !v)}
-              className="btn btn-link password-toggle"
-              aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-            >
-              {showPassword ? (
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M17.94 17.94A10.06 10.06 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
-                  <line x1="1" y1="1" x2="23" y2="23"/>
-                </svg>
-              ) : (
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                  <circle cx="12" cy="12" r="3"/>
-                </svg>
-              )}
-            </button>
-          </div>
+
+      <div className="form-group">
+        <div className="form-floating">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            placeholder="Contraseña (mínimo 8 caracteres)"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            disabled={loading}
+            required
+            className="form-control"
+            id="password"
+          />
+          <label htmlFor="password">
+            <i className="material-icons">lock</i>
+            Contraseña (mínimo 8 caracteres)
+          </label>
+          <button
+            type="button"
+            tabIndex={-1}
+            onClick={() => setShowPassword((v) => !v)}
+            className="btn btn-link password-toggle"
+            aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+          >
+            <i className="material-icons text-secondary">{showPassword ? 'visibility_off' : 'visibility'}</i>
+          </button>
         </div>
-        <div className="form-group">
-          <div className="form-floating">
-            <input
-              type={showConfirm ? 'text' : 'password'}
-              placeholder="Confirmar Contraseña"
-              value={confirm}
-              onChange={(e) => setConfirm(e.target.value)}
-              disabled={loading}
-              required
-              className="form-control"
-              id="confirmPassword"
-            />
-            <label htmlFor="confirmPassword">
-              <i className="material-icons">lock_outline</i>
-              Confirmar Contraseña
-            </label>
-            <button
-              type="button"
-              tabIndex={-1}
-              onClick={() => setShowConfirm((v) => !v)}
-              className="btn btn-link password-toggle"
-              aria-label={showConfirm ? 'Ocultar confirmación' : 'Mostrar confirmación'}
-            >
-              {showConfirm ? (
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M17.94 17.94A10.06 10.06 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
-                  <line x1="1" y1="1" x2="23" y2="23"/>
-                </svg>
-              ) : (
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                  <circle cx="12" cy="12" r="3"/>
-                </svg>
-              )}
-            </button>
-          </div>
+      </div>
+      <div className="form-group">
+        <div className="form-floating">
+          <input
+            type={showConfirm ? 'text' : 'password'}
+            placeholder="Confirmar Contraseña"
+            value={confirm}
+            onChange={(e) => setConfirm(e.target.value)}
+            disabled={loading}
+            required
+            className="form-control"
+            id="confirmPassword"
+          />
+          <label htmlFor="confirmPassword">
+            <i className="material-icons">lock_outline</i>
+            Confirmar Contraseña
+          </label>
+          <button
+            type="button"
+            tabIndex={-1}
+            onClick={() => setShowConfirm((v) => !v)}
+            className="btn btn-link password-toggle"
+            aria-label={showConfirm ? 'Ocultar confirmación' : 'Mostrar confirmación'}
+          >
+            <i className="material-icons text-secondary">{showConfirm ? 'visibility_off' : 'visibility'}</i>
+          </button>
         </div>
+      </div>
 
       <div className="form-actions">
         <button
@@ -177,8 +157,8 @@ export default function PasswordForm({ registerDataRef }) {
           <i className="material-icons">arrow_back</i>
           Volver
         </button>
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           disabled={loading}
           className="btn btn-primary flex-fill"
         >

@@ -74,7 +74,7 @@ export default function PetProfilePage() {
       <div className="pet-profile-container">
         {/* Centered Hero Header */}
         <header className="pet-header-centered">
-          <div className="avatar avatar-xl avatar-bordered-thick mb-4">
+          <div className="avatar avatar-2xl avatar-bordered-thick mb-1">
             <img
               src={pet.image_url ? (pet.image_url.startsWith('/') ? pet.image_url : `${UPLOADS_URL}/uploads/pets/${pet.image_url}`) : (pet.images?.[0] ? `${UPLOADS_URL}/uploads/pets/${pet.images[0]}` : "/default-avatar.png")}
               alt={pet.name}

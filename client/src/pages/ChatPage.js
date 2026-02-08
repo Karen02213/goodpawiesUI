@@ -206,9 +206,9 @@ function ChatPage() {
 
             {/* User Info */}
             <div className="sidebar-section">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                <h4 className="sidebar-section-title" style={{ margin: 0 }}>Context</h4>
-                <p className="text-muted" style={{ fontSize: '0.75rem', margin: 0 }}>Select a pet to discuss</p>
+              <div className="d-flex justify-content-between align-items-center mb-2">
+                <h4 className="sidebar-section-title m-0">Context</h4>
+                <p className="text-muted text-xs m-0">Select a pet to discuss</p>
               </div>
               <div className="pet-selector">
                 <select
@@ -325,7 +325,7 @@ function ChatPage() {
                 <span className="message-time">{formatTime(message.timestamp)}</span>
               </div>
               {message.role === 'user' && (
-                <div className="message-avatar user-avatar">
+                <div className="message-avatar user-avatar-small">
                   {user?.avatar ? (
                     <img
                       src={user.avatar.startsWith('/') ? user.avatar : `${UPLOADS_URL}/uploads/users/${user.avatar}`}

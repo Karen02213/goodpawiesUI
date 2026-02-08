@@ -64,7 +64,7 @@ function AppContent() {
         </Routes>
       </main>
 
-      {!location.pathname.startsWith('/chat') && <Footer />}
+      {!location.pathname.startsWith('/chat') && !location.pathname.startsWith('/demo') && <Footer />}
 
       {/* Modal Container for global modals */}
       <ModalContainer modals={modals} onHideModal={hideModal} />

@@ -71,7 +71,7 @@
 
 .form-floating>label {
   position: absolute;
-  top: 0;
+  top: -5px;
   left: 0;
   height: 100%;
   padding: 1rem 0.75rem;
@@ -86,13 +86,43 @@
 .form-floating>.form-control:focus~label,
 .form-floating>.form-control:not(:placeholder-shown)~label {
   opacity: 1;
-  transform: scale(0.85) translateY(-0.75rem) translateX(0.15rem);
+  transform: scale(0.85) translateY(-1rem) translateX(0.15rem);
   color: var(--color-primary);
   background-color: var(--color-bg-primary);
   height: auto;
   padding: 0 0.25rem;
   z-index: 2;
   width: auto;
+}
+
+/* Fix for Select in Floating Label */
+.form-floating>.form-select {
+  padding-top: 1.625rem;
+  padding-bottom: 0.625rem;
+}
+
+.form-floating>.form-select~label {
+  opacity: 1;
+  transform: scale(0.85) translateY(-1rem) translateX(0.15rem);
+  width: auto;
+  height: auto;
+  background-color: var(--color-bg-primary);
+  padding: 0 0.25rem;
+  z-index: 2;
+}
+
+/* Fix for Password Toggle Overlap */
+.form-floating>.form-control:not(:placeholder-shown) {
+  padding-top: 1.625rem;
+  padding-bottom: 0.625rem;
+}
+
+/* Ensure label stays up if placeholder is shown (for date inputs etc) */
+.form-floating>.form-control:focus~label,
+.form-floating>.form-control:not(:placeholder-shown)~label,
+.form-floating>.form-select~label {
+  opacity: 1;
+  transform: scale(0.85) translateY(-1rem) translateX(0.15rem);
 }
 
 /* Material Design Input Style */
@@ -565,7 +595,7 @@
 .form-container .form-control {
   border: 2px solid var(--color-border-light);
   border-radius: 12px;
-  padding: 1rem;
+  padding: 2rem;
   font-size: 1rem;
   transition: all 0.2s ease;
 }
@@ -577,7 +607,7 @@
 
 .form-container .form-floating>.form-control {
   padding-top: 1.5rem;
-  padding-bottom: 0.625rem;
+  padding-bottom: 0.55rem;
 }
 
 .form-container .form-floating>label {

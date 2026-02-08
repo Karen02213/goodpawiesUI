@@ -187,6 +187,10 @@ styles/
 | `.card-body` | Card content area |
 | `.card-footer` | Card footer section |
 | `.card-interactive` | Hoverable card |
+| `.card-action` | Interactive card for main actions |
+| `.profile-card` | Profile style with top border |
+| `.card-feature` | Feature item with icon |
+| `.stats-card` | Gradient background stat box |
 
 ### Forms
 | Class | Description |
@@ -199,12 +203,21 @@ styles/
 | `.invalid-feedback` | Error message |
 
 ### Avatars
-| Class | Description |
-|-------|-------------|
-| `.avatar` | Base avatar container |
-| `.avatar-sm/md/lg/xl` | Size modifiers |
-| `.avatar-bordered` | Adds border |
-| `.avatar-initials` | Text fallback |
+| Class | Size | Description |
+|-------|------|-------------|
+| `.avatar` | - | Base avatar container |
+| `.avatar-xs` | 24px | Extra small |
+| `.avatar-sm` | 32px | Small |
+| `.avatar-md` | 40px | Medium (default) |
+| `.avatar-lg` | 64px | Large |
+| `.avatar-xl` | 120px | Extra large |
+| `.avatar-2xl` | 150px | 2X large |
+| `.avatar-bordered` | - | White border with shadow |
+| `.avatar-bordered-thick` | - | Secondary color border |
+| `.avatar-shadow` | - | Adds shadow effect |
+| `.avatar-hover-zoom` | - | Zoom on hover |
+| `.avatar-group` | - | Stacked avatar container |
+| `.avatar-initials` | - | Gradient background for initials |
 
 ### Badges
 | Class | Description |
@@ -220,6 +233,39 @@ styles/
 | `.navbar` | Main navigation bar |
 | `.nav-link` | Navigation links |
 | `.nav-menu` | Menu container |
+| `.sidebar-item` | Sidebar menu item |
+| `.sidebar-item.active` | Active state with accent |
+
+### Loaders
+| Class | Description |
+|-------|-------------|
+| `.spinner-custom` | Animated 4-dot spinner (requires 4 empty divs) |
+| `.pulse-loader` | Container for pulsing dots |
+| `.pulse-dot` | Individual pulsing dot |
+| `.loading-spinner` | Circular border spinner |
+| `.loading-dots` | Alternative dot loader |
+| `.preloader-wrapper.active` | Materialize-style circular loader |
+
+### Alerts
+| Class | Description |
+|-------|-------------|
+| `.alert` | Base alert container (flexbox) |
+| `.alert-success` | Green gradient background |
+| `.alert-warning` | Yellow gradient background |
+| `.alert-danger` | Red gradient background |
+| `.alert-info` | Blue gradient background |
+
+### States
+| Class | Description |
+|-------|-------------|
+| `.loading` | Full-page loading container |
+| `.error` | Error state container |
+| `.empty-state` | Empty content placeholder |
+| `.success-state` | Green success box |
+| `.warning-state` | Yellow warning box |
+| `.info-state` | Blue information box |
+| `.valid-feedback` | Form validation success |
+| `.invalid-feedback` | Form validation error |
 
 ---
 
@@ -316,6 +362,8 @@ styles/
 | `components/_navigation.css` | Navbar and menus |
 | `utils/_utilities.css` | Helper classes |
 | `utils/_responsive.css` | Media query utilities |
+| `pages/_demo.css` | Demo page specific styles |
+
 ### Cards
 ```css
 /* Base Card */
@@ -323,8 +371,11 @@ styles/
 
 /* Interactive Cards */
 .card-interactive { ... }
-.action-card { ... } /* Homepage/Dashboard actions */
-.tips-card { ... }   /* Content with side accent */
+.profile-card { ... } /* New: Profile style with top border */
+.stats-card { ... }   /* New: Gradient background stat box */
+.action-card { ... } 
+.tips-card { ... }   
+```
 
 /* Feature Items */
 .feature-item { ... } /* Vertically stacked icon + text */

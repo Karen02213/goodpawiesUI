@@ -63,12 +63,12 @@ const Modal = ({
     <>
 
       <div className="modal-backdrop show"></div>
-      <div className="modal show d-block" tabIndex="-1" role="dialog" onClick={handleOverlayClick}>
+      <div className="modal show" tabIndex="-1" role="dialog" onClick={handleOverlayClick}>
         <div className={`modal-dialog modal-dialog-centered ${type ? `modal-${type}` : ''}`} onClick={(e) => e.stopPropagation()}>
           <div className="modal-content">
             <div className={`modal-header ${type ? `modal-header-${type}` : ''}`}>
-              <div className="d-flex align-items-center gap-2">
-                <span className="fs-4">{getModalIcon()}</span>
+              <div className="flex align-items-center gap-2">
+                <span className="modal-icon-lg">{getModalIcon()}</span>
                 <h5 className="modal-title">{title}</h5>
               </div>
               <button
