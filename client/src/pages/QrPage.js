@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import QRCodeStyling from "qr-code-styling";
 import { useAuth } from "../components/AuthProvider";
-import apiClient, { UPLOADS_URL } from "../utils/api";
+import apiClient from "../utils/api";
 
 // Initialize QR code styling instance
 const qrCode = new QRCodeStyling({
@@ -28,6 +28,9 @@ const qrCode = new QRCodeStyling({
   },
   cornersDotOptions: {
     type: "dot"
+  },
+  qrOptions: {
+    errorCorrectionLevel: 'H'
   }
 });
 
@@ -84,12 +87,10 @@ function QrPage() {
   }, [qrUrl]);
 
   useEffect(() => {
-    const avatarUrl = profileUser?.avatar
-      ? (profileUser.avatar.startsWith('/') ? profileUser.avatar : `${UPLOADS_URL}/uploads/users/${profileUser.avatar}`)
-      : "/default-avatar.png";
+
 
     qrCode.update({
-      image: avatarUrl,
+      image: "/paw-icon-black.svg",
       dotsOptions: { color: qrOptions.dotsColor, type: qrOptions.dotsType },
       backgroundOptions: { color: qrOptions.backgroundColor },
       cornersSquareOptions: { type: qrOptions.cornersSquareType },
@@ -126,7 +127,7 @@ function QrPage() {
               <select
                 value={fileExt}
                 onChange={(e) => setFileExt(e.target.value)}
-                className="qr-select"
+                className="qr-select form-select"
               >
                 <option value="png">PNG</option>
                 <option value="jpeg">JPEG</option>
@@ -186,6 +187,7 @@ function QrPage() {
                   <select
                     value={qrOptions.dotsType}
                     onChange={(e) => handleOptionChange('dotsType', e.target.value)}
+                    className="form-select"
                   >
                     <option value="rounded">Rounded</option>
                     <option value="dots">Dots</option>
@@ -199,6 +201,7 @@ function QrPage() {
                   <select
                     value={qrOptions.cornersSquareType}
                     onChange={(e) => handleOptionChange('cornersSquareType', e.target.value)}
+                    className="form-select"
                   >
                     <option value="extra-rounded">Extra Rounded</option>
                     <option value="rounded">Rounded</option>

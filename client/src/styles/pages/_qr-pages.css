@@ -2,6 +2,88 @@
    QR Code Page Styles - Compact Viewport-Fit Layout
    ========================================================================== */
 
+/* Loading & Error States */
+.qr-loading-container,
+.qr-error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: var(--spacing-3xl);
+  min-height: calc(100vh - 64px);
+  background: var(--gradient-primary);
+}
+
+.qr-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--color-border-light);
+  border-top-color: var(--color-secondary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.qr-loading-text {
+  margin-top: var(--spacing-md);
+  color: white;
+  opacity: 0.9;
+}
+
+.qr-error-title {
+  color: var(--color-danger);
+  margin-bottom: var(--spacing-md);
+  font-size: var(--font-size-xl);
+}
+
+.qr-error-container .btn {
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-secondary);
+  color: white;
+  border-radius: var(--border-radius-lg);
+  text-decoration: none;
+}
+
+/* Back Link */
+.qr-back-link {
+  color: white;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-sm);
+  background: rgba(255, 255, 255, 0.2);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-3xl);
+  font-size: var(--font-size-sm);
+  transition: background var(--transition-fast);
+}
+
+.qr-back-link:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* URL Display */
+.qr-info {
+  text-align: center;
+  width: 100%;
+}
+
+.qr-url-display {
+  word-break: break-all;
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  background: var(--color-bg-secondary);
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius-lg);
+  margin: 0;
+}
+
 .qr-page {
   min-height: calc(100vh - 64px);
   min-height: calc(100dvh - 64px);
@@ -17,7 +99,7 @@
   max-width: 480px;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: var(--spacing-sm);
 }
 
 /* Header */
@@ -43,8 +125,8 @@
 .qr-card {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
-  border-radius: var(--border-radius-2xl);
-  padding: var(--spacing-xl);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-md);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
 }
 
@@ -87,23 +169,14 @@
 
 .qr-select {
   flex: 1;
-  padding: var(--spacing-sm) var(--spacing-md);
-  border: 2px solid var(--color-border-light);
-  border-radius: var(--border-radius-lg);
-  font-size: var(--font-size-sm);
-  background: white;
   cursor: pointer;
-  transition: border-color var(--transition-fast);
 }
 
-.qr-select:focus {
-  border-color: #667eea;
-  outline: none;
-}
+
 
 .btn-download {
   flex: 2;
-  padding: var(--spacing-sm) var(--spacing-lg);
+  padding: var(--spacing-md) var(--spacing-md);
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
@@ -224,6 +297,7 @@
 /* Tips Footer */
 .qr-tips {
   text-align: center;
+  padding-top: var(--spacing-md);
   color: rgba(255, 255, 255, 0.85);
   font-size: var(--font-size-xs);
 }
@@ -235,7 +309,7 @@
   }
 
   .qr-card {
-    padding: var(--spacing-2xl);
+    padding: var(--spacing-lg);
   }
 
   .qr-header h1 {
@@ -246,7 +320,7 @@
 /* Responsive - Large Desktop */
 @media (min-width: 1024px) {
   .qr-page {
-    padding: var(--spacing-xl);
+    padding: var(--spacing-md);
   }
 
   .qr-page-container {
@@ -254,8 +328,8 @@
   }
 }
 
-/* Responsive - Small Mobile */
-@media (max-width: 375px) {
+/* Responsive - Mobile Details */
+@media (max-width: 480px) {
   .qr-page {
     padding: var(--spacing-sm);
   }
@@ -275,6 +349,10 @@
   .qr-select,
   .btn-download {
     width: 100%;
+  }
+
+  .qr-header h1 {
+    font-size: 1.75rem;
   }
 }
 
