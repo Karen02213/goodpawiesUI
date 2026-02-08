@@ -65,12 +65,13 @@ export default function ProfilePage() {
             </svg>
           </Link>
           <div className="profile-user-image">
-            <img
-              src={user?.avatar ? `${UPLOADS_URL}/uploads/users/${user.avatar}` : "/default-avatar.png"}
-              alt="Profile"
-              className="profile-user-avatar"
-              onError={(e) => { e.target.onerror = null; e.target.src = "/default-avatar.png"; }}
-            />
+            <div className="avatar avatar-xl avatar-bordered">
+              <img
+                src={user?.avatar ? `${UPLOADS_URL}/uploads/users/${user.avatar}` : "/default-avatar.png"}
+                alt="Profile"
+                onError={(e) => { e.target.onerror = null; e.target.src = "/default-avatar.png"; }}
+              />
+            </div>
           </div>
 
           <div className="profile-user-details">
@@ -133,12 +134,13 @@ export default function ProfilePage() {
                   className="profile-pet-card"
                 >
                   <div className="profile-pet-image-container">
-                    <img
-                      src={pet.image_url ? (pet.image_url.startsWith('/') ? pet.image_url : `${UPLOADS_URL}/uploads/pets/${pet.image_url}`) : "/default-avatar.png"}
-                      alt={pet.name}
-                      className="profile-pet-image"
-                      onError={(e) => { e.target.onerror = null; e.target.src = "/default-avatar.png"; }}
-                    />
+                    <div className="avatar avatar-xl avatar-bordered">
+                      <img
+                        src={pet.image_url ? (pet.image_url.startsWith('/') ? pet.image_url : `${UPLOADS_URL}/uploads/pets/${pet.image_url}`) : "/default-avatar.png"}
+                        alt={pet.name}
+                        onError={(e) => { e.target.onerror = null; e.target.src = "/default-avatar.png"; }}
+                      />
+                    </div>
                   </div>
                   <div className="profile-pet-name">{pet.name || pet.s_petname}</div>
                   <div className="profile-pet-type">{pet.type || pet.s_type}</div>

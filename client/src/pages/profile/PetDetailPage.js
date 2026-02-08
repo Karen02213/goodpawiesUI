@@ -141,12 +141,13 @@ export default function PetDetailPage() {
         <div className="pet-content">
           <div className="pet-info-card">
             <div className="pet-image">
-              <img
-                src={pet.image_url ? (pet.image_url.startsWith('/') ? pet.image_url : `${UPLOADS_URL}/uploads/pets/${pet.image_url}`) : "/default-avatar.png"}
-                alt={pet.name}
-                className="pet-avatar"
-                onError={(e) => { e.target.onerror = null; e.target.src = "/default-avatar.png"; }}
-              />
+              <div className="avatar avatar-xl avatar-bordered">
+                <img
+                  src={pet.image_url ? (pet.image_url.startsWith('/') ? pet.image_url : `${UPLOADS_URL}/uploads/pets/${pet.image_url}`) : "/default-avatar.png"}
+                  alt={pet.name}
+                  onError={(e) => { e.target.onerror = null; e.target.src = "/default-avatar.png"; }}
+                />
+              </div>
             </div>
 
             <div className="pet-details">

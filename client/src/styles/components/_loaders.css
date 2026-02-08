@@ -1,0 +1,225 @@
+/* ==========================================================================
+   Loaders & Spinners
+   ========================================================================== */
+
+/* Spinner Custom */
+.spinner-custom {
+    display: inline-block;
+    position: relative;
+    width: 64px;
+    height: 64px;
+}
+
+.spinner-custom div {
+    position: absolute;
+    top: 27px;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+
+.spinner-custom div:nth-child(1) {
+    left: 6px;
+    animation: spinner1 0.6s infinite;
+}
+
+.spinner-custom div:nth-child(2) {
+    left: 6px;
+    animation: spinner2 0.6s infinite;
+}
+
+.spinner-custom div:nth-child(3) {
+    left: 26px;
+    animation: spinner2 0.6s infinite;
+}
+
+.spinner-custom div:nth-child(4) {
+    left: 45px;
+    animation: spinner3 0.6s infinite;
+}
+
+@keyframes spinner1 {
+    0% {
+        transform: scale(0);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes spinner3 {
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(0);
+    }
+}
+
+@keyframes spinner2 {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    100% {
+        transform: translate(19px, 0);
+    }
+}
+
+/* Pulse Loader */
+.pulse-loader {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+}
+
+.pulse-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--color-secondary);
+    animation: pulse-animation 1.5s infinite ease-in-out;
+}
+
+.pulse-dot:nth-child(2) {
+    animation-delay: -0.3s;
+}
+
+.pulse-dot:nth-child(3) {
+    animation-delay: -0.6s;
+}
+
+@keyframes pulse-animation {
+
+    0%,
+    80%,
+    100% {
+        transform: scale(0);
+        opacity: 0.5;
+    }
+
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Materialize Preloader Styles */
+.preloader-wrapper {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto;
+}
+
+.preloader-wrapper.active .spinner-layer {
+    animation: container-rotate 1568ms linear infinite;
+}
+
+.spinner-layer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-color: var(--color-primary);
+}
+
+.spinner-blue-only {
+    border-color: #4285f4;
+}
+
+.circle-clipper {
+    display: inline-block;
+    position: relative;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    border-color: inherit;
+}
+
+.circle-clipper .circle {
+    width: 200%;
+    height: 100%;
+    border-width: 3px;
+    border-style: solid;
+    border-color: inherit;
+    border-bottom-color: transparent !important;
+    border-radius: 50%;
+    animation: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.circle-clipper.left .circle {
+    left: 0;
+    border-right-color: transparent !important;
+    transform: rotate(129deg);
+}
+
+.circle-clipper.right .circle {
+    left: -100%;
+    border-left-color: transparent !important;
+    transform: rotate(-129deg);
+}
+
+.gap-patch {
+    position: absolute;
+    top: 0;
+    left: 45%;
+    width: 10%;
+    height: 100%;
+    overflow: hidden;
+    border-color: inherit;
+}
+
+.gap-patch .circle {
+    width: 1000%;
+    left: -450%;
+}
+
+@keyframes container-rotate {
+    to {
+        transform: rotate(360deg)
+    }
+}
+
+.preloader-wrapper.active .spinner-layer.spinner-blue-only .circle-clipper.left .circle {
+    animation: left-spin 1333ms cubic-bezier(0.4, 0.0, 0.2, 1) infinite both;
+}
+
+.preloader-wrapper.active .spinner-layer.spinner-blue-only .circle-clipper.right .circle {
+    animation: right-spin 1333ms cubic-bezier(0.4, 0.0, 0.2, 1) infinite both;
+}
+
+@keyframes left-spin {
+    from {
+        transform: rotate(130deg);
+    }
+
+    50% {
+        transform: rotate(-5deg);
+    }
+
+    to {
+        transform: rotate(130deg);
+    }
+}
+
+@keyframes right-spin {
+    from {
+        transform: rotate(-130deg);
+    }
+
+    50% {
+        transform: rotate(5deg);
+    }
+
+    to {
+        transform: rotate(-130deg);
+    }
+}

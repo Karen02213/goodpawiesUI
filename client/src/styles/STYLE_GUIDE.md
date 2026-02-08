@@ -198,6 +198,22 @@ styles/
 | `.valid-feedback` | Success message |
 | `.invalid-feedback` | Error message |
 
+### Avatars
+| Class | Description |
+|-------|-------------|
+| `.avatar` | Base avatar container |
+| `.avatar-sm/md/lg/xl` | Size modifiers |
+| `.avatar-bordered` | Adds border |
+| `.avatar-initials` | Text fallback |
+
+### Badges
+| Class | Description |
+|-------|-------------|
+| `.badge` | Base badge style |
+| `.badge-pill` | Rounded pill shape |
+| `.badge-status` | Status indicator (success, warning, etc.) |
+| `.badge-tag` | Tag style |
+
 ### Navigation
 | Class | Description |
 |-------|-------------|
@@ -293,6 +309,75 @@ styles/
 | `components/_forms.css` | Form controls |
 | `components/_cards.css` | Card components |
 | `components/_modals.css` | Modal dialogs |
+| `components/_notifications.css` | Toast notifications |
+| `components/_avatars.css` | Avatar components |
+| `components/_badges.css` | Badge components |
+| `components/_chat.css` | Chat interface |
 | `components/_navigation.css` | Navbar and menus |
 | `utils/_utilities.css` | Helper classes |
 | `utils/_responsive.css` | Media query utilities |
+### Cards
+```css
+/* Base Card */
+.card { ... }
+
+/* Interactive Cards */
+.card-interactive { ... }
+.action-card { ... } /* Homepage/Dashboard actions */
+.tips-card { ... }   /* Content with side accent */
+
+/* Feature Items */
+.feature-item { ... } /* Vertically stacked icon + text */
+```
+
+### Forms & Input
+```css
+/* Toggle Cards (Checkbox/Radio) */
+.toggle-card { ... }
+.toggle-card-content { ... } /* Box with icon and label */
+
+/* Floating Inputs */
+.form-floating { ... }
+```
+
+### Loaders
+```css
+.spinner-custom { ... } /* Animated spinner */
+.pulse-loader { ... }   /* Pulsing dots */
+```
+
+### Alerts
+```css
+.alert { ... }           /* Base alert config */
+.alert-success { ... }   /* Success state */
+.alert-warning { ... }   /* Warning state */
+```
+
+### Utilities
+```css
+/* Shadows */
+.shadow-sm, .shadow-md, .shadow-lg ...
+
+/* Borders */
+.rounded, .rounded-lg, .rounded-circle ...
+```
+
+### Landing & Hero
+```css
+/* Hero Section */
+.hero-section { ... } /* Premium gradient, 80vh height */
+.hero-title { ... }   /* Clamp font size, text shadow */
+.hero-icon { ... }    /* Glassmorphic icon container */
+
+/* Landing Page */
+.features-grid { ... } /* CSS Grid auto-fit */
+.feature-card { ... }  /* Hover lift effect */
+.disclaimer { ... }    /* Warning styled alert box */
+```
+
+### Pet Profile
+```css
+/* Avatars */
+.avatar { ... }       /* Base avatar class */
+.avatar-xl { ... }    /* 150px size */
+```

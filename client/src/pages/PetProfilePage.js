@@ -74,18 +74,18 @@ export default function PetProfilePage() {
       <div className="pet-profile-container">
         {/* Centered Hero Header */}
         <header className="pet-header-centered">
-          <div className="pet-image-container-large">
+          <div className="avatar avatar-xl avatar-bordered-thick mb-4">
             <img
               src={pet.image_url ? (pet.image_url.startsWith('/') ? pet.image_url : `${UPLOADS_URL}/uploads/pets/${pet.image_url}`) : (pet.images?.[0] ? `${UPLOADS_URL}/uploads/pets/${pet.images[0]}` : "/default-avatar.png")}
               alt={pet.name}
-              className="pet-image-large"
+              className="pet-image-large" // Keeping specific class for now if needed, but styling comes from avatar
               onError={(e) => { e.target.onerror = null; e.target.src = "/default-avatar.png"; }}
             />
           </div>
           <h1 className="pet-name-large">{pet.name}</h1>
           <div className="pet-badges">
-            <span className="pet-badge-pill">{pet.type}</span>
-            <span className="pet-badge-pill">{pet.breed}</span>
+            <span className="badge badge-pill">{pet.type}</span>
+            <span className="badge badge-pill">{pet.breed}</span>
           </div>
         </header>
 
@@ -136,8 +136,8 @@ export default function PetProfilePage() {
             <section className="pet-info-card health-card">
               <h2>Health Status</h2>
               <div className="health-badges">
-                {pet.vaccinated && <span className="health-badge">💉 Vaccinated</span>}
-                {pet.sterilized && <span className="health-badge">⚕️ Sterilized</span>}
+                {pet.vaccinated && <span className="badge badge-status badge-success">💉 Vaccinated</span>}
+                {pet.sterilized && <span className="badge badge-status badge-success">⚕️ Sterilized</span>}
               </div>
             </section>
           )}
@@ -145,7 +145,7 @@ export default function PetProfilePage() {
           {/* Owner & Contact */}
           <section className="pet-info-card owner-card-centered">
             <div className="owner-info-centered">
-              <div className="user-avatar-large-circle">
+              <div className="avatar avatar-lg avatar-bordered">
                 <img
                   src={pet.owner.avatar ? `${UPLOADS_URL}/uploads/users/${pet.owner.avatar}` : "/default-avatar.png"}
                   alt={pet.owner.fullName || pet.owner.username}

@@ -1,0 +1,105 @@
+/* ==========================================================================
+   Avatar Component Styles
+   ========================================================================== */
+
+.avatar {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #e2e8f0;
+    color: #64748b;
+    font-weight: 600;
+    object-fit: cover;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+}
+
+/* Sizes */
+.avatar-xs {
+    width: 24px;
+    height: 24px;
+    font-size: 0.75rem;
+}
+
+.avatar-sm {
+    width: 32px;
+    height: 32px;
+    font-size: 0.85rem;
+}
+
+.avatar-md {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+}
+
+.avatar-lg {
+    width: 64px;
+    height: 64px;
+    font-size: 1.5rem;
+}
+
+.avatar-xl {
+    width: 120px;
+    height: 120px;
+    font-size: 2.5rem;
+}
+
+.avatar-2xl {
+    width: 150px;
+    height: 150px;
+    font-size: 3rem;
+}
+
+/* Modifiers */
+.avatar-bordered {
+    border: 3px solid white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.avatar-bordered-thick {
+    border: 4px solid white;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.avatar-shadow {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.avatar-hover-zoom {
+    transition: transform 0.3s ease;
+}
+
+.avatar-hover-zoom:hover {
+    transform: scale(1.05);
+}
+
+/* Avatar Group (for future use) */
+.avatar-group {
+    display: flex;
+    align-items: center;
+}
+
+.avatar-group .avatar {
+    margin-left: -10px;
+    border: 2px solid white;
+}
+
+.avatar-group .avatar:first-child {
+    margin-left: 0;
+}
+
+/* Initials/Placeholder Style */
+.avatar-initials {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}

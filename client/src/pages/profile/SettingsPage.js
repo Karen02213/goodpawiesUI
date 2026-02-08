@@ -170,11 +170,13 @@ export default function SettingsPage() {
                         {/* Avatar Upload */}
                         <div className="settings-avatar-section">
                             <div className="settings-avatar">
-                                <img
-                                    src={imagePreview || "/default-avatar.png"}
-                                    alt="Profile"
-                                    onError={(e) => { e.target.src = "/default-avatar.png"; }}
-                                />
+                                <div className="avatar avatar-xl avatar-bordered">
+                                    <img
+                                        src={imagePreview || "/default-avatar.png"}
+                                        alt="Profile"
+                                        onError={(e) => { e.target.src = "/default-avatar.png"; }}
+                                    />
+                                </div>
                             </div>
                             <div className="settings-avatar-actions">
                                 <label className="btn btn-outline-primary btn-sm">
@@ -183,7 +185,7 @@ export default function SettingsPage() {
                                         type="file"
                                         accept="image/*"
                                         onChange={handleImageChange}
-                                        style={{ display: "none" }}
+                                        className="d-none"
                                     />
                                 </label>
                                 <p className="settings-avatar-hint">JPG, PNG or GIF. Max 5MB.</p>

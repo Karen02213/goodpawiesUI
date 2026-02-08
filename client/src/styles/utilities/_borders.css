@@ -1,0 +1,43 @@
+/* ==========================================================================
+   Border Radius Utilities
+   ========================================================================== */
+
+.rounded-none {
+    border-radius: 0;
+}
+
+.rounded-sm {
+    border-radius: var(--border-radius-sm);
+}
+
+.rounded {
+    border-radius: var(--border-radius-md);
+}
+
+.rounded-md {
+    border-radius: var(--border-radius-md);
+}
+
+.rounded-lg {
+    border-radius: var(--border-radius-lg);
+}
+
+.rounded-xl {
+    border-radius: var(--border-radius-xl);
+}
+
+.rounded-2xl {
+    border-radius: var(--border-radius-2xl);
+}
+
+.rounded-3xl {
+    border-radius: var(--border-radius-3xl);
+}
+
+.rounded-full {
+    border-radius: var(--border-radius-full);
+}
+
+.rounded-circle {
+    border-radius: 50%;
+}

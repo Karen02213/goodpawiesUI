@@ -402,6 +402,7 @@ export default function EditPetPage() {
             <input
               type="checkbox"
               name="b_vaccinated"
+              id="b_vaccinated"
               className="toggle-card-input"
               checked={petData.b_vaccinated}
               onChange={handleChange}
@@ -417,6 +418,7 @@ export default function EditPetPage() {
             <input
               type="checkbox"
               name="b_sterilized"
+              id="b_sterilized"
               className="toggle-card-input"
               checked={petData.b_sterilized}
               onChange={handleChange}
@@ -433,6 +435,7 @@ export default function EditPetPage() {
           <label htmlFor="pet_image">Foto de la mascota</label>
           <input
             id="pet_image"
+            name="pet_image"
             type="file"
             accept="image/*"
             onChange={handleImageChange}
@@ -441,11 +444,12 @@ export default function EditPetPage() {
           />
           {imagePreview && (
             <div style={{ marginTop: "1rem", textAlign: "center" }}>
-              <img
-                src={imagePreview}
-                alt="Vista previa"
-                style={{ width: "140px", height: "140px", borderRadius: "999px", objectFit: "cover" }}
-              />
+              <div className="avatar avatar-xl avatar-bordered d-inline-flex">
+                <img
+                  src={imagePreview}
+                  alt="Vista previa"
+                />
+              </div>
             </div>
           )}
         </div>

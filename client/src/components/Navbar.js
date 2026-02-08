@@ -101,7 +101,7 @@ export default function Navbar() {
             {/* Sidebar Header */}
             <div className="sidebar-header-section">
               <div className="sidebar-user-card">
-                <div className="sidebar-avatar">
+                <div className="avatar avatar-md">
                   {user?.avatar ? (
                     <img
                       src={`${UPLOADS_URL}/uploads/users/${user.avatar}`}
@@ -109,7 +109,7 @@ export default function Navbar() {
                       onError={(e) => { e.target.onerror = null; e.target.src = '/default-avatar.png'; }}
                     />
                   ) : (
-                    <div className="avatar-placeholder-large">
+                    <div className="avatar-initials w-100 h-100 d-flex align-items-center justify-content-center">
                       {(user?.username || user?.fullName || 'U')[0].toUpperCase()}
                     </div>
                   )}

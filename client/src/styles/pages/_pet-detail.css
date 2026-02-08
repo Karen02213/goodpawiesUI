@@ -81,14 +81,7 @@
   flex-shrink: 0;
 }
 
-.pet-avatar {
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 6px solid #f7fafc;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-}
+/* Avatar styles moved to components/_avatars.css */
 
 .pet-details {
   flex: 1;

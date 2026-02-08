@@ -1,17 +1,17 @@
 import React from 'react';
 
-const Modal = ({ 
-  isOpen, 
-  onClose, 
-  title, 
-  message, 
-  type = 'info', 
-  confirmText = 'OK', 
-  cancelText = 'Cancel', 
-  onConfirm, 
+const Modal = ({
+  isOpen,
+  onClose,
+  title,
+  message,
+  type = 'info',
+  confirmText = 'OK',
+  cancelText = 'Cancel',
+  onConfirm,
   onCancel,
   showCancel = false,
-  children 
+  children
 }) => {
   if (!isOpen) return null;
 
@@ -36,9 +36,6 @@ const Modal = ({
     }
   };
 
-  const getModalClass = () => {
-    return `modal-content ${type}`;
-  };
 
   const handleConfirm = () => {
     if (onConfirm) {
@@ -63,45 +60,54 @@ const Modal = ({
   };
 
   return (
-    <div className="modal-overlay" onClick={handleOverlayClick}>
-      <div className={getModalClass()}>
-        <div className="modal-header">
-          <div className="modal-icon">
-            {getModalIcon()}
+    <>
+
+      <div className="modal-backdrop show"></div>
+      <div className="modal show d-block" tabIndex="-1" role="dialog" onClick={handleOverlayClick}>
+        <div className={`modal-dialog modal-dialog-centered ${type ? `modal-${type}` : ''}`} onClick={(e) => e.stopPropagation()}>
+          <div className="modal-content">
+            <div className={`modal-header ${type ? `modal-header-${type}` : ''}`}>
+              <div className="d-flex align-items-center gap-2">
+                <span className="fs-4">{getModalIcon()}</span>
+                <h5 className="modal-title">{title}</h5>
+              </div>
+              <button
+                type="button"
+                className="modal-close"
+                onClick={onClose}
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+
+            <div className="modal-body">
+              {message && <p>{message}</p>}
+              {children}
+            </div>
+
+            <div className="modal-footer">
+              {showCancel && (
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={handleCancel}
+                >
+                  {cancelText}
+                </button>
+              )}
+              <button
+                type="button"
+                className={`btn ${type === 'delete' ? 'btn-danger' : 'btn-primary'}`}
+                onClick={handleConfirm}
+              >
+                {confirmText}
+              </button>
+            </div>
           </div>
-          <h3 className="modal-title">{title}</h3>
-          <button 
-            className="modal-close" 
-            onClick={onClose}
-            aria-label="Close modal"
-          >
-            ×
-          </button>
-        </div>
-        
-        <div className="modal-body">
-          {message && <p className="modal-message">{message}</p>}
-          {children}
-        </div>
-        
-        <div className="modal-footer">
-          {showCancel && (
-            <button 
-              className="btn btn-secondary" 
-              onClick={handleCancel}
-            >
-              {cancelText}
-            </button>
-          )}
-          <button 
-            className={`btn ${type === 'delete' ? 'btn-danger' : 'btn-primary'}`}
-            onClick={handleConfirm}
-          >
-            {confirmText}
-          </button>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

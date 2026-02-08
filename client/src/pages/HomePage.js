@@ -6,39 +6,39 @@ function HomePage() {
   const { user } = useAuth();
 
   return (
-    <div className="home-page">
+    <div className="home-page app-container">
       {/* Welcome Section */}
-      <section className="home-hero">
-        <div className="home-hero-content">
-          <h1 className="home-title">
-            Welcome back, <span className="highlight">{user?.fullName || user?.username || 'Pet Parent'}</span>!
-          </h1>
-          <p className="home-subtitle">
-            Your AI-powered veterinary assistant is ready to help with your dog or cat's health questions.
-          </p>
+      <section className="hero-section text-center">
+        <div className="container">
+          <div className="hero-content mx-auto">
+            <h1 className="hero-title">
+              Welcome back, <span className="highlight">{user?.fullName || user?.username || 'Pet Parent'}</span>!
+            </h1>
+            <p className="hero-subtitle">
+              Your AI-powered veterinary assistant is ready to help with your dog or cat's health questions.
+            </p>
+          </div>
         </div>
       </section>
 
       {/* Quick Actions */}
-      <section className="home-actions">
-        <div className="home-container">
+      <section className="section section-bg-light">
+        <div className="container">
           <h2 className="section-title">Quick Actions</h2>
-          <div className="action-cards">
-            <Link to="/chat" className="action-card">
-              <div className="action-icon">
+          <div className="grid-responsive">
+            <Link to="/chat" className="card-action">
+              <div className="card-icon">
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                 </svg>
               </div>
               <h3>Start AI Chat</h3>
               <p>Get instant veterinary guidance for your pets</p>
-              <span className="action-btn">Open Chat →</span>
+              <span className="btn-text" style={{ fontWeight: 600, color: 'white' }}>Open Chat →</span>
             </Link>
 
-
-
-            <Link to="/profile" className="action-card">
-              <div className="action-icon">
+            <Link to="/profile" className="card-action">
+              <div className="card-icon">
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                   <circle cx="12" cy="7" r="4" />
@@ -46,19 +46,19 @@ function HomePage() {
               </div>
               <h3>My Profile</h3>
               <p>View and manage your account</p>
-              <span className="action-btn">View Profile →</span>
+              <span className="btn-text" style={{ fontWeight: 600, color: 'var(--color-secondary)' }}>View Profile →</span>
             </Link>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="home-features">
-        <div className="home-container">
+      <section className="section">
+        <div className="container">
           <h2 className="section-title">How GoodPawies Helps You</h2>
-          <div className="features-grid">
-            <div className="feature-item">
-              <div className="feature-icon-circle">
+          <div className="grid-responsive">
+            <div className="card-feature">
+              <div className="feature-icon">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <circle cx="12" cy="12" r="10" />
                   <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
@@ -69,8 +69,8 @@ function HomePage() {
               <p>Describe symptoms and get AI-powered analysis with possible causes and recommended actions.</p>
             </div>
 
-            <div className="feature-item">
-              <div className="feature-icon-circle">
+            <div className="card-feature">
+              <div className="feature-icon">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M12 2L2 7l10 5 10-5-10-5z" />
                   <path d="M2 17l10 5 10-5" />
@@ -81,8 +81,8 @@ function HomePage() {
               <p>Specialized AI trained on veterinary knowledge specifically for dogs and cats.</p>
             </div>
 
-            <div className="feature-item">
-              <div className="feature-icon-circle">
+            <div className="card-feature">
+              <div className="feature-icon">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <circle cx="12" cy="12" r="10" />
                   <polyline points="12 6 12 12 16 14" />
@@ -92,8 +92,8 @@ function HomePage() {
               <p>Get immediate responses any time of day or night without waiting for appointments.</p>
             </div>
 
-            <div className="feature-item">
-              <div className="feature-icon-circle">
+            <div className="card-feature">
+              <div className="feature-icon">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                   <path d="M7 11V7a5 5 0 0 1 10 0v4" />
@@ -107,17 +107,17 @@ function HomePage() {
       </section>
 
       {/* Tips Section */}
-      <section className="home-tips">
-        <div className="home-container">
-          <div className="tips-card">
-            <div className="tips-icon">
+      <section className="section section-bg-light">
+        <div className="container">
+          <div className="card-tip">
+            <div className="tip-icon">
               <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="10" />
                 <line x1="12" y1="16" x2="12" y2="12" />
                 <line x1="12" y1="8" x2="12.01" y2="8" />
               </svg>
             </div>
-            <div className="tips-content">
+            <div className="tip-content">
               <h3>Pro Tip</h3>
               <p>
                 When describing your pet's symptoms, include details like: how long the symptoms have been present,
@@ -130,9 +130,9 @@ function HomePage() {
       </section>
 
       {/* Disclaimer */}
-      <section className="home-disclaimer">
-        <div className="home-container">
-          <div className="disclaimer-box">
+      <section className="section">
+        <div className="container">
+          <div className="disclaimer">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
               <line x1="12" y1="9" x2="12" y2="13" />
@@ -150,3 +150,4 @@ function HomePage() {
 }
 
 export default HomePage;
+

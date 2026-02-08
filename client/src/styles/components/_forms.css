@@ -82,11 +82,17 @@
   color: var(--color-text-muted);
 }
 
+
 .form-floating>.form-control:focus~label,
 .form-floating>.form-control:not(:placeholder-shown)~label {
-  opacity: 0.65;
-  transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+  opacity: 1;
+  transform: scale(0.85) translateY(-0.75rem) translateX(0.15rem);
   color: var(--color-primary);
+  background-color: var(--color-bg-primary);
+  height: auto;
+  padding: 0 0.25rem;
+  z-index: 2;
+  width: auto;
 }
 
 /* Material Design Input Style */
@@ -526,9 +532,9 @@
    ========================================================================== */
 
 .form-container {
-  max-width: 480px;
+  max-width: 520px;
   margin: var(--spacing-2xl) auto;
-  padding: var(--spacing-2xl);
+  padding: var(--spacing-xl);
   border-radius: 20px;
   background: white;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
@@ -674,6 +680,83 @@
 }
 
 /* ==========================================================================
+   Toggle Cards (Checkbox/Radio)
+   ========================================================================== */
+
+
+/* Toggle Grid Layout */
+.toggle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+  width: 100%;
+}
+
+.toggle-card {
+  position: relative;
+  display: block;
+  cursor: pointer;
+  margin-bottom: 0;
+  /* Managed by grid gap */
+  width: 100%;
+  height: 100%;
+  /* Fill grid cell */
+}
+
+.toggle-card-input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.toggle-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md);
+  background-color: var(--color-bg-primary);
+  border: 2px solid var(--color-border-medium);
+  border-radius: var(--border-radius-lg);
+  transition: all var(--transition-base);
+  height: 100%;
+  min-height: 100px;
+  text-align: center;
+  user-select: none;
+}
+
+.toggle-card-input:checked+.toggle-card-content {
+  background-color: rgba(var(--color-primary-rgb), 0.05);
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.15);
+}
+
+.toggle-card-icon {
+  font-size: 2rem;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-sm);
+  transition: color var(--transition-base);
+}
+
+.toggle-card-input:checked+.toggle-card-content .toggle-card-icon {
+  color: var(--color-primary);
+}
+
+.toggle-card-label {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  line-height: 1.2;
+}
+
+.toggle-card-input:checked+.toggle-card-content .toggle-card-label {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ==========================================================================
    Toggle Switches (Material Design Style)
    ========================================================================== */
 
@@ -814,18 +897,19 @@ input:checked+.slider:before {
   outline-offset: 2px;
 }
 
+
 /* ==========================================================================
-   Toggle Cards (Checkbox/Radio Replacement)
+   Card Input (Checkbox/Radio Replacement)
    ========================================================================== */
 
-.toggle-grid {
+.card-input-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: var(--spacing-md);
   margin-bottom: var(--spacing-lg);
 }
 
-.toggle-card {
+.card-input {
   position: relative;
   cursor: pointer;
   height: 100%;
@@ -834,7 +918,7 @@ input:checked+.slider:before {
 }
 
 /* The actual input covers the entire card area to ensure clicks work */
-.toggle-card-input {
+.card-input-element {
   position: absolute;
   top: 0;
   left: 0;
@@ -845,68 +929,65 @@ input:checked+.slider:before {
   cursor: pointer;
 }
 
-.toggle-card-content {
+.card-input-content {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  padding: var(--spacing-md);
   background-color: var(--color-bg-primary);
   border: 2px solid var(--color-border-light);
-  border-radius: 12px;
-  transition: all 0.2s ease;
+  border-radius: var(--border-radius-xl);
+  transition: all var(--transition-fast);
   height: 100%;
   text-align: center;
   position: relative;
-  /* For z-index context */
   z-index: 1;
 }
 
-.toggle-card:hover .toggle-card-content {
-  border-color: #cbd5e0;
-  background-color: #f8fafc;
+.card-input:hover .card-input-content {
+  border-color: var(--color-gray-300);
+  background-color: var(--color-bg-secondary);
 }
 
-.toggle-card-icon {
-  margin-bottom: 0.5rem;
+.card-input-icon {
+  margin-bottom: var(--spacing-sm);
   font-size: 2rem;
   color: var(--color-text-muted);
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast);
 }
 
-.toggle-card-label {
-  font-weight: 500;
+.card-input-label {
+  font-weight: var(--font-weight-medium);
   color: var(--color-text-secondary);
-  transition: all 0.2s ease;
-  font-size: 0.95rem;
+  transition: all var(--transition-fast);
+  font-size: var(--font-size-sm);
 }
 
 /* Checked State */
-.toggle-card-input:checked+.toggle-card-content {
+.card-input-element:checked+.card-input-content {
   background-color: rgba(102, 126, 234, 0.08);
-  /* Light primary bg */
-  border-color: #667eea;
-  /* Primary color */
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
 }
 
-.toggle-card-input:checked+.toggle-card-content .toggle-card-icon {
-  color: #667eea;
+.card-input-element:checked+.card-input-content .card-input-icon {
+  color: var(--color-primary);
   transform: scale(1.1);
 }
 
-.toggle-card-input:checked+.toggle-card-content .toggle-card-label {
-  color: #667eea;
-  font-weight: 700;
+.card-input-element:checked+.card-input-content .card-input-label {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-bold);
 }
 
 /* Add a checkmark badge when selected */
-.toggle-card-input:checked+.toggle-card-content::after {
+.card-input-element:checked+.card-input-content::after {
   content: 'check_circle';
   font-family: 'Material Icons';
   position: absolute;
   top: 8px;
   right: 8px;
-  color: #667eea;
+  color: var(--color-primary);
   font-size: 1.2rem;
 }

@@ -25,12 +25,12 @@ export default function AvatarMenu({ imageUrl, username, onLogout }) {
   return (
     <div ref={menuRef} className="profile-avatar-menu">
       {/* Profile Photo */}
-      <img
-        src={imageUrl || "/default-avatar.png"}
-        alt="Profile"
-        onClick={() => setOpen(!open)}
-        className="profile-avatar-image"
-      />
+      <div className="avatar avatar-md avatar-bordered avatar-hover-zoom" onClick={() => setOpen(!open)} style={{ cursor: 'pointer', marginLeft: '14px' }}>
+        <img
+          src={imageUrl || "/default-avatar.png"}
+          alt="Profile"
+        />
+      </div>
 
       {/* Dropdown Menu */}
       {open && (
