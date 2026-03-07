@@ -98,7 +98,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--color-bg-primary, #ffffff);
   padding: var(--spacing-md);
 }
 
@@ -113,14 +113,14 @@
 /* Header */
 .qr-header {
   text-align: center;
-  color: white;
+  color: var(--color-text-primary, #333333);
 }
 
 .qr-header h1 {
   font-size: clamp(1.5rem, 5vw, 2rem);
   font-weight: var(--font-weight-bold);
   margin: 0 0 var(--spacing-xs) 0;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  text-shadow: none;
 }
 
 .qr-header p {

@@ -27,6 +27,10 @@ yarn-error.log*
 ./server/logs/*.log*.*
 ./server/logs/
 
+# Credenciales de Google Cloud
+credenciales-gcp.json
+.env
+
 
 # uploads
 /server/uploads/pets/*

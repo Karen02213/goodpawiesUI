@@ -15,5 +15,17 @@ services:
       - mariadb-data:/var/lib/mysql
       - ./database:/database
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: goodpawies-phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: mariadb
+      PMA_PORT: 3306
+    ports:
+      - "8080:80"
+    depends_on:
+      - mariadb
+
 volumes:
   mariadb-data:

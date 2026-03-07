@@ -32,3 +32,10 @@ yarn-error.log*
 ./server/uploads/pets/*
 ./server/uploads/users/*
 ./server/uploads/qr/*
+
+
+# Google Cloud Credentials
+*credentials.json
+# Google Cloud Credentials
+*credentials*.json
+google-credentials*.json

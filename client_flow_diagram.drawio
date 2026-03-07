@@ -1,0 +1,159 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" version="29.6.0" pages="2">
+  <diagram id="GoodPawiesFlow" name="Client Flow">
+    <mxGraphModel dx="1665" dy="791" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" value="Zona Pública" vertex="1">
+          <mxGeometry height="450" width="320" x="260" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="loginPage" parent="2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" value="Inicio" vertex="1">
+          <mxGeometry height="60" width="140" x="60" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="regStep1" parent="2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" value="Registro de nombre y correo electronico" vertex="1">
+          <mxGeometry height="60" width="140" x="60" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="regStep2" parent="2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" value="Registro Contraseña" vertex="1">
+          <mxGeometry height="60" width="140" x="60" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="publicPet" parent="2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Perfil Público Mascota" vertex="1">
+          <mxGeometry height="60" width="140" x="140" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="scanQR" parent="2" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" value="Escanear QR" vertex="1">
+          <mxGeometry height="60" width="80" x="30" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="3" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Autenticación &amp; Routing" vertex="1">
+          <mxGeometry height="450" width="280" x="580" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="authCheck" parent="3" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" value="¿Ruta Protegida?" vertex="1">
+          <mxGeometry height="80" width="110" x="40" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="hasToken" parent="3" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" value="¿Tiene Token?" vertex="1">
+          <mxGeometry height="80" width="110" x="40" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="redirectLogin" parent="3" style="rounded=1;whiteSpace=wrap;html=1;" value="Redirigir a /login" vertex="1">
+          <mxGeometry height="40" width="120" x="35" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="conn5" edge="1" parent="3" source="hasToken" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" target="redirectLogin" value="No">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ULJmJeUxeK2H_Wmz80y6-8" edge="1" parent="3" source="authCheck" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="redirectLogin" value="">
+          <mxGeometry relative="1" x="-0.8148" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="170" y="420" />
+            </Array>
+            <mxPoint x="180" y="155" as="sourcePoint" />
+            <mxPoint x="-120" y="460" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn7" edge="1" parent="3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="dashboard" value="Si (Auth OK)">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="230" y="301" />
+              <mxPoint x="230" y="80" />
+            </Array>
+            <mxPoint x="150" y="301" as="sourcePoint" />
+            <mxPoint x="440.04999999999995" y="140" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="Zona Privada (Dashboard)" vertex="1">
+          <mxGeometry height="450" width="360" x="860" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="ULJmJeUxeK2H_Wmz80y6-50" edge="1" parent="4" source="dashboard" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="ULJmJeUxeK2H_Wmz80y6-48">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dashboard" parent="4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2D7600;fontWeight=bold;" value="Perfil" vertex="1">
+          <mxGeometry height="60" width="160" x="100" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ULJmJeUxeK2H_Wmz80y6-47" edge="1" parent="4" source="addPet" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="editPet">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="addPet" parent="4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" value="Agregar Mascota" vertex="1">
+          <mxGeometry height="50" width="120" x="40" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="editPet" parent="4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" value="Detalle/Editar Mascota" vertex="1">
+          <mxGeometry height="60" width="140" x="30" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="qrGen" parent="4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Generador QR" vertex="1">
+          <mxGeometry height="60" width="140" x="30" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="ULJmJeUxeK2H_Wmz80y6-48" parent="4" style="rounded=1;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="50" width="120" x="210" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="ULJmJeUxeK2H_Wmz80y6-49" parent="4" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Chatbot" vertex="1">
+          <mxGeometry height="30" width="60" x="240" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="ULJmJeUxeK2H_Wmz80y6-6" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="180" y="310" as="sourcePoint" />
+            <mxPoint x="320" y="310" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="start1" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" value="Usuario" vertex="1">
+          <mxGeometry height="60" width="30" x="150" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="conn3" edge="1" parent="1" source="authCheck" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="loginPage" value="No">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="715" y="310" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn4" edge="1" parent="1" source="authCheck" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" target="hasToken" value="Si">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn8" edge="1" parent="1" source="loginPage" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" target="regStep1" value="Registrarse">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn9" edge="1" parent="1" source="regStep1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" target="regStep2" value="Continuar">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn10" edge="1" parent="1" source="regStep2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" target="loginPage" value="Submit OK">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="280" y="530" />
+              <mxPoint x="280" y="310" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="connLoginSuccess" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;" value="Login OK">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="375" y="220" />
+              <mxPoint x="1025" y="220" />
+            </Array>
+            <mxPoint x="374.98" y="280" as="sourcePoint" />
+            <mxPoint x="1024.98" y="290" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn11" edge="1" parent="1" source="dashboard" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" target="addPet">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn13" edge="1" parent="1" source="editPet" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" target="qrGen" value="Ver QR">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="connScan" edge="1" parent="1" source="scanQR" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" target="publicPet">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ULJmJeUxeK2H_Wmz80y6-43" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="scanQR">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="180" y="620" as="sourcePoint" />
+            <mxPoint x="280" y="620" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ULJmJeUxeK2H_Wmz80y6-42" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" value="Visitante" vertex="1">
+          <mxGeometry height="60" width="30" x="150" y="590" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="iAFKCS9ujYSkIgQ5e8wv" name="Página-2">
+    <mxGraphModel dx="672" dy="811" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

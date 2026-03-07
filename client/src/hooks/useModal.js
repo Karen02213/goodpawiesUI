@@ -78,8 +78,8 @@ export const useModal = () => {
       title,
       message,
       showCancel: true,
-      confirmText: 'Delete',
-      cancelText: 'Cancel',
+      confirmText: 'Eliminar',
+      cancelText: 'Cancelar',
       onConfirm,
       ...options
     });

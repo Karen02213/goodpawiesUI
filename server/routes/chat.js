@@ -1,10 +1,11 @@
-// server/routes/chat.js - AI Chat API with LLM Integration
+const { GoogleGenAI } = require('@google/genai');
 const express = require('express');
 const router = express.Router();
 const { verifyToken } = require('../middleware/auth');
 const { success, errors, send } = require('../utils/response');
 const logger = require('../utils/logger');
 const { getPetById } = require('../db/petQueries');
+const { searchRAG } = require('../utils/rag');
 
 // System prompt for the veterinary AI assistant
 const SYSTEM_PROMPT = `You are a veterinary AI assistant named GoodPawies. You ONLY answer medical questions regarding Dogs and Cats.
@@ -35,16 +36,22 @@ const SYSTEM_PROMPT = `You are a veterinary AI assistant named GoodPawies. You O
 - Responses should be in Spanish markdown format for better readability.
 - Response must be concise but informative.
 - Keep responses focused and helpful.
+- Always use Markdown format with bullet points, emojis, and clear sections when appropriate to enhance readability.
+- Mardown formatting should be used to break down complex information into digestible parts, making it easier for pet owners to understand and follow the advice provided. Use headings, bullet points, and emojis to create a friendly and engaging response that resonates with pet owners while conveying important information effectively.
+- Formatting should be used to create a clear and engaging response that resonates with pet owners while conveying important information effectively. Use headings, bullet points, and emojis to break down complex information into digestible parts, making it easier for pet owners to understand and follow the advice provided. Always maintain a compassionate and supportive tone, acknowledging the emotional aspect of caring for a beloved pet while providing practical guidance. Remember, your goal is to be a helpful guide, not a replacement for professional veterinary care. Always encourage users to seek in-person veterinary attention when necessary, especially in cases of emergencies or severe symptoms.
+- ALWAYS respond in spanish language, regardless of the language used by the user. This is to ensure that all users receive information in a language they can understand, as many pet owners may be more comfortable with Spanish. Always maintain the same compassionate and informative tone in Spanish, providing clear and helpful advice while encouraging users to seek professional veterinary care when needed. Remember, your goal is to be a helpful guide for pet owners, and responding in Spanish can help ensure that your advice is accessible and understandable to a wider audience.;
 
 Remember: You are a helpful guide, not a replacement for professional veterinary care.`;
 
-// Helper function to call Google Gemini API
+// Helper function to call Google Gemini API using @google/genai SDK
 async function callGeminiAPI(messages, context = '') {
-  const apiKey = process.env.GEMINI_API_KEY;
-
-  if (!apiKey) {
-    throw new Error('GEMINI_API_KEY not configured');
-  }
+  // Initialize Vertex with your Cloud project and location
+  const ai = new GoogleGenAI({
+    vertexai: true,
+    project: '687446770739',
+    location: 'us-central1'
+  });
+  const model = 'projects/687446770739/locations/us-central1/endpoints/3664591991028580352';
 
   // Format messages for Gemini
   const formattedMessages = messages.map(msg => ({
@@ -54,48 +61,42 @@ async function callGeminiAPI(messages, context = '') {
 
   const fullSystemPrompt = context ? `${SYSTEM_PROMPT}\n\nCurrent Pet Context:\n${context}` : SYSTEM_PROMPT;
 
-  // Add system instruction
-  const requestBody = {
-    contents: formattedMessages,
+  const generationConfig = {
+    maxOutputTokens: 1024,
+    temperature: 0.3,
+    topP: 1,
     systemInstruction: {
       parts: [{ text: fullSystemPrompt }]
     },
-    generationConfig: {
-      temperature: 0.7,
-      topK: 40,
-      topP: 0.95,
-      maxOutputTokens: 2048,
-    },
     safetySettings: [
-      { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
-      { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
-      { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
-      { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" }
-    ]
+      { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'OFF' },
+      { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'OFF' },
+      { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'OFF' },
+      { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'OFF' }
+    ],
+    tools: [{ googleSearch: {} }]
   };
 
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(requestBody)
-    }
-  );
+  const req = {
+    model: model,
+    contents: formattedMessages,
+    config: generationConfig,
+  };
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    logger.error('Gemini API error', { status: response.status, error: errorData });
-    throw new Error(`Gemini API error: ${response.status}`);
+  const streamingResp = await ai.models.generateContentStream(req);
+  let fullResponse = '';
+
+  for await (const chunk of streamingResp) {
+    if (chunk.text) {
+      fullResponse += chunk.text;
+    }
   }
 
-  const data = await response.json();
-
-  if (!data.candidates || !data.candidates[0]?.content?.parts?.[0]?.text) {
+  if (!fullResponse) {
     throw new Error('Invalid response from Gemini API');
   }
 
-  return data.candidates[0].content.parts[0].text;
+  return fullResponse;
 }
 
 // Helper function to call OpenAI API
@@ -220,6 +221,16 @@ History/Notes: ${pet.s_description || 'None'}
 
     // Get the last user message for logging
     const lastUserMessage = messages.filter(m => m.role === 'user').pop();
+    
+    // Fetch external RAG Context
+    let ragContext = '';
+    if (lastUserMessage && lastUserMessage.content) {
+      ragContext = await searchRAG(lastUserMessage.content);
+      if (ragContext) {
+        context += `\n\n### BASA TU RESPUESTA EN ESTA INFORMACIÓN VETERINARIA OFICIAL (RAG Context) ###\n${ragContext}\n#####################################################################\nSolo usa esta información si es relevante a la consulta del usuario.`;
+        logger.info('RAG context added successfully to the prompt for Gemini.');
+      }
+    }
 
     logger.info('Chat request received', {
       userId: req.user.id,
@@ -231,37 +242,27 @@ History/Notes: ${pet.s_description || 'None'}
     let aiResponse;
     let provider = 'fallback';
 
-    // Try Gemini first, then OpenAI, then fallback
-    try {
-      if (process.env.GEMINI_API_KEY) {
-        aiResponse = await callGeminiAPI(messages, context);
-        provider = 'gemini';
-      } else if (process.env.OPENAI_API_KEY) {
-        aiResponse = await callOpenAIAPI(messages, context);
-        provider = 'openai';
-      } else {
-        // No API configured - use fallback
-        aiResponse = getFallbackResponse(lastUserMessage?.content || '');
-        provider = 'fallback';
-      }
-    } catch (apiError) {
-      logger.error('AI API call failed', { error: apiError.message, provider });
-
-      // Try the other provider as backup
+    if (!aiResponse) {
+      // Try Gemini (Fine-Tuned) first, then fallback
       try {
-        if (provider === 'gemini' && process.env.OPENAI_API_KEY) {
-          aiResponse = await callOpenAIAPI(messages, context);
-          provider = 'openai-fallback';
-        } else if (provider === 'openai' && process.env.GEMINI_API_KEY) {
-          aiResponse = await callGeminiAPI(messages, context);
-          provider = 'gemini-fallback';
-        } else {
-          throw apiError;
+        aiResponse = await callGeminiAPI(messages, context);
+        provider = 'gemini-fine-tuned+rag';
+      } catch (apiError) {
+        logger.error('Gemini API call failed', { error: apiError.message, provider });
+        
+        // Try OpenAI as backup
+        try {
+          if (process.env.OPENAI_API_KEY) {
+            aiResponse = await callOpenAIAPI(messages, context);
+            provider = 'openai-fallback';
+          } else {
+            throw apiError;
+          }
+        } catch (backupError) {
+          // Both failed, use fallback
+          aiResponse = getFallbackResponse(lastUserMessage?.content || '');
+          provider = 'fallback';
         }
-      } catch (backupError) {
-        // Both failed, use fallback
-        aiResponse = getFallbackResponse(lastUserMessage?.content || '');
-        provider = 'fallback';
       }
     }
 

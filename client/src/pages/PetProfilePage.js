@@ -93,9 +93,9 @@ export default function PetProfilePage() {
         <main className="pet-info-grid">
           {/* About Section */}
           <section className="pet-info-card about-card">
-            <h2>About {pet.name}</h2>
+            <h2>Sobre {pet.name}</h2>
             <p className={pet.description ? "pet-description" : "pet-description-empty"}>
-              {pet.description || "Every pet has a story waiting to be told..."}
+              {pet.description || "Todos los perros tienen una historia esperando ser contada..."}
             </p>
           </section>
 
@@ -105,28 +105,28 @@ export default function PetProfilePage() {
               <span className="detail-icon">🎂</span>
               <div className="detail-content">
                 <span className="detail-label">Edad</span>
-                <span className="detail-value">{pet.age ? `${pet.age} años` : 'Unknown'}</span>
+                <span className="detail-value">{pet.age ? `${pet.age} años` : 'Sin registrar'}</span>
               </div>
             </div>
             <div className="detail-row">
               <span className="detail-icon">⚧</span>
               <div className="detail-content">
                 <span className="detail-label">Género</span>
-                <span className="detail-value">{pet.gender || 'Unknown'}</span>
+                <span className="detail-value">{pet.gender || 'Sin registrar'}</span>
               </div>
             </div>
             <div className="detail-row">
               <span className="detail-icon">🎨</span>
               <div className="detail-content">
                 <span className="detail-label">Color</span>
-                <span className="detail-value">{pet.color || 'Unknown'}</span>
+                <span className="detail-value">{pet.color || 'Sin registrar'}</span>
               </div>
             </div>
             <div className="detail-row">
               <span className="detail-icon">📏</span>
               <div className="detail-content">
                 <span className="detail-label">Tamaño</span>
-                <span className="detail-value">{pet.size || 'Unknown'}</span>
+                <span className="detail-value">{pet.size === 'small' ? 'Pequeño' : pet.size === 'medium' ? 'Mediano' : pet.size === 'large' ? 'Grande' : 'Sin registrar'}</span>
               </div>
             </div>
           </section>

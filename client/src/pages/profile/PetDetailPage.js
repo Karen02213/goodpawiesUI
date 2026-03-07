@@ -65,8 +65,8 @@ export default function PetDetailPage() {
 
   const handleDeletePet = () => {
     showDeleteConfirm(
-      `Eliminar ${pet?.name}?`,
-      `¿Estás seguro de que quieres eliminar a ${pet?.name}? Esta acción no se puede deshacer.`,
+      `¿Eliminar ${pet?.name}?`,
+      `¿Estás seguro que quieres eliminar a ${pet?.name}? Esta acción no se puede deshacer.`,
       async () => {
         const deleteApiCall = wrapApiCall(async () => {
           const response = await apiClient.deletePet(petid);
@@ -75,11 +75,11 @@ export default function PetDetailPage() {
             // Navigate immediately after successful deletion
             navigate('/profile', { replace: true });
           } else {
-            showError('Delete Failed', 'No se pudo eliminar la mascota. Por favor, intenta de nuevo.');
+            showError('Error al eliminar', 'No se pudo eliminar la mascota. Por favor intenta de nuevo.');
           }
         }, {
           onError: () => {
-            showError('Delete Failed', 'No se pudo eliminar la mascota. Por favor, intenta de nuevo.');
+            showError('Error al eliminar', 'Ocurrió un error al eliminar la mascota.');
           }
         });
 
@@ -95,6 +95,7 @@ export default function PetDetailPage() {
   if (loading) {
     return (
       <div className="pet-detail-page">
+        <div className="loading">Cargando detalles de la mascota...</div>
         <div className="loading">Cargando detalles de la mascota...</div>
       </div>
     );
@@ -154,19 +155,19 @@ export default function PetDetailPage() {
               <h2>{pet.name}</h2>
               <div className="detail-item">
                 <span className="label">Tipo:</span>
-                <span className="value" style={{ textTransform: 'capitalize' }}>{pet.type || 'Unknown'}</span>
+                <span className="value" style={{ textTransform: 'capitalize' }}>{pet.type || 'Sin registrar'}</span>
               </div>
               <div className="detail-item">
                 <span className="label">Raza:</span>
-                <span className="value">{pet.breed || 'Unknown'}</span>
+                <span className="value">{pet.breed || 'Sin registrar'}</span>
               </div>
               <div className="detail-item">
                 <span className="label">Género:</span>
-                <span className="value" style={{ textTransform: 'capitalize' }}>{pet.gender || 'Unknown'}</span>
+                <span className="value" style={{ textTransform: 'capitalize' }}>{pet.gender || 'Sin registrar'}</span>
               </div>
               <div className="detail-item">
                 <span className="label">Edad:</span>
-                <span className="value">{pet.age ? `${pet.age}` : 'Unknown'}</span>
+                <span className="value">{pet.age ? `${pet.age}` : 'Sin registrar'}</span>
               </div>
               {pet.description && (
                 <div className="detail-item" style={{ alignItems: 'flex-start' }}>
@@ -194,7 +195,7 @@ export default function PetDetailPage() {
                 to={`/profile/${uid}/pet/${petid}/qr`}
                 className="btn"
               >
-                {isOwner ? "Manage QR Code" : "View QR Code"}
+                {isOwner ? "Crear código QR" : "Ver código QR"}
               </Link>
             </div>
 

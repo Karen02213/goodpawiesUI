@@ -34,7 +34,7 @@ function LandingPage() {
           </div>
           <h1 className="hero-title">GoodPawies: Tu Asistente Veterinario con IA</h1>
           <p className="hero-subtitle">Orientación médica instantánea para tus Perros y Gatos.</p>
-
+          
           {/* Call to Action Buttons */}
           <div className="cta-buttons">
             <Link to="/login" className="btn btn-primary btn-lg cta-btn">

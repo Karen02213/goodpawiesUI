@@ -166,7 +166,7 @@ export default function PetQrPage() {
 
   return (
 
-    <div className="qr-page">
+    <div className="qr-page" backgroundColor="white">
       <div className="qr-page-container">
         <div className="qr-header">
           <Link to={`/profile/${uid}/pet/${petid}`} className="qr-back-link">
@@ -260,9 +260,9 @@ export default function PetQrPage() {
                     onChange={(e) => handleOptionChange('cornersSquareType', e.target.value)}
                     className="form-select"
                   >
-                    <option value="square">Square</option>
-                    <option value="dot">Dot</option>
-                    <option value="extra-rounded">Rounded</option>
+                    <option value="square">Cuadrado</option>
+                    <option value="dot">Punto</option>
+                    <option value="extra-rounded">Redondeado</option>
                   </select>
                 </div>
 

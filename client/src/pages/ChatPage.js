@@ -84,7 +84,7 @@ function ChatPage() {
       {
         id: Date.now(),
         role: 'assistant',
-        content: "Hello! I'm your AI Veterinary Assistant. I can help answer medical questions about your dogs and cats. How can I help you today?",
+        content: "¡Hola! Soy goodpawies tu Asistente Veterinario de IA. Puedo ayudarte a responder preguntas médicas sobre tus perros y gatos. ¿Cómo te puedo ayudar hoy?",
         timestamp: new Date()
       }
     ]);
@@ -129,12 +129,12 @@ function ChatPage() {
         };
         setMessages(prev => [...prev, assistantMessage]);
       } else {
-        setError(response.message || 'Failed to get response from AI');
+        setError(response.message || 'Error al obtener respuesta de la IA');
         // Add error message to chat
         const errorMessage = {
           id: Date.now() + 1,
           role: 'assistant',
-          content: "I'm sorry, I encountered an issue processing your request. Please try again.",
+          content: "Lo siento, hubo un problema procesando tu solicitud. Por favor intenta de nuevo.",
           timestamp: new Date(),
           isError: true
         };
@@ -142,11 +142,11 @@ function ChatPage() {
       }
     } catch (err) {
       console.error('Chat error:', err);
-      setError('Network error. Please check your connection and try again.');
+      setError('Error de red. Por favor verifica tu conexión e intenta de nuevo.');
       const errorMessage = {
         id: Date.now() + 1,
         role: 'assistant',
-        content: "I'm having trouble connecting right now. Please check your internet connection and try again.",
+        content: "Tengo problemas de conexión. Por favor verifica tu internet e intenta de nuevo.",
         timestamp: new Date(),
         isError: true
       };
@@ -216,7 +216,7 @@ function ChatPage() {
                   className="form-select pet-select"
                   value={selectedPetId}
                   onChange={(e) => setSelectedPetId(e.target.value)}
-                  aria-label="Select Pet Context"
+                  aria-label="Seleccionar Contexto de Mascota"
                 >
                   <option value="">General (Sin mascota específica)</option>
                   {userPets.map(pet => (
@@ -226,12 +226,12 @@ function ChatPage() {
                   ))}
                 </select>
                 {selectedPetId && (
-                  <small className="pet-context-label">
-                    Discutiendo: {(() => {
-                      const pet = userPets.find(p => String(p.id) === selectedPetId);
-                      return pet ? (pet.name || pet.s_petname) : '';
-                    })()}
-                  </small>
+                   <small className="text-muted" style={{ display: 'block', marginTop: '5px', fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>
+                     Discussing: {(() => {
+                        const pet = userPets.find(p => String(p.id) === selectedPetId);
+                        return pet ? (pet.name || pet.s_petname) : '';
+                     })()}
+                   </small>
                 )}
               </div>
             </div>
@@ -259,7 +259,7 @@ function ChatPage() {
             {/* Sidebar Footer */}
             <div className="sidebar-footer">
               <p className="sidebar-disclaimer">
-                AI responses are for informational purposes only.
+                Las respuestas de IA son solo para fines informativos.
               </p>
             </div>
           </>
@@ -342,7 +342,7 @@ function ChatPage() {
 
           {messages.length === 1 && (
             <div className="chat-suggestions">
-              <p className="suggestions-label">Suggested questions:</p>
+              <p className="suggestions-label">Preguntas sugeridas:</p>
               <div className="suggestions-grid">
                 {suggestions.map((suggestion, index) => (
                   <button
@@ -414,7 +414,7 @@ function ChatPage() {
               type="submit"
               className="btn chat-send-btn"
               disabled={!inputValue.trim() || isLoading}
-              aria-label="Send message"
+              aria-label="Enviar mensaje"
             >
               {isLoading ? (
                 <div className="send-loading"></div>

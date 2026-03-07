@@ -94,7 +94,7 @@ createRateLimitTable();
 const createRateLimiter = (options = {}) => {
   const {
     windowMs = 15 * 60 * 1000,
-    max = 100,
+    max = 10000,
     message = 'Too many requests, please try again later.',
     keyGenerator,
     standardHeaders = true,
@@ -116,7 +116,7 @@ const createRateLimiter = (options = {}) => {
 const rateLimitConfigs = {
   auth: {
     windowMs: 1 * 60 * 1000,
-    max: 500,
+    max: 5000,
     message: 'Too many authentication attempts, please try again in 1 minute.',
     keyGenerator: (req) => {
       const identifier = req.body.identifier || req.body.username || req.body.email || '';
@@ -125,17 +125,17 @@ const rateLimitConfigs = {
   },
   api: {
     windowMs: 5 * 60 * 1000,
-    max: 1000,
+    max: 10000,
     message: 'Too many API requests, please slow down.'
   },
   registration: {
     windowMs: 60 * 60 * 1000,
-    max: 300,
+    max: 3000,
     message: 'Too many registration attempts, please try again in an hour.'
   },
   passwordReset: {
     windowMs: 60 * 60 * 1000,
-    max: 300,
+    max: 3000,
     message: 'Too many password reset attempts, please try again in an hour.',
     keyGenerator: (req) => {
       const identifier = req.body.identifier || req.body.email || '';

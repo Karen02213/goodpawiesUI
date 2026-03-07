@@ -1,0 +1,63 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" version="29.6.1">
+  <diagram id="qr_code_styling" name="Funcionamiento qr-code-styling">
+    <mxGraphModel dx="825" dy="1665" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="start" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#d5e8d4;strokeColor=#82b366;" value="1. Inicio en React:&lt;br&gt;QrPage.js" vertex="1">
+          <mxGeometry height="60" width="200" x="320" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="note_vars" parent="1" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;spacingLeft=10;" value="Configuración del QR:&lt;br&gt;&lt;br&gt;🎨 dotsOptions: &#39;#667eea&#39;, tipo &#39;rounded&#39;&lt;br&gt;⬜ cornersSquare: &#39;extra-rounded&#39;&lt;br&gt;⚫ cornersDot: &#39;dot&#39; (puntito circular)&lt;br&gt;🖼️ image: &#39;/default-avatar.png&#39;&lt;br&gt;🛡️ ErrLevel: &#39;H&#39; (Alto, 30% tolerado para&lt;br&gt;que quepa el logo en el medio sin romperse)" vertex="1">
+          <mxGeometry height="150" width="270" x="640" y="315" as="geometry" />
+        </mxCell>
+        <mxCell id="lib_container" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;swimlaneFillColor=#ffffff;" value="3. Renderizado en Navegador (HTML Canvas / SVG)" vertex="1">
+          <mxGeometry height="290" width="300" x="270" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="proc1" parent="lib_container" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="A. Genera la URL de la mascota junto con los datos" vertex="1">
+          <mxGeometry height="40" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="proc2" parent="lib_container" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="B.&amp;nbsp; Instacia &#39; new QRCodeStyling&#39; yCalcula la Matriz Lógica de 1s y 0s" vertex="1">
+          <mxGeometry height="40" width="300" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="proc3" parent="lib_container" style="text;strokeColor=none;fillColor=#e1d5e7;align=center;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontStyle=2" value="C. Algoritmo de Trazado Geométrico:&lt;br&gt;Usa la API del Canvas del navegador para&lt;br&gt;dibujar circulitos (&#39;rounded&#39;) donde hay un &#39;1&#39; y &lt;br&gt;curvar las figuras de los bordes (&#39;extra-rounded&#39;)." vertex="1">
+          <mxGeometry height="80" width="300" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="proc4" parent="lib_container" style="text;strokeColor=none;fillColor=#d5e8d4;align=center;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontStyle=2" value="D. Superposición del Logo:&#xa;Borra los puntos del centro geométrico&#xa;y carga la imagen &#39;default-avatar.png&#39; en su lugar." vertex="1">
+          <mxGeometry height="60" width="300" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="proc5" parent="lib_container" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="E. Monta el Canvas en el DOM" vertex="1">
+          <mxGeometry height="40" width="300" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="output" parent="1" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#bac8d3;strokeColor=#23445d;" value="4. Resultado Visual&#xa;qrCode.append(ref.current)&#xa;&#xa;El usuario ve el QR interactivo en su cel/pc" vertex="1">
+          <mxGeometry height="80" width="300" x="270" y="580" as="geometry" />
+        </mxCell>
+        <mxCell id="download_act" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#d5e8d4;strokeColor=#82b366;" value="5. Acción del Usuario&#xa;(Opcional)&#xa;Botón de Descargar" vertex="1">
+          <mxGeometry height="60" width="160" x="340" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="download_lib" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;br&gt;&lt;canvas&gt;&lt;br&gt;en archivo local PNG para bajar&lt;/canvas&gt;" vertex="1">
+          <mxGeometry height="60" width="240" x="300" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="edge2" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" target="lib_container">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="420" y="200" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge3" edge="1" parent="1" source="lib_container" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" target="output">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge4" edge="1" parent="1" source="output" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" target="download_act">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge5" edge="1" parent="1" source="download_act" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" target="download_lib">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edgeNote" edge="1" parent="1" source="note_vars" style="edgeStyle=none;rounded=0;html=1;dashed=1;endArrow=none;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="proc3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="KpJj-e8fErwLuL9FKYuv-1" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="qrCode.download()&lt;br&gt;Convierte el elemento en el formato deseado&amp;nbsp;" vertex="1">
+          <mxGeometry height="30" width="130" x="349" y="825" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

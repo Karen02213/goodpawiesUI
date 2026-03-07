@@ -7,7 +7,7 @@ const Modal = ({
   message,
   type = 'info',
   confirmText = 'OK',
-  cancelText = 'Cancel',
+  cancelText = 'Cancelar',
   onConfirm,
   onCancel,
   showCancel = false,

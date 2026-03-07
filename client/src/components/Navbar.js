@@ -124,6 +124,7 @@ export default function Navbar() {
             {/* Navigation Links */}
             <ul className="navbar-menu">
               <li className="menu-section-title">Menú Principal</li>
+              <li className="menu-section-title">Menú Principal</li>
               <li>
                 <Link to="/home" className={isActive('/home') ? 'active' : ''} onClick={() => setMenuOpen(false)}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -138,10 +139,10 @@ export default function Navbar() {
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                   </svg>
-                  Chat IA
+                  Chat con IA
                 </Link>
               </li>
-
+              
               <li className="menu-section-title">Gestión de Mascotas</li>
               <li>
                 <Link to="/register/pet" className={isActive('/register/pet') ? 'active' : ''} onClick={() => setMenuOpen(false)}>
@@ -160,10 +161,11 @@ export default function Navbar() {
                     <circle cx="12" cy="7" r="4" />
                   </svg>
                   Mi Perfil y Mascotas
+                  Mi Perfil y Mascotas
                 </Link>
               </li>
 
-              <li className="menu-section-title">Más</li>
+              {/* <li className="menu-section-title">Más</li>
               <li>
                 <Link to="/demo" className={isActive('/demo') ? 'active' : ''} onClick={() => setMenuOpen(false)}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -173,7 +175,7 @@ export default function Navbar() {
                   </svg>
                   Demo
                 </Link>
-              </li>
+              </li> */}
             </ul>
 
             {/* Sidebar Footer */}
@@ -184,6 +186,7 @@ export default function Navbar() {
                   <polyline points="16 17 21 12 16 7" />
                   <line x1="21" y1="12" x2="9" y2="12" />
                 </svg>
+                Cerrar Sesión
                 Cerrar Sesión
               </button>
             </div>

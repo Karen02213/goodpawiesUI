@@ -53,12 +53,12 @@ function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section className="section">
-        <div className="container">
+      {/* <section className="home-features">
+        <div className="home-container">
           <h2 className="section-title">Cómo te Ayuda GoodPawies</h2>
-          <div className="grid-responsive">
-            <div className="card-feature">
-              <div className="feature-icon">
+          <div className="features-grid">
+            <div className="feature-item">
+              <div className="feature-icon-circle">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <circle cx="12" cy="12" r="10" />
                   <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
@@ -66,7 +66,7 @@ function HomePage() {
                 </svg>
               </div>
               <h4>Análisis de Síntomas</h4>
-              <p>Describe los síntomas y obtén un análisis impulsado por IA con posibles causas y acciones recomendadas.</p>
+              <p>Describe síntomas y obtén un análisis impulsado por IA con posibles causas y acciones recomendadas.</p>
             </div>
 
             <div className="card-feature">
@@ -78,7 +78,7 @@ function HomePage() {
                 </svg>
               </div>
               <h4>Experto en Perros y Gatos</h4>
-              <p>IA especializada entrenada en conocimiento veterinario específicamente para perros y gatos.</p>
+              <p>IA especializada entrenada en conocimientos veterinarios específicamente para perros y gatos.</p>
             </div>
 
             <div className="card-feature">
@@ -89,7 +89,7 @@ function HomePage() {
                 </svg>
               </div>
               <h4>Disponible 24/7</h4>
-              <p>Obtén respuestas inmediatas a cualquier hora del día o la noche sin esperar citas.</p>
+              <p>Obtén respuestas inmediatas en cualquier momento del día o de la noche sin esperar citas.</p>
             </div>
 
             <div className="card-feature">
