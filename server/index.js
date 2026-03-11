@@ -25,6 +25,8 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const primaryClientOrigin = process.env.CLIENT_URL || 'https://goodpawies.dev';
 const apiOrigin = process.env.API_URL || 'https://api.goodpawies.dev';
+const canonicalClientOrigin = 'https://goodpawies.dev';
+const wwwClientOrigin = 'https://www.goodpawies.dev';
 
 const parseAllowedOrigins = (value) => (value || '')
   .split(',')
@@ -58,7 +60,7 @@ app.use(helmet({
       styleSrc: ["'self'", "'unsafe-inline'"],
       scriptSrc: ["'self'"],
       imgSrc: ["'self'", "data:", "https:", "blob:"],
-      connectSrc: ["'self'", primaryClientOrigin, apiOrigin],
+      connectSrc: ["'self'", canonicalClientOrigin, wwwClientOrigin, primaryClientOrigin, apiOrigin],
     },
   },
   crossOriginResourcePolicy: { policy: "cross-origin" },
@@ -67,7 +69,8 @@ app.use(helmet({
 
 const envAllowedOrigins = parseAllowedOrigins(process.env.CORS_ALLOWED_ORIGINS);
 const allowedOrigins = new Set([
-  'https://goodpawies.dev',
+  canonicalClientOrigin,
+  wwwClientOrigin,
   primaryClientOrigin,
   ...envAllowedOrigins,
 ]);

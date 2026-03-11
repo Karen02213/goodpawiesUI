@@ -1,6 +1,7 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "GoodPawies",
+  "name": "GoodPawies - AI Veterinary Assistant",
+  "description": "GoodPawies helps pet owners manage profiles, QR tags, and AI-assisted pet care guidance.",
   "icons": [
     {
       "src": "favicon.ico",
@@ -18,8 +19,10 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "theme_color": "#0f172a",
   "background_color": "#ffffff"
 }

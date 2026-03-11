@@ -5,6 +5,13 @@ upstream goodpawies_api {
 
 server {
     listen 80;
+    server_name www.goodpawies.dev;
+
+    return 301 https://goodpawies.dev$request_uri;
+}
+
+server {
+    listen 80;
     server_name goodpawies.dev;
     root /var/www/goodpawiesUI/client/build;
     index index.html;
