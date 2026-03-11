@@ -1,0 +1,7 @@
+[Unit]
+Description=GoodPawies development stack
+Wants=goodpawies-client-dev.service goodpawies-server-dev.service
+After=network-online.target
+
+[Install]
+WantedBy=multi-user.target

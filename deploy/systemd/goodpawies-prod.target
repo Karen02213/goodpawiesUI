@@ -1,0 +1,7 @@
+[Unit]
+Description=GoodPawies production stack
+Wants=goodpawies-server.service nginx.service
+After=network-online.target nginx.service
+
+[Install]
+WantedBy=multi-user.target

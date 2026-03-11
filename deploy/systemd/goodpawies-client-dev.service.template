@@ -1,0 +1,33 @@
+[Unit]
+Description=GoodPawies React client development server
+Documentation=file:__APP_ROOT__/SYSTEMD_DEPLOYMENT.md
+After=network-online.target
+Wants=network-online.target
+PartOf=goodpawies-dev.target
+
+[Service]
+Type=simple
+User=__RUN_AS_USER__
+Group=__RUN_AS_GROUP__
+WorkingDirectory=__APP_ROOT__/client
+Environment=HOME=__RUN_AS_HOME__
+Environment=PATH=__NODE_PATH__
+Environment=HOST=0.0.0.0
+Environment=PORT=3000
+Environment=BROWSER=none
+Environment=CI=true
+ExecStart=__NPM_BIN__ start
+Restart=always
+RestartSec=5
+StartLimitIntervalSec=60
+StartLimitBurst=10
+TimeoutStartSec=120
+TimeoutStopSec=30
+KillSignal=SIGINT
+NoNewPrivileges=true
+PrivateTmp=true
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=goodpawies-dev.target
