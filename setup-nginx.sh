@@ -8,19 +8,23 @@ if [ "$EUID" -ne 0 ]; then
     echo "Note: Some steps require sudo privileges"
 fi
 echo "apt install nginx -y"
-# Add goodpawies.local to hosts file
-echo "📝 Adding goodpawies.local to /etc/hosts..."
-if ! grep -q "goodpawies.local" /etc/hosts; then
-    echo "127.0.0.1  goodpawies.local" | sudo tee -a /etc/hosts
-    echo "✅ Added goodpawies.local to hosts file"
-else
-    echo "✅ goodpawies.local already in hosts file"
-fi
+echo "🌐 Verifying deployment targets..."
+echo "   Frontend domain: goodpawies.dev"
+echo "   API domain:      api.goodpawies.dev"
+echo "   Ensure both DNS records point to this server before enabling the site."
+echo "   Expected frontend build path on server: /var/www/goodpawiesUI/client/build"
 
 # Copy nginx config
 echo "📋 Setting up Nginx configuration..."
-sudo cp nginx/goodpawies.local.conf /etc/nginx/sites-available/goodpawies.local
-sudo ln -sf /etc/nginx/sites-available/goodpawies.local /etc/nginx/sites-enabled/
+sudo cp nginx/goodpawies /etc/nginx/sites-available/goodpawies
+sudo ln -sf /etc/nginx/sites-available/goodpawies /etc/nginx/sites-enabled/goodpawies
+sudo rm -f /etc/nginx/sites-enabled/goodpawies.local
+sudo rm -f /etc/nginx/sites-available/goodpawies.local
+
+if [ ! -d "/var/www/goodpawiesUI/client/build" ]; then
+    echo "⚠️  Frontend build directory not found at /var/www/goodpawiesUI/client/build"
+    echo "   Build the client and deploy it to that path before reloading Nginx."
+fi
 
 # Test nginx config
 echo "🔍 Testing Nginx configuration..."
@@ -42,22 +46,22 @@ else
     echo "⚠️  Backend server not running. Start with: cd server && npm start"
 fi
 
-if pgrep -f "react-scripts start" > /dev/null; then
-    echo "✅ React app is running"
+if [ -f "/var/www/goodpawiesUI/client/build/index.html" ]; then
+    echo "✅ Frontend build is present"
 else
-    echo "⚠️  React app not running. Start with: cd client && npm start"
+    echo "⚠️  Frontend build missing. Run: cd client && npm run build"
 fi
 
 echo ""
 echo "🎉 Setup complete!"
 echo ""
 echo "📍 Access your application at:"
-echo "   Frontend: http://goodpawies.local"
-echo "   API:      http://goodpawies.local/api"
-echo "   Health:   http://goodpawies.local/api/health"
+echo "   Frontend: https://goodpawies.dev"
+echo "   API:      https://api.goodpawies.dev"
+echo "   Health:   https://api.goodpawies.dev/api/health"
 echo ""
-echo "🔧 To start both services:"
-echo "   npm run dev"
+echo "🔧 Frontend deployment step:"
+echo "   cd client && npm run build"
 echo ""
 echo "🧪 Test the setup:"
-echo "   curl http://goodpawies.local/api/health"
+echo "   curl https://api.goodpawies.dev/api/health"

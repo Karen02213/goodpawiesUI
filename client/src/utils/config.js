@@ -4,7 +4,7 @@
  * @returns {string} The normalized URL
  */
 export const normalizeApiBaseUrl = (url) => {
-    const fallback = 'http://localhost:5000/api';
+    const fallback = 'https://api.goodpawies.dev/api';
     if (!url || typeof url !== 'string') return fallback;
 
     // Remove trailing slashes

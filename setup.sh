@@ -336,8 +336,8 @@ main() {
         echo "   - Client: cd client && npm start"
         echo ""
         echo "📚 URLs:"
-        echo "   - API: http://localhost:5000/api/health"
-        echo "   - Client: http://localhost:3000"
+        echo "   - API: https://api.goodpawies.dev/api/health"
+        echo "   - Client: https://goodpawies.dev"
         echo "   - phpMyAdmin: http://localhost:8080"
         print_status "Happy coding! 🐾"
     fi

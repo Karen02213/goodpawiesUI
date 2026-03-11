@@ -23,6 +23,13 @@ const chatRoutes = require('./routes/chat');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const primaryClientOrigin = process.env.CLIENT_URL || 'https://goodpawies.dev';
+const apiOrigin = process.env.API_URL || 'https://api.goodpawies.dev';
+
+const parseAllowedOrigins = (value) => (value || '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 // Logging middleware (log every request, structured for audit/data analysis)
 app.use((req, res, next) => {
@@ -51,46 +58,24 @@ app.use(helmet({
       styleSrc: ["'self'", "'unsafe-inline'"],
       scriptSrc: ["'self'"],
       imgSrc: ["'self'", "data:", "https:", "blob:"],
-      connectSrc: ["'self'", "http://localhost:3000", "http://192.168.1.73:3000", process.env.CLIENT_URL || "http://localhost:3000"],
+      connectSrc: ["'self'", primaryClientOrigin, apiOrigin],
     },
   },
   crossOriginResourcePolicy: { policy: "cross-origin" },
   hsts: { maxAge: 31536000, includeSubDomains: true, preload: true }
 }));
 
-const isDev = (process.env.NODE_ENV || 'development') === 'development';
-const envAllowedOrigins = (process.env.CORS_ALLOWED_ORIGINS || '')
-  .split(',')
-  .map((origin) => origin.trim())
-  .filter(Boolean);
-
-const defaultAllowedOrigins = [
-  'http://localhost:3000',
-  'http://127.0.0.1:3000',
-  'http://goodpawies.local'
-];
-
-const allowedOrigins = new Set([...defaultAllowedOrigins, ...envAllowedOrigins]);
-
-const isAllowedDevOrigin = (origin) => {
-  if (!origin) return true;
-  if (!isDev) return false;
-  try {
-    const { hostname, protocol, port } = new URL(origin);
-    const isHttp = protocol === 'http:';
-    const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
-    const isLan = /^192\.168\.\d{1,3}\.\d{1,3}$/.test(hostname) || /^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(hostname);
-    return isHttp && (isLocalhost || isLan) && (!port || port === '3000');
-  } catch {
-    return false;
-  }
-};
+const envAllowedOrigins = parseAllowedOrigins(process.env.CORS_ALLOWED_ORIGINS);
+const allowedOrigins = new Set([
+  'https://goodpawies.dev',
+  primaryClientOrigin,
+  ...envAllowedOrigins,
+]);
 
 const corsOptions = {
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
     if (allowedOrigins.has(origin)) return callback(null, true);
-    if (isAllowedDevOrigin(origin)) return callback(null, true);
     return callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
