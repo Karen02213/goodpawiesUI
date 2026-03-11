@@ -22,6 +22,8 @@ const qrRoutes = require('./routes/qr');
 const chatRoutes = require('./routes/chat');
 
 const app = express();
+app.set('trust proxy', 1);
+
 const PORT = process.env.PORT || 5000;
 const primaryClientOrigin = process.env.CLIENT_URL || 'https://goodpawies.dev';
 const apiOrigin = process.env.API_URL || 'https://api.goodpawies.dev';

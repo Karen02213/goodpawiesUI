@@ -52,7 +52,10 @@ case "$mode" in
   prod)
     case "$target" in
       all)
-        units=(goodpawies-server.service nginx.service)
+        units=(goodpawies-client-dev.service goodpawies-server.service nginx.service)
+        ;;
+      client)
+        units=(goodpawies-client-dev.service)
         ;;
       server)
         units=(goodpawies-server.service)

@@ -8,13 +8,15 @@ This repository now includes systemd units for both development and production-s
 - `goodpawies-server-dev.service`: runs `npm run dev` inside `server/`
 - `goodpawies-server.service`: runs `npm start` inside `server/`
 - `goodpawies-dev.target`: starts the client and server development services together
-- `goodpawies-prod.target`: starts the production API service together with `nginx`
+- `goodpawies-prod.target`: starts the client service, the production API service, and `nginx`
 
 ## Why there are two modes
 
 The client command `npm start` is the React development server and the server command `npm run dev` uses `nodemon`. They are fine for development, but they are not the production-grade way to serve the app.
 
-For production, the frontend should be built with `npm run build` and served by `nginx`, while the backend should run with `npm start`.
+This repository currently has an `nginx` frontend config that proxies `goodpawies.dev` to port `3000`, so the selected stack must also keep the React client service running.
+
+If you later switch `nginx/goodpawies` back to serving `client/build` directly, you can remove the client service from `goodpawies-prod.target`.
 
 ## Install the units
 
@@ -56,6 +58,7 @@ Production mode:
 ```bash
 sudo goodpawiesctl prod start all
 sudo goodpawiesctl prod stop all
+sudo goodpawiesctl prod restart client
 sudo goodpawiesctl prod restart server
 sudo goodpawiesctl prod restart nginx
 sudo goodpawiesctl prod status all
@@ -74,11 +77,11 @@ sudo systemctl stop goodpawies-prod.target
 
 ## Production checklist
 
-Before using `goodpawies-prod.target`:
+Before using `goodpawies-prod.target` with the current nginx proxy config:
 
 1. Install dependencies in both `client/` and `server/`.
-2. Build the frontend with `cd client && npm run build`.
-3. Install and reload the `nginx` config from `nginx/goodpawies`.
+2. Install and reload the `nginx` config from `nginx/goodpawies`.
+3. Make sure the client service can start on port `3000`.
 4. Ensure the server `.env` file is present and valid.
 5. Point DNS to the server for `goodpawies.dev` and `api.goodpawies.dev`.
 
