@@ -8,6 +8,16 @@ ENABLE_TARGET=dev
 START_NOW=yes
 RUN_AS_USER=${SUDO_USER:-${USER:-}}
 RUN_AS_GROUP=
+RUN_AS_HOME=
+
+log() {
+  printf '[goodpawies-install] %s\n' "$1"
+}
+
+fail() {
+  printf '[goodpawies-install] ERROR: %s\n' "$1" >&2
+  exit 1
+}
 
 usage() {
   cat <<EOF
@@ -24,8 +34,7 @@ EOF
 
 require_root() {
   if [[ ${EUID} -ne 0 ]]; then
-    echo "Run this script with sudo." >&2
-    exit 1
+    fail "Run this script with sudo."
   fi
 }
 
@@ -42,17 +51,46 @@ discover_group() {
 }
 
 discover_npm_bin() {
+  local candidate
+
   if [[ -n ${NPM_BIN:-} ]]; then
     printf '%s\n' "$NPM_BIN"
-    return
+    return 0
   fi
 
-  sudo -u "$RUN_AS_USER" bash -lc 'command -v npm'
+  candidate=$(sudo -u "$RUN_AS_USER" env HOME="$RUN_AS_HOME" bash -lc 'command -v npm || true')
+  if [[ -n "$candidate" ]]; then
+    printf '%s\n' "$candidate"
+    return 0
+  fi
+
+  candidate=$(command -v npm || true)
+  if [[ -n "$candidate" ]]; then
+    printf '%s\n' "$candidate"
+    return 0
+  fi
+
+  for candidate in \
+    /usr/bin/npm \
+    /usr/local/bin/npm \
+    "$RUN_AS_HOME/.nvm/versions/node"/*/bin/npm
+  do
+    if [[ -x "$candidate" ]]; then
+      printf '%s\n' "$candidate"
+      return 0
+    fi
+  done
+
+  return 1
 }
 
 render_unit() {
   local template=$1
   local destination=$2
+
+  if [[ ! -f "$template" ]]; then
+    fail "Missing template: $template"
+  fi
 
   sed \
     -e "s/__APP_ROOT__/$(escape_sed "$ROOT_DIR")/g" \
@@ -95,20 +133,18 @@ while [[ $# -gt 0 ]]; do
 done
 
 require_root
+log "Project root resolved to $ROOT_DIR"
 
 if [[ -z "$RUN_AS_USER" ]]; then
-  echo "Unable to determine the runtime user. Pass --user explicitly." >&2
-  exit 1
+  fail "Unable to determine the runtime user. Pass --user explicitly."
 fi
 
 if [[ ! -d "$ROOT_DIR/client" || ! -d "$ROOT_DIR/server" ]]; then
-  echo "Client or server directory is missing under $ROOT_DIR." >&2
-  exit 1
+  fail "Client or server directory is missing under $ROOT_DIR."
 fi
 
 if [[ ! -f "$ROOT_DIR/client/package.json" || ! -f "$ROOT_DIR/server/package.json" ]]; then
-  echo "package.json is missing in client or server." >&2
-  exit 1
+  fail "package.json is missing in client or server."
 fi
 
 case "$ENABLE_TARGET" in
@@ -123,24 +159,25 @@ esac
 
 RUN_AS_HOME=$(discover_user_home "$RUN_AS_USER")
 if [[ -z "$RUN_AS_HOME" ]]; then
-  echo "Unable to determine home directory for user $RUN_AS_USER." >&2
-  exit 1
+  fail "Unable to determine home directory for user $RUN_AS_USER."
 fi
 
 if [[ -z "$RUN_AS_GROUP" ]]; then
   RUN_AS_GROUP=$(discover_group "$RUN_AS_USER")
 fi
 
-NPM_BIN=$(discover_npm_bin)
+log "Using runtime user $RUN_AS_USER:$RUN_AS_GROUP"
+NPM_BIN=$(discover_npm_bin || true)
 if [[ -z "$NPM_BIN" || ! -x "$NPM_BIN" ]]; then
-  echo "Unable to locate npm for user $RUN_AS_USER. Export NPM_BIN or install Node.js system-wide." >&2
-  exit 1
+  fail "Unable to locate npm for user $RUN_AS_USER. Re-run with NPM_BIN=/full/path/to/npm sudo bash ./scripts/install-systemd-services.sh --enable $ENABLE_TARGET"
 fi
 
 NODE_BIN_DIR=$(dirname "$NPM_BIN")
 NODE_PATH="$NODE_BIN_DIR:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+log "Using npm at $NPM_BIN"
 
 install -d "$SYSTEMD_DIR"
+log "Rendering systemd unit files into $SYSTEMD_DIR"
 
 render_unit "$ROOT_DIR/deploy/systemd/goodpawies-client-dev.service.template" "$SYSTEMD_DIR/goodpawies-client-dev.service"
 render_unit "$ROOT_DIR/deploy/systemd/goodpawies-server-dev.service.template" "$SYSTEMD_DIR/goodpawies-server-dev.service"
@@ -149,6 +186,7 @@ install -m 0644 "$ROOT_DIR/deploy/systemd/goodpawies-dev.target" "$SYSTEMD_DIR/g
 install -m 0644 "$ROOT_DIR/deploy/systemd/goodpawies-prod.target" "$SYSTEMD_DIR/goodpawies-prod.target"
 install -m 0755 "$ROOT_DIR/scripts/goodpawiesctl.sh" /usr/local/bin/goodpawiesctl
 
+log "Reloading systemd"
 systemctl daemon-reload
 
 systemctl disable goodpawies-dev.target >/dev/null 2>&1 || true
@@ -156,20 +194,25 @@ systemctl disable goodpawies-prod.target >/dev/null 2>&1 || true
 
 case "$ENABLE_TARGET" in
   dev)
+    log "Enabling development target on boot"
     systemctl enable goodpawies-dev.target
     if [[ "$START_NOW" == yes ]]; then
+      log "Starting development target now"
       systemctl stop goodpawies-prod.target >/dev/null 2>&1 || true
       systemctl start goodpawies-dev.target
     fi
     ;;
   prod)
+    log "Enabling production target on boot"
     systemctl enable goodpawies-prod.target
     if [[ "$START_NOW" == yes ]]; then
+      log "Starting production target now"
       systemctl stop goodpawies-dev.target >/dev/null 2>&1 || true
       systemctl start goodpawies-prod.target
     fi
     ;;
   none)
+    log "Installed units without enabling a boot target"
     if [[ "$START_NOW" == yes ]]; then
       systemctl stop goodpawies-dev.target >/dev/null 2>&1 || true
       systemctl stop goodpawies-prod.target >/dev/null 2>&1 || true
