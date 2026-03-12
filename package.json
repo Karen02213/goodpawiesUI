@@ -2,6 +2,9 @@
   "name": "goodpawiesui",
   "version": "1.0.0.1a",
   "main": "index.js",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "client": "npm start --prefix client",
     "server": "npm run dev --prefix server",

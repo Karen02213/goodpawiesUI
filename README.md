@@ -1,5 +1,7 @@
 # Local Development with Custom Domain and Nginx
 
+Node.js 20+ is required for this repository. Current client and server dependencies include packages that do not support Node 18.
+
 To use a custom domain (goodpawies.local) for both the React app and API:
 
 1. Add to your /etc/hosts:

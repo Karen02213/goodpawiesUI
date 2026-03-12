@@ -88,7 +88,7 @@ A professional, secure authentication and API server for the GoodPawies pet soci
 ## Setup Instructions
 
 ### 1. Prerequisites
-- Node.js 16+ and npm 8+
+- Node.js 20+ and npm
 - MySQL 8.0+
 - Docker (optional, for database)
 

@@ -42,13 +42,13 @@ run_npm() {
     print_header "📦 Installing Node.js Dependencies"
     
     if ! command -v node &> /dev/null; then
-        print_error "Node.js is not installed. Please install Node.js 16+ first."
+        print_error "Node.js is not installed. Please install Node.js 20+ first."
         exit 1
     fi
     
     NODE_VERSION=$(node -v | cut -d'.' -f1 | cut -d'v' -f2)
-    if [ "$NODE_VERSION" -lt 16 ]; then
-        print_error "Node.js version 16+ is required. Current version: $(node -v)"
+    if [ "$NODE_VERSION" -lt 20 ]; then
+        print_error "Node.js version 20+ is required by current dependencies. Current version: $(node -v)"
         exit 1
     fi
     
