@@ -158,7 +158,7 @@ async function getBreedsByType(petType) {
  */
 async function getAllPetTypes() {
   const query = `
-    SELECT id, s_type
+    SELECT id, s_type, s_icon
     FROM pets_types 
     WHERE b_active = 1
     ORDER BY s_type ASC

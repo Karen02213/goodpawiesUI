@@ -183,6 +183,7 @@ CREATE TABLE pets_color (
 CREATE TABLE pets_types (
     id INT PRIMARY KEY AUTO_INCREMENT,
     s_type VARCHAR(30) NOT NULL,
+    s_icon VARCHAR(8) DEFAULT NULL,
     dt_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     dt_updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     b_active BIT DEFAULT 1
@@ -191,7 +192,7 @@ CREATE TABLE pets_types (
 CREATE TABLE pets_breed (
     id INT PRIMARY KEY AUTO_INCREMENT,
     id_type INT NOT NULL,
-    s_breed VARCHAR(30) NOT NULL,
+    s_breed VARCHAR(60) NOT NULL,
     dt_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     dt_updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     b_active BIT DEFAULT 1,
@@ -203,7 +204,7 @@ CREATE TABLE pets (
     userid INT NOT NULL,
     s_petname VARCHAR(30) NOT NULL,
     s_type VARCHAR(30) NOT NULL,
-    s_breed VARCHAR(30) NOT NULL,
+    s_breed VARCHAR(60) NOT NULL,
     s_description TEXT,
     s_color VARCHAR(50),
     s_age VARCHAR(20),
@@ -419,7 +420,7 @@ INSERT INTO user_info (userid, s_description, b_active) VALUES
 (5, 'Tengo un rancho con varios animales, principalmente perros.', 1),
 (6, 'Criadora responsable de Pastor Alemán.', 1),
 (7, 'Fan de los gatos persas, tengo 2 hermosas gatitas.', 1),
-(8, 'Amante de las aves, tengo varios periquitos australianos.', 1),
+(8, 'Rescatista de gatos, actualmente cuido dos michis muy juguetones.', 1),
 (9, 'Corredor con mi Husky Siberiano todos los días.', 1),
 (10, 'Voluntaria en refugio de animales los fines de semana.', 1),
 (11, 'Papá de un Bulldog Francés muy consentido.', 1),
@@ -440,29 +441,68 @@ INSERT INTO pets_color (s_color, s_hex, b_active) VALUES
 ('Bicolor', NULL, 1), ('Rojizo', '#A52A2A', 1), ('Crema', '#FFFDD0', 1);
 
 -- Pet types
-INSERT INTO pets_types (s_type, b_active) VALUES
-('Perro', 1), ('Gato', 1), ('Ave', 1), ('Conejo', 1), ('Pez', 1), ('Hámster', 1);
+INSERT INTO pets_types (s_type, s_icon, b_active) VALUES
+('Perro', '🐶', 1),
+('Gato', '🐱', 1);
 
 -- Pet breeds
 INSERT INTO pets_breed (id_type, s_breed, b_active) VALUES
 -- Perros (id_type = 1)
-(1, 'Golden Retriever', 1), (1, 'Pastor Alemán', 1), (1, 'Border Collie', 1),
-(1, 'Bulldog Francés', 1), (1, 'Labrador', 1), (1, 'Chihuahua', 1),
-(1, 'Poodle', 1), (1, 'Rottweiler', 1), (1, 'Husky Siberiano', 1),
-(1, 'Schnauzer', 1), (1, 'Beagle', 1), (1, 'Mestizo', 1),
+(1, 'Mestizo', 1),
+(1, 'Golden Retriever', 1),
+(1, 'Labrador Retriever', 1),
+(1, 'Pastor Alemán', 1),
+(1, 'Bulldog Francés', 1),
+(1, 'Bulldog Inglés', 1),
+(1, 'Chihuahua', 1),
+(1, 'Poodle', 1),
+(1, 'Rottweiler', 1),
+(1, 'Husky Siberiano', 1),
+(1, 'Schnauzer', 1),
+(1, 'Beagle', 1),
+(1, 'Pug', 1),
+(1, 'Shih Tzu', 1),
+(1, 'Yorkshire Terrier', 1),
+(1, 'Terranova', 1),
+(1, 'Doberman', 1),
+(1, 'Border Collie', 1),
+(1, 'Dálmata', 1),
+(1, 'Cocker Spaniel', 1),
+(1, 'Bóxer', 1),
+(1, 'Gran Danés', 1),
+(1, 'Maltés', 1),
+(1, 'Akita Inu', 1),
+(1, 'Samoyedo', 1),
+(1, 'Weimaraner', 1),
+(1, 'Basset Hound', 1),
+(1, 'Jack Russell Terrier', 1),
+(1, 'Boston Terrier', 1),
+(1, 'Setter Irlandés', 1),
+(1, 'Pointer Inglés', 1),
+(1, 'San Bernardo', 1),
 -- Gatos (id_type = 2)
-(2, 'Mestizo', 1), (2, 'Siamés', 1), (2, 'Persa', 1),
-(2, 'Maine Coon', 1), (2, 'British Shorthair', 1), (2, 'Ragdoll', 1),
--- Aves (id_type = 3)
-(3, 'Periquito Australiano', 1), (3, 'Canario', 1), (3, 'Cockatiel', 1), (3, 'Loro', 1),
--- Conejos (id_type = 4)
-(4, 'Holland Lop', 1), (4, 'Mini Lop', 1), (4, 'Cabeza de León', 1),
--- Peces (id_type = 5)
-(5, 'Betta', 1), (5, 'Goldfish', 1), (5, 'Guppy', 1),
--- Hámsters (id_type = 6)
-(6, 'Sirio', 1), (6, 'Ruso', 1), (6, 'Roborovski', 1);
+(2, 'Mestizo', 1),
+(2, 'Gato doméstico de pelo corto', 1),
+(2, 'Gato doméstico de pelo largo', 1),
+(2, 'Siamés', 1),
+(2, 'Persa', 1),
+(2, 'Maine Coon', 1),
+(2, 'Británico de Pelo Corto', 1),
+(2, 'Ragdoll', 1),
+(2, 'Bengalí', 1),
+(2, 'Azul Ruso', 1),
+(2, 'Sphynx', 1),
+(2, 'Bosque de Noruega', 1),
+(2, 'Scottish Fold', 1),
+(2, 'Abisinio', 1),
+(2, 'Angora Turco', 1),
+(2, 'Birmano', 1),
+(2, 'Bombay', 1),
+(2, 'Exótico de Pelo Corto', 1),
+(2, 'Himalayo', 1),
+(2, 'Oriental de Pelo Corto', 1);
 
--- Sample pets (15+ diverse pets)
+-- Sample pets (solo perros y gatos)
 INSERT INTO pets (userid, s_petname, s_type, s_breed, s_description, s_color, s_age, s_gender, s_size, b_vaccinated, b_sterilized, b_active) VALUES
 -- Carlos's pets
 (1, 'Max', 'Perro', 'Golden Retriever', 'Muy juguetón y cariñoso, le encanta nadar en la alberca.', 'Dorado', '4 años', 'Macho', 'large', 1, 1, 1),
@@ -484,9 +524,9 @@ INSERT INTO pets (userid, s_petname, s_type, s_breed, s_description, s_color, s_
 -- Roberto's Persian cats
 (7, 'Princesa', 'Gato', 'Persa', 'Gata de pelo largo, necesita cepillado diario.', 'Gris', '4 años', 'Hembra', 'medium', 1, 1, 1),
 (7, 'Duquesa', 'Gato', 'Persa', 'Hermana de Princesa, un poco más juguetona.', 'Blanco', '4 años', 'Hembra', 'medium', 1, 1, 1),
--- Sofia's birds
-(8, 'Piolín', 'Ave', 'Canario', 'Canta todas las mañanas, muy alegre.', 'Amarillo', '2 años', 'Macho', 'small', 0, 0, 1),
-(8, 'Kiwi', 'Ave', 'Periquito Australiano', 'Periquito verde muy parlanchín, dice varias palabras.', 'Verde', '1 año', 'Macho', 'small', 0, 0, 1),
+-- Sofía's rescued cats
+(8, 'Piolín', 'Gato', 'Gato doméstico de pelo corto', 'Rescatado de cachorro, muy curioso y le encanta dormir al sol.', 'Crema', '2 años', 'Macho', 'medium', 1, 1, 1),
+(8, 'Kiwi', 'Gato', 'Mestizo', 'Gatita inquieta y juguetona, siempre persigue juguetes por toda la casa.', 'Bicolor', '1 año', 'Hembra', 'medium', 1, 1, 1),
 -- Miguel's Husky
 (9, 'Nieve', 'Perro', 'Husky Siberiano', 'Husky con ojos azules, muy activa y le encanta correr.', 'Blanco', '3 años', 'Hembra', 'large', 1, 1, 1),
 -- Fernanda's rescue dog

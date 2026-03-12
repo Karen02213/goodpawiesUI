@@ -2,9 +2,9 @@
 // Pet management routes - extracted to reduce main file redundancy
 const express = require('express');
 const router = express.Router();
+const { randomUUID } = require('crypto');
 const fs = require('fs');
 const path = require('path');
-const { v4: uuidv4 } = require('uuid');
 const { verifyToken, optionalAuth } = require('../middleware/auth');
 const { validateUserId, validatePetId, validatePetRegistration, validateEnhancedPetRegistration, validateEnhancedPetUpdate } = require('../middleware/validation');
 const { asyncHandler, auditAction, validateOwnership } = require('../utils/errors');
@@ -26,7 +26,7 @@ function saveImageFile(base64Data) {
 
   const ext = matches[1] === 'jpeg' ? 'jpg' : matches[1];
   const data = matches[2];
-  const filename = `${uuidv4()}.${ext}`;
+  const filename = `${randomUUID()}.${ext}`;
   const filepath = path.join(UPLOADS_DIR, filename);
 
   // Ensure directory exists

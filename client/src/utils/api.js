@@ -5,6 +5,20 @@ import authService from './auth';
 import { normalizeApiBaseUrl, getBaseUrl } from './config';
 
 
+const ALLOWED_PET_TYPES = new Set(['Perro', 'Gato']);
+const PET_TYPE_ICONS = {
+  Perro: '🐶',
+  Gato: '🐱'
+};
+
+export const formatPetTypeLabel = (type) => {
+  if (!type?.s_type) return '';
+
+  const icon = type.s_icon || PET_TYPE_ICONS[type.s_type] || '';
+  return icon ? `${icon} ${type.s_type}` : type.s_type;
+};
+
+
 
 class ApiClient {
   constructor() {
@@ -220,8 +234,11 @@ export const usePetDropdowns = () => {
           apiClient.getPetColors()
         ]);
 
-        setBreeds(breedsData.breeds || []);
-        setPetTypes(typesData.types || []);
+        const allowedTypes = (typesData.types || []).filter((type) => ALLOWED_PET_TYPES.has(type.s_type));
+        const allowedBreeds = (breedsData.breeds || []).filter((breed) => ALLOWED_PET_TYPES.has(breed.s_type));
+
+        setBreeds(allowedBreeds);
+        setPetTypes(allowedTypes);
         setGenders(gendersData.genders || []);
         setSizes(sizesData.sizes || []);
         setColors(colorsData.colors || []);

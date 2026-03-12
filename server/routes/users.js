@@ -2,9 +2,9 @@
 // User management routes - extracted to reduce main file redundancy
 const express = require('express');
 const router = express.Router();
+const { randomUUID } = require('crypto');
 const fs = require('fs');
 const path = require('path');
-const { v4: uuidv4 } = require('uuid');
 const { verifyToken, optionalAuth, requireOwnership } = require('../middleware/auth');
 const { validateUserId, validatePagination } = require('../middleware/validation');
 const { asyncHandler, auditAction } = require('../utils/errors');
@@ -25,7 +25,7 @@ function saveUserImage(base64Data) {
 
   const ext = matches[1] === 'jpeg' ? 'jpg' : matches[1];
   const data = matches[2];
-  const filename = `${uuidv4()}.${ext}`;
+  const filename = `${randomUUID()}.${ext}`;
   const filepath = path.join(USER_UPLOADS_DIR, filename);
 
   if (!fs.existsSync(USER_UPLOADS_DIR)) {

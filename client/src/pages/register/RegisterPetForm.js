@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { usePetDropdowns, usePetRegistration } from "../../utils/api";
+import { formatPetTypeLabel, usePetDropdowns, usePetRegistration } from "../../utils/api";
 
 const AGE_RANGES = [
   "Menos de 1",
@@ -193,13 +193,7 @@ function RegisterPage() {
                       <option value="">Selecciona el tipo</option>
                       {petTypes.map((type) => (
                         <option key={type.id} value={type.s_type}>
-                          {type.s_type === 'Dog' ? '🐶 Perro' :
-                            type.s_type === 'Cat' ? '🐱 Gato' :
-                              type.s_type === 'Bird' ? '🐦 Ave' :
-                                type.s_type === 'Rabbit' ? '🐰 Conejo' :
-                                  type.s_type === 'Fish' ? '🐟 Pez' :
-                                    type.s_type === 'Hamster' ? '🐹 Hámster' :
-                                      type.s_type}
+                          {formatPetTypeLabel(type)}
                         </option>
                       ))}
                     </select>
